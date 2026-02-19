@@ -5,7 +5,10 @@ import SectionWrapper from '@/components/SectionWrapper'
 import ViewToggle, { type ViewMode } from '@/components/portal/ViewToggle'
 import BoardView, { type BoardColumn } from '@/components/portal/BoardView'
 import GrantCard from '@/components/portal/GrantCard'
+import DiseaseTabs from '@/components/DiseaseTabs'
 import { grants, grantStatusLabels, grantStatusColors } from '@/data/grants'
+import { filterByDisease } from '@/data/disease-utils'
+import { getRelatedProjects, getRelatedAgreements } from '@/data/cross-links'
 import type { GrantStatus, Grant } from '@/data/grants'
 
 type SortKey = 'title' | 'pi' | 'agency' | 'amount' | 'deadline' | 'status'
@@ -29,7 +32,33 @@ function formatDate(dateStr: string | null): string {
   return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
+function RelatedBadges({ label, items }: { label: string; items: { id: string; title: string }[] }) {
+  if (items.length === 0) return null
+  const shown = items.slice(0, 5)
+  const overflow = items.length - shown.length
+  return (
+    <div className="sm:col-span-2 lg:col-span-3">
+      <span className="text-xs font-semibold uppercase text-gray-400">{label}</span>
+      <div className="mt-1 flex flex-wrap gap-1.5">
+        {shown.map((item) => (
+          <span key={item.id} className="rounded-full bg-[var(--color-primary)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--color-primary)] line-clamp-1">
+            {item.title.length > 60 ? item.title.slice(0, 57) + '...' : item.title}
+          </span>
+        ))}
+        {overflow > 0 && (
+          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">
+            +{overflow} more
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function ExpandedGrantRow({ grant }: { grant: Grant }) {
+  const relatedProjects = grant.diseases.length > 0 ? getRelatedProjects(grant.diseases) : []
+  const relatedAgreements = grant.diseases.length > 0 ? getRelatedAgreements(grant.diseases) : []
+
   return (
     <tr>
       <td colSpan={8} className="bg-gray-50 px-4 py-4">
@@ -96,6 +125,8 @@ function ExpandedGrantRow({ grant }: { grant: Grant }) {
               <p className="text-sm text-gray-700">{grant.notes}</p>
             </div>
           )}
+          <RelatedBadges label="Related Projects" items={relatedProjects} />
+          <RelatedBadges label="Related Agreements" items={relatedAgreements} />
         </div>
       </td>
     </tr>
@@ -104,6 +135,7 @@ function ExpandedGrantRow({ grant }: { grant: Grant }) {
 
 export default function GrantsPage() {
   const [view, setView] = useState<ViewMode>('table')
+  const [diseaseTab, setDiseaseTab] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<GrantStatus | 'all'>('all')
   const [piFilter, setPiFilter] = useState<string>('all')
   const [personnelFilter, setPersonnelFilter] = useState<string>('all')
@@ -112,21 +144,26 @@ export default function GrantsPage() {
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
+  const diseaseFiltered = useMemo(
+    () => filterByDisease(grants, diseaseTab),
+    [diseaseTab]
+  )
+
   const pis = useMemo(
-    () => [...new Set(grants.map((g) => g.pi).filter(Boolean))].sort(),
-    []
+    () => [...new Set(diseaseFiltered.map((g) => g.pi).filter(Boolean))].sort(),
+    [diseaseFiltered]
   )
   const allPersonnel = useMemo(
-    () => [...new Set(grants.flatMap((g) => g.keyPersonnel).filter(Boolean))].sort(),
-    []
+    () => [...new Set(diseaseFiltered.flatMap((g) => g.keyPersonnel).filter(Boolean))].sort(),
+    [diseaseFiltered]
   )
   const agencies = useMemo(
-    () => [...new Set(grants.map((g) => g.agency).filter(Boolean))].sort(),
-    []
+    () => [...new Set(diseaseFiltered.map((g) => g.agency).filter(Boolean))].sort(),
+    [diseaseFiltered]
   )
 
   const filtered = useMemo(() => {
-    let result = [...grants]
+    let result = [...diseaseFiltered]
     if (statusFilter !== 'all') result = result.filter((g) => g.status === statusFilter)
     if (piFilter !== 'all') result = result.filter((g) => g.pi === piFilter)
     if (personnelFilter !== 'all') result = result.filter((g) => g.keyPersonnel.includes(personnelFilter))
@@ -151,7 +188,7 @@ export default function GrantsPage() {
     })
 
     return result
-  }, [statusFilter, piFilter, personnelFilter, agencyFilter, sortKey, sortDir])
+  }, [diseaseFiltered, statusFilter, piFilter, personnelFilter, agencyFilter, sortKey, sortDir])
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -199,6 +236,10 @@ export default function GrantsPage() {
             <ViewToggle view={view} onChange={setView} />
           </div>
         </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <DiseaseTabs activeTab={diseaseTab} onChange={setDiseaseTab} />
       </div>
 
       <SectionWrapper>

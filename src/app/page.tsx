@@ -4,30 +4,18 @@ import StatsBar from '@/components/StatsBar'
 import ResearchGroupCard from '@/components/ResearchGroupCard'
 import { researchGroups } from '@/data/research-groups'
 import { projects } from '@/data/projects'
+import { filterByDisease } from '@/data/disease-utils'
 import Link from 'next/link'
 
 function countActiveProjects(groupName: string): number {
-  const diseaseMap: Record<string, string[]> = {
-    MOGAD: ['MOGAD'],
-    NMOSD: ['NMOSD'],
-    'Autoimmune Encephalitis': ['Autoimmune Encephalitis'],
-    Neurosarcoidosis: ['Neurosarcoidosis'],
-    'CNS Vasculitis': ['Vasculitis'],
-    'Translational Neuroimmunology': ['MS'],
-  }
-  const diseases = diseaseMap[groupName] ?? []
-  const diseaseSet = new Set(diseases.map((d) => d.toLowerCase()))
-  return projects.filter(
-    (p) =>
-      p.stage !== 'completed' &&
-      p.stage !== 'published' &&
-      p.diseases.some((d) => diseaseSet.has(d.toLowerCase()))
+  return filterByDisease(projects, groupName).filter(
+    (p) => p.stage !== 'completed' && p.stage !== 'published'
   ).length
 }
 
 const heroStats = [
   { value: '6', label: 'Research Groups' },
-  { value: '8', label: 'Investigators' },
+  { value: '12', label: 'Investigators' },
   { value: '60+', label: 'Active Projects' },
   { value: '700+', label: 'Registry Patients' },
 ]
@@ -43,6 +31,7 @@ export default function HomePage() {
   return (
     <>
       <Hero
+        showLogo
         subtitle="MGB Neurology &middot; Division of Neuroimmunology"
         title="ANDOR Research Group"
         description="Autoimmune Neurological Disorders Observational Studies & Registry &mdash; advancing the understanding and treatment of rare autoimmune neurological diseases through collaborative, data-driven research."

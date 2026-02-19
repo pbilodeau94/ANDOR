@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Logo from './Logo'
 
 type HeroProps = {
   title: string
@@ -6,9 +7,10 @@ type HeroProps = {
   description?: string
   cta?: { label: string; href: string }
   children?: React.ReactNode
+  showLogo?: boolean
 }
 
-export default function Hero({ title, subtitle, description, cta, children }: HeroProps) {
+export default function Hero({ title, subtitle, description, cta, children, showLogo }: HeroProps) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary-light)] to-[var(--color-accent-dark)] py-20 text-white sm:py-28">
       {/* Background pattern */}
@@ -25,6 +27,11 @@ export default function Hero({ title, subtitle, description, cta, children }: He
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
+          {showLogo && (
+            <div className="animate-fade-in-up mb-6">
+              <Logo className="h-12 text-white sm:h-14" />
+            </div>
+          )}
           {subtitle && (
             <p className="animate-fade-in-up mb-3 text-sm font-semibold uppercase tracking-wider text-teal-200">
               {subtitle}

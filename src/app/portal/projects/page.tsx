@@ -5,7 +5,10 @@ import SectionWrapper from '@/components/SectionWrapper'
 import ViewToggle, { type ViewMode } from '@/components/portal/ViewToggle'
 import BoardView, { type BoardColumn } from '@/components/portal/BoardView'
 import ProjectCard from '@/components/portal/ProjectCard'
+import DiseaseTabs from '@/components/DiseaseTabs'
 import { projects, projectStageLabels, projectStageColors } from '@/data/projects'
+import { filterByDisease } from '@/data/disease-utils'
+import { getRelatedGrants, getRelatedAgreements } from '@/data/cross-links'
 import type { ProjectStage, Project } from '@/data/projects'
 
 type SortKey = 'title' | 'lead' | 'pi' | 'disease' | 'stage' | 'researchType'
@@ -20,9 +23,33 @@ const boardColumns: BoardColumn<ProjectStage>[] = [
   { key: 'completed', label: 'Completed', color: 'bg-purple-100 text-purple-700' },
 ]
 
-const diseaseAreas = ['MOGAD', 'NMOSD', 'MS', 'Autoimmune Encephalitis', 'Neurosarcoidosis', 'Vasculitis']
+function RelatedBadges({ label, items }: { label: string; items: { id: string; title: string }[] }) {
+  if (items.length === 0) return null
+  const shown = items.slice(0, 5)
+  const overflow = items.length - shown.length
+  return (
+    <div className="sm:col-span-2 lg:col-span-3">
+      <span className="text-xs font-semibold uppercase text-gray-400">{label}</span>
+      <div className="mt-1 flex flex-wrap gap-1.5">
+        {shown.map((item) => (
+          <span key={item.id} className="rounded-full bg-[var(--color-primary)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--color-primary)] line-clamp-1">
+            {item.title.length > 60 ? item.title.slice(0, 57) + '...' : item.title}
+          </span>
+        ))}
+        {overflow > 0 && (
+          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">
+            +{overflow} more
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
 
 function ExpandedProjectRow({ project }: { project: Project }) {
+  const relatedGrants = project.diseases.length > 0 ? getRelatedGrants(project.diseases) : []
+  const relatedAgreements = project.diseases.length > 0 ? getRelatedAgreements(project.diseases) : []
+
   return (
     <tr>
       <td colSpan={8} className="bg-gray-50 px-4 py-4">
@@ -57,6 +84,8 @@ function ExpandedProjectRow({ project }: { project: Project }) {
               </div>
             </div>
           )}
+          <RelatedBadges label="Related Grants" items={relatedGrants} />
+          <RelatedBadges label="Related Agreements" items={relatedAgreements} />
         </div>
       </td>
     </tr>
@@ -65,25 +94,25 @@ function ExpandedProjectRow({ project }: { project: Project }) {
 
 export default function ProjectsPage() {
   const [view, setView] = useState<ViewMode>('table')
-  const [diseaseFilter, setDiseaseFilter] = useState<string>('all')
+  const [diseaseTab, setDiseaseTab] = useState<string | null>(null)
   const [stageFilter, setStageFilter] = useState<ProjectStage | 'all'>('all')
   const [leadFilter, setLeadFilter] = useState<string>('all')
   const [sortKey, setSortKey] = useState<SortKey>('title')
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
+  const diseaseFiltered = useMemo(
+    () => filterByDisease(projects, diseaseTab),
+    [diseaseTab]
+  )
+
   const leads = useMemo(
-    () => [...new Set(projects.map((p) => p.lead).filter(Boolean))].sort(),
-    []
+    () => [...new Set(diseaseFiltered.map((p) => p.lead).filter(Boolean))].sort(),
+    [diseaseFiltered]
   )
 
   const filtered = useMemo(() => {
-    let result = [...projects]
-    if (diseaseFilter !== 'all') {
-      result = result.filter((p) =>
-        p.diseases.some((d) => d.toLowerCase() === diseaseFilter.toLowerCase())
-      )
-    }
+    let result = [...diseaseFiltered]
     if (stageFilter !== 'all') {
       result = result.filter((p) => p.stage === stageFilter)
     }
@@ -105,7 +134,7 @@ export default function ProjectsPage() {
     })
 
     return result
-  }, [diseaseFilter, stageFilter, leadFilter, sortKey, sortDir])
+  }, [diseaseFiltered, stageFilter, leadFilter, sortKey, sortDir])
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -116,10 +145,9 @@ export default function ProjectsPage() {
     }
   }
 
-  const hasFilters = diseaseFilter !== 'all' || stageFilter !== 'all' || leadFilter !== 'all'
+  const hasFilters = stageFilter !== 'all' || leadFilter !== 'all'
 
   function clearFilters() {
-    setDiseaseFilter('all')
     setStageFilter('all')
     setLeadFilter('all')
   }
@@ -154,20 +182,13 @@ export default function ProjectsPage() {
         </div>
       </div>
 
-      <SectionWrapper>
-        {/* Filters */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <select
-            value={diseaseFilter}
-            onChange={(e) => setDiseaseFilter(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
-          >
-            <option value="all">All Disease Areas</option>
-            {diseaseAreas.map((d) => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <DiseaseTabs activeTab={diseaseTab} onChange={setDiseaseTab} />
+      </div>
 
+      <SectionWrapper>
+        {/* Filters — disease dropdown removed in favor of tabs above */}
+        <div className="mb-6 flex flex-wrap items-center gap-3">
           <select
             value={stageFilter}
             onChange={(e) => setStageFilter(e.target.value as ProjectStage | 'all')}

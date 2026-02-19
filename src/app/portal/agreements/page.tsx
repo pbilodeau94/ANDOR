@@ -2,6 +2,9 @@
 
 import { useState, useMemo } from 'react'
 import SectionWrapper from '@/components/SectionWrapper'
+import DiseaseTabs from '@/components/DiseaseTabs'
+import { filterByDisease } from '@/data/disease-utils'
+import { getRelatedProjects, getRelatedGrants } from '@/data/cross-links'
 import {
   agreements,
   agreementStatusLabels,
@@ -19,7 +22,33 @@ function formatDate(dateStr: string | null): string {
   })
 }
 
+function RelatedBadges({ label, items }: { label: string; items: { id: string; title: string }[] }) {
+  if (items.length === 0) return null
+  const shown = items.slice(0, 5)
+  const overflow = items.length - shown.length
+  return (
+    <div className="sm:col-span-2">
+      <span className="text-xs font-semibold uppercase text-gray-400">{label}</span>
+      <div className="mt-1 flex flex-wrap gap-1.5">
+        {shown.map((item) => (
+          <span key={item.id} className="rounded-full bg-[var(--color-primary)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--color-primary)] line-clamp-1">
+            {item.title.length > 60 ? item.title.slice(0, 57) + '...' : item.title}
+          </span>
+        ))}
+        {overflow > 0 && (
+          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">
+            +{overflow} more
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function ExpandedAgreementRow({ agreement }: { agreement: Agreement }) {
+  const relatedProjects = agreement.diseases.length > 0 ? getRelatedProjects(agreement.diseases) : []
+  const relatedGrants = agreement.diseases.length > 0 ? getRelatedGrants(agreement.diseases) : []
+
   return (
     <tr>
       <td colSpan={7} className="bg-gray-50 px-4 py-4">
@@ -46,6 +75,8 @@ function ExpandedAgreementRow({ agreement }: { agreement: Agreement }) {
               </div>
             </div>
           )}
+          <RelatedBadges label="Related Projects" items={relatedProjects} />
+          <RelatedBadges label="Related Grants" items={relatedGrants} />
         </div>
       </td>
     </tr>
@@ -53,13 +84,19 @@ function ExpandedAgreementRow({ agreement }: { agreement: Agreement }) {
 }
 
 export default function AgreementsPage() {
+  const [diseaseTab, setDiseaseTab] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<AgreementStatus | 'all'>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
+  const diseaseFiltered = useMemo(
+    () => filterByDisease(agreements, diseaseTab),
+    [diseaseTab]
+  )
+
   const filtered = useMemo(() => {
-    if (statusFilter === 'all') return agreements
-    return agreements.filter((a) => a.status === statusFilter)
-  }, [statusFilter])
+    if (statusFilter === 'all') return diseaseFiltered
+    return diseaseFiltered.filter((a) => a.status === statusFilter)
+  }, [diseaseFiltered, statusFilter])
 
   return (
     <>
@@ -70,6 +107,10 @@ export default function AgreementsPage() {
             {agreements.length} data use and material transfer agreements
           </p>
         </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <DiseaseTabs activeTab={diseaseTab} onChange={setDiseaseTab} />
       </div>
 
       <SectionWrapper>
