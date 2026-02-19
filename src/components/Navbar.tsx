@@ -13,10 +13,7 @@ const publicLinks = [
 ]
 
 const portalLinks = [
-  { href: '/portal', label: 'Dashboard' },
-  { href: '/portal/grants', label: 'Grants' },
-  { href: '/portal/projects', label: 'Projects' },
-  { href: '/portal/agreements', label: 'Agreements' },
+  { href: '/portal', label: 'Portal' },
 ]
 
 export default function Navbar() {

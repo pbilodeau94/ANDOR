@@ -27,7 +27,7 @@ function countActiveProjects(groupName: string): number {
 
 const heroStats = [
   { value: '6', label: 'Research Groups' },
-  { value: '30+', label: 'Investigators' },
+  { value: '8', label: 'Investigators' },
   { value: '60+', label: 'Active Projects' },
   { value: '700+', label: 'Registry Patients' },
 ]
@@ -45,7 +45,7 @@ export default function HomePage() {
       <Hero
         subtitle="MGB Neurology &middot; Division of Neuroimmunology"
         title="ANDOR Research Group"
-        description="Autoimmune Neurological Disorders Observational Studies & Registry — advancing the understanding and treatment of rare autoimmune neurological diseases through collaborative, data-driven research."
+        description="Autoimmune Neurological Disorders Observational Studies & Registry &mdash; advancing the understanding and treatment of rare autoimmune neurological diseases through collaborative, data-driven research."
         cta={{ label: 'Support Our Research', href: '/support' }}
       >
         <div className="animate-fade-in-up-delay-3 mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4">

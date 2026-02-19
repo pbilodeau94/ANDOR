@@ -1,5 +1,14 @@
 export type GrantStatus = 'not_started' | 'in_progress' | 'submitted' | 'funded' | 'completed'
 
+export type GrantDocumentType = 'biosketch' | 'budget' | 'letter_of_support' | 'specific_aims' | 'other'
+
+export type GrantDocument = {
+  name: string
+  type: GrantDocumentType
+  url: string
+  investigator?: string
+}
+
 export type Grant = {
   id: string
   title: string
@@ -14,6 +23,10 @@ export type Grant = {
   status: GrantStatus
   diseases: string[]
   notes?: string
+  keyPersonnel: string[]
+  rfaUrl: string | null
+  rfaPdfUrl: string | null
+  documents: GrantDocument[]
 }
 
 export const grants: Grant[] = [
@@ -30,6 +43,10 @@ export const grants: Grant[] = [
     startDate: '2026-07-01',
     status: 'submitted',
     diseases: ['MOGAD', 'MS'],
+    keyPersonnel: ['Phil Bilodeau', 'Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g2',
@@ -44,6 +61,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: ['MOGAD', 'NMOSD', 'Neurosarcoidosis'],
+    keyPersonnel: ['Michael Levy', 'Shamik Bhattacharyya'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g3',
@@ -58,6 +79,10 @@ export const grants: Grant[] = [
     startDate: '2026-01-01',
     status: 'not_started',
     diseases: ['MOGAD', 'MS'],
+    keyPersonnel: ['Phil Bilodeau', 'Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g4',
@@ -72,6 +97,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: ['NMOSD'],
+    keyPersonnel: ['Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g5',
@@ -86,6 +115,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: ['MOGAD'],
+    keyPersonnel: ['Michael Levy', 'Takahisa Mikami'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g6',
@@ -100,10 +133,14 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: ['MOGAD'],
+    keyPersonnel: ['Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g7',
-    title: 'Determinants of Age-Dependent Tropism in MOG Antibody–Associated Disease',
+    title: 'Determinants of Age-Dependent Tropism in MOG Antibody\u2013Associated Disease',
     pi: '',
     lead: '',
     agency: 'NIAID',
@@ -114,6 +151,10 @@ export const grants: Grant[] = [
     startDate: '2026-05-01',
     status: 'not_started',
     diseases: ['MS'],
+    keyPersonnel: ['Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g8',
@@ -128,6 +169,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: [],
+    keyPersonnel: [],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g9',
@@ -142,6 +187,10 @@ export const grants: Grant[] = [
     startDate: '2026-09-01',
     status: 'not_started',
     diseases: ['MOGAD'],
+    keyPersonnel: ['Michael Levy', 'Shamik Bhattacharyya'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g10',
@@ -156,6 +205,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: [],
+    keyPersonnel: ['Jimmy Nguyen', 'Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g11',
@@ -170,6 +223,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: [],
+    keyPersonnel: ['Jimmy Nguyen', 'Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g12',
@@ -184,6 +241,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: [],
+    keyPersonnel: ['Jimmy Nguyen'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g13',
@@ -198,6 +259,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: [],
+    keyPersonnel: ['Jimmy Nguyen', 'Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g14',
@@ -212,6 +277,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: [],
+    keyPersonnel: ['Jimmy Nguyen'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g15',
@@ -226,6 +295,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: [],
+    keyPersonnel: ['Jimmy Nguyen', 'Michael Levy', 'Shamik Bhattacharyya'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
   {
     id: 'g16',
@@ -240,6 +313,10 @@ export const grants: Grant[] = [
     startDate: null,
     status: 'not_started',
     diseases: [],
+    keyPersonnel: ['Jimmy Nguyen', 'Michael Levy'],
+    rfaUrl: null,
+    rfaPdfUrl: null,
+    documents: [],
   },
 ]
 

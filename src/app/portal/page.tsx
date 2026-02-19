@@ -3,6 +3,9 @@ import SectionWrapper from '@/components/SectionWrapper'
 import DeadlineCard from '@/components/DeadlineCard'
 import { grants, grantStatusLabels } from '@/data/grants'
 import type { GrantStatus } from '@/data/grants'
+import { projects } from '@/data/projects'
+import { agreements } from '@/data/agreements'
+import { documents } from '@/data/documents'
 
 function getUpcomingDeadlines() {
   const now = new Date()
@@ -48,7 +51,7 @@ export default function PortalDashboard() {
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold text-[var(--color-primary)]">Investigator Portal</h1>
           <p className="mt-2 text-gray-600">
-            Track grants, research projects, and data agreements across ANDOR.
+            Track grants, research projects, agreements, and documents across ANDOR.
           </p>
         </div>
       </div>
@@ -125,22 +128,31 @@ export default function PortalDashboard() {
       {/* Quick Links */}
       <SectionWrapper alt>
         <h2 className="text-xl font-bold text-[var(--color-primary)]">Quick Links</h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               href: '/portal/grants',
               title: 'Grants Tracker',
-              description: 'Full grant pipeline with filtering and sorting',
+              description: 'Full grant pipeline with Table and Board views',
+              count: `${grants.length} grants`,
             },
             {
               href: '/portal/projects',
               title: 'Projects Tracker',
-              description: 'Research projects organized by disease area',
+              description: 'Research projects with Table and Board views',
+              count: `${projects.length} projects`,
             },
             {
               href: '/portal/agreements',
               title: 'Agreements Tracker',
               description: 'DUA and MTA status with partner institutions',
+              count: `${agreements.length} agreements`,
+            },
+            {
+              href: '/portal/documents',
+              title: 'Documents',
+              description: 'Biosketches, budgets, and support documents',
+              count: `${documents.length} documents`,
             },
           ].map((link) => (
             <Link
@@ -152,6 +164,7 @@ export default function PortalDashboard() {
                 {link.title}
               </h3>
               <p className="mt-1 text-sm text-gray-500">{link.description}</p>
+              <p className="mt-2 text-xs font-medium text-[var(--color-accent)]">{link.count}</p>
             </Link>
           ))}
         </div>

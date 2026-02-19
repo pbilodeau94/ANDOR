@@ -8,10 +8,10 @@ import {
   agreementStatusColors,
   directionLabels,
 } from '@/data/agreements'
-import type { AgreementStatus } from '@/data/agreements'
+import type { AgreementStatus, Agreement } from '@/data/agreements'
 
 function formatDate(dateStr: string | null): string {
-  if (!dateStr) return '—'
+  if (!dateStr) return '\u2014'
   return new Date(dateStr).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -19,8 +19,42 @@ function formatDate(dateStr: string | null): string {
   })
 }
 
+function ExpandedAgreementRow({ agreement }: { agreement: Agreement }) {
+  return (
+    <tr>
+      <td colSpan={7} className="bg-gray-50 px-4 py-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          {agreement.dataShared && (
+            <div>
+              <span className="text-xs font-semibold uppercase text-gray-400">Data Shared</span>
+              <p className="mt-1 text-sm text-gray-700">{agreement.dataShared}</p>
+            </div>
+          )}
+          {agreement.samplesShared && (
+            <div>
+              <span className="text-xs font-semibold uppercase text-gray-400">Samples Shared</span>
+              <p className="mt-1 text-sm text-gray-700">{agreement.samplesShared}</p>
+            </div>
+          )}
+          {agreement.diseases.length > 0 && (
+            <div>
+              <span className="text-xs font-semibold uppercase text-gray-400">Disease Areas</span>
+              <div className="mt-1 flex flex-wrap gap-1">
+                {agreement.diseases.map((d) => (
+                  <span key={d} className="rounded bg-gray-200 px-2 py-0.5 text-xs text-gray-600">{d}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </td>
+    </tr>
+  )
+}
+
 export default function AgreementsPage() {
   const [statusFilter, setStatusFilter] = useState<AgreementStatus | 'all'>('all')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     if (statusFilter === 'all') return agreements
@@ -69,6 +103,7 @@ export default function AgreementsPage() {
           <table className="w-full min-w-[700px]">
             <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
+                <th className="w-8 py-3 pl-4 pr-2"></th>
                 <th className="py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Agreement
                 </th>
@@ -82,9 +117,6 @@ export default function AgreementsPage() {
                   Direction
                 </th>
                 <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Diseases
-                </th>
-                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Expiration
                 </th>
                 <th className="whitespace-nowrap py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
@@ -94,43 +126,54 @@ export default function AgreementsPage() {
             </thead>
             <tbody>
               {filtered.map((agreement) => (
-                <tr key={agreement.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="py-3 pr-4">
-                    <div className="max-w-xs text-sm font-medium text-gray-900 line-clamp-2">
-                      {agreement.title}
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">
-                    {agreement.partner}
-                  </td>
-                  <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">
-                    {agreement.type}
-                  </td>
-                  <td className="whitespace-nowrap py-3 pr-4">
-                    <span className="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
-                      {directionLabels[agreement.direction]}
-                    </span>
-                  </td>
-                  <td className="py-3 pr-4">
-                    <div className="flex flex-wrap gap-1">
-                      {agreement.diseases.map((d) => (
-                        <span key={d} className="text-xs text-gray-500">
-                          {d}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">
-                    {formatDate(agreement.expirationDate)}
-                  </td>
-                  <td className="whitespace-nowrap py-3">
-                    <span
-                      className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${agreementStatusColors[agreement.status]}`}
-                    >
-                      {agreementStatusLabels[agreement.status]}
-                    </span>
-                  </td>
-                </tr>
+                <>
+                  <tr
+                    key={agreement.id}
+                    className="cursor-pointer border-b border-gray-100 hover:bg-gray-50"
+                    onClick={() => setExpandedId(expandedId === agreement.id ? null : agreement.id)}
+                  >
+                    <td className="py-3 pl-4 pr-2">
+                      <svg
+                        className={`h-4 w-4 text-gray-400 transition-transform ${expandedId === agreement.id ? 'rotate-90' : ''}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </td>
+                    <td className="py-3 pr-4">
+                      <div className="max-w-xs text-sm font-medium text-gray-900 line-clamp-2">
+                        {agreement.title}
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">
+                      {agreement.partner}
+                    </td>
+                    <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">
+                      {agreement.type}
+                    </td>
+                    <td className="whitespace-nowrap py-3 pr-4">
+                      <span className="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
+                        {directionLabels[agreement.direction]}
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">
+                      {formatDate(agreement.expirationDate)}
+                    </td>
+                    <td className="whitespace-nowrap py-3">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${agreementStatusColors[agreement.status]}`}
+                      >
+                        {agreementStatusLabels[agreement.status]}
+                      </span>
+                    </td>
+                  </tr>
+                  {expandedId === agreement.id && (
+                    <ExpandedAgreementRow key={`${agreement.id}-expanded`} agreement={agreement} />
+                  )}
+                </>
               ))}
               {filtered.length === 0 && (
                 <tr>

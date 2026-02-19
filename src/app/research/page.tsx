@@ -2,6 +2,7 @@ import Hero from '@/components/Hero'
 import SectionWrapper from '@/components/SectionWrapper'
 import { researchGroups } from '@/data/research-groups'
 import { projects } from '@/data/projects'
+import { publications } from '@/data/publications'
 
 function getGroupProjects(groupName: string) {
   const diseaseMap: Record<string, string[]> = {
@@ -15,6 +16,10 @@ function getGroupProjects(groupName: string) {
   const diseases = diseaseMap[groupName] ?? []
   const diseaseSet = new Set(diseases.map((d) => d.toLowerCase()))
   return projects.filter((p) => p.diseases.some((d) => diseaseSet.has(d.toLowerCase())))
+}
+
+function getGroupPublications(groupName: string) {
+  return publications.filter((p) => p.researchGroup === groupName)
 }
 
 export default function ResearchPage() {
@@ -38,6 +43,7 @@ export default function ResearchPage() {
         const groupProjects = getGroupProjects(group.name)
         const active = groupProjects.filter((p) => p.stage !== 'completed' && p.stage !== 'published')
         const completed = groupProjects.filter((p) => p.stage === 'completed' || p.stage === 'published')
+        const groupPubs = getGroupPublications(group.name)
 
         return (
           <SectionWrapper key={group.id} alt={i % 2 === 1} id={group.slug}>
@@ -90,6 +96,37 @@ export default function ResearchPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Key Publications */}
+                {groupPubs.length > 0 && (
+                  <div className="mt-6">
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                      Key Publications
+                    </h4>
+                    <ul className="mt-2 space-y-3">
+                      {groupPubs.map((pub) => (
+                        <li key={pub.id}>
+                          <a
+                            href={`https://doi.org/${pub.doi}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group block"
+                          >
+                            <p className="text-sm font-medium text-gray-800 group-hover:text-[var(--color-primary)]">
+                              {pub.title}
+                            </p>
+                            <p className="mt-0.5 text-xs text-gray-500">
+                              {pub.authors}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {pub.journal} ({pub.year})
+                            </p>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               {/* Projects */}
