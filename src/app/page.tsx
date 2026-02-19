@@ -1,65 +1,153 @@
-import Image from "next/image";
+import Hero from '@/components/Hero'
+import SectionWrapper from '@/components/SectionWrapper'
+import StatsBar from '@/components/StatsBar'
+import ResearchGroupCard from '@/components/ResearchGroupCard'
+import { researchGroups } from '@/data/research-groups'
+import { projects } from '@/data/projects'
+import Link from 'next/link'
 
-export default function Home() {
+function countActiveProjects(groupName: string): number {
+  const diseaseMap: Record<string, string[]> = {
+    MOGAD: ['MOGAD'],
+    NMOSD: ['NMOSD'],
+    'Autoimmune Encephalitis': ['Autoimmune Encephalitis'],
+    Neurosarcoidosis: ['Neurosarcoidosis'],
+    'CNS Vasculitis': ['Vasculitis'],
+    'Translational Neuroimmunology': ['MS'],
+  }
+  const diseases = diseaseMap[groupName] ?? []
+  const diseaseSet = new Set(diseases.map((d) => d.toLowerCase()))
+  return projects.filter(
+    (p) =>
+      p.stage !== 'completed' &&
+      p.stage !== 'published' &&
+      p.diseases.some((d) => diseaseSet.has(d.toLowerCase()))
+  ).length
+}
+
+const heroStats = [
+  { value: '6', label: 'Research Groups' },
+  { value: '30+', label: 'Investigators' },
+  { value: '60+', label: 'Active Projects' },
+  { value: '700+', label: 'Registry Patients' },
+]
+
+const impactStats = [
+  { value: '69', label: 'Research Projects' },
+  { value: '16', label: 'Grant Applications' },
+  { value: '3', label: 'Clinical Trials' },
+  { value: '7', label: 'Partner Institutions' },
+]
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <Hero
+        subtitle="MGB Neurology &middot; Division of Neuroimmunology"
+        title="ANDOR Research Group"
+        description="Autoimmune Neurological Disorders Observational Studies & Registry — advancing the understanding and treatment of rare autoimmune neurological diseases through collaborative, data-driven research."
+        cta={{ label: 'Support Our Research', href: '/support' }}
+      >
+        <div className="animate-fade-in-up-delay-3 mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4">
+          {heroStats.map((stat) => (
+            <div key={stat.label}>
+              <div className="text-3xl font-bold text-white">{stat.value}</div>
+              <div className="text-sm text-gray-300">{stat.label}</div>
+            </div>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </Hero>
+
+      {/* Research Groups */}
+      <SectionWrapper>
+        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">Research Programs</h2>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
+          Our collaborative spans six core research areas, each with dedicated registries, biorepositories, and active clinical studies.
+        </p>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {researchGroups.map((group) => (
+            <ResearchGroupCard
+              key={group.id}
+              group={group}
+              projectCount={countActiveProjects(group.name)}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
-      </main>
-    </div>
-  );
+      </SectionWrapper>
+
+      {/* Mission & Approach */}
+      <SectionWrapper alt>
+        <div className="grid gap-12 lg:grid-cols-2">
+          <div>
+            <h2 className="text-3xl font-bold text-[var(--color-primary)]">Our Mission</h2>
+            <p className="mt-4 leading-relaxed text-gray-600">
+              ANDOR was established to create a unified, data-driven research infrastructure across
+              Mass General Brigham&apos;s neuroimmunology division. By building federated disease registries,
+              shared biorepositories, and standardized clinical databases, we enable investigators to
+              collaborate at scale on rare diseases that no single center can study alone.
+            </p>
+            <p className="mt-4 leading-relaxed text-gray-600">
+              Our approach combines prospective patient registries with translational laboratory studies,
+              pragmatic clinical trials, and multi-center collaborations with leading institutions worldwide.
+              This infrastructure accelerates discovery and improves outcomes for patients with autoimmune
+              neurological conditions.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold text-[var(--color-primary)]">Research Infrastructure</h2>
+            <ul className="mt-4 space-y-3">
+              {[
+                'Prospective disease-specific registries (700+ patients across conditions)',
+                'Centralized biorepository (serum, CSF, PBMCs, tissue)',
+                'REDCap longitudinal databases with standardized outcomes',
+                'Collaborative agreements with 7+ partner institutions',
+                'Cell-based assay laboratory for antibody testing',
+                'Advanced imaging protocols (7T MRI, central vein sign)',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <svg
+                    className="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-accent)]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* Impact Stats */}
+      <SectionWrapper>
+        <h2 className="mb-10 text-center text-3xl font-bold text-[var(--color-primary)]">Research Impact</h2>
+        <StatsBar stats={impactStats} />
+      </SectionWrapper>
+
+      {/* CTA */}
+      <SectionWrapper alt>
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-[var(--color-primary)]">Support Our Research</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-gray-600">
+            Your philanthropic investment accelerates discovery for patients with rare autoimmune
+            neurological diseases. Help us expand our registries, fund clinical trials, and train
+            the next generation of neuroimmunology investigators.
+          </p>
+          <Link
+            href="/support"
+            className="mt-8 inline-flex items-center rounded-lg bg-[var(--color-primary)] px-8 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[var(--color-primary-light)] hover:shadow-xl"
+          >
+            Learn How to Give
+            <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+      </SectionWrapper>
+    </>
+  )
 }
