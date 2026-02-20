@@ -7,6 +7,7 @@ const tabs = [
   { href: '/portal', label: 'Dashboard' },
   { href: '/portal/grants', label: 'Grants' },
   { href: '/portal/projects', label: 'Projects' },
+  { href: '/portal/tasks', label: 'Tasks' },
   { href: '/portal/agreements', label: 'Agreements' },
   { href: '/portal/documents', label: 'Documents' },
 ]
