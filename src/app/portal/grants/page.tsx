@@ -2,10 +2,8 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react'
 import SectionWrapper from '@/components/SectionWrapper'
-import DiseaseTabs from '@/components/DiseaseTabs'
 import DiseaseChips from '@/components/portal/DiseaseChips'
-import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels } from '@/data/grants'
-import { filterByDisease } from '@/data/disease-utils'
+import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels, knownDiseases } from '@/data/grants'
 import { useGrantsStore } from '@/data/use-grants-store'
 import {
   calculateMilestones,
@@ -18,7 +16,7 @@ import { team } from '@/data/team'
 import type { GrantStatus, Grant, IdcCategory, GrantType } from '@/data/grants'
 import type { Milestone } from '@/data/deadline-calculator'
 
-type SortKey = 'title' | 'pi' | 'agency' | 'type' | 'total' | 'deadline' | 'status'
+type SortKey = 'title' | 'pi' | 'agency' | 'type' | 'total' | 'deadline' | 'adminDeadline' | 'scienceDeadline' | 'notificationDate' | 'status'
 type SortDir = 'asc' | 'desc'
 
 const activeStatuses = new Set<GrantStatus>(['not_started', 'in_progress'])
@@ -37,11 +35,45 @@ function formatShortDate(dateStr: string): string {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
+// --- Grant Type Tabs ---
+
+function GrantTypeTabs({ activeTab, onChange }: { activeTab: GrantType | null; onChange: (tab: GrantType | null) => void }) {
+  const tabs: { key: GrantType | null; label: string }[] = [
+    { key: null, label: 'All' },
+    { key: 'federal', label: 'NIH' },
+    { key: 'foundation', label: 'Foundation' },
+    { key: 'industry', label: 'Industry' },
+  ]
+
+  return (
+    <div className="border-b border-gray-200">
+      <nav className="-mb-px flex gap-1 overflow-x-auto" aria-label="Grant type filters">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.key
+          return (
+            <button
+              key={tab.label}
+              onClick={() => onChange(tab.key)}
+              className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                isActive
+                  ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              }`}
+            >
+              {tab.label}
+            </button>
+          )
+        })}
+      </nav>
+    </div>
+  )
+}
+
 // --- Editable Deadline Cell (table column) ---
 
-function EditableDeadlineCell({ grant, onUpdate }: { grant: Grant; onUpdate: (updates: Partial<Grant>) => void }) {
+function EditableDeadlineCell({ value, fieldKey, grant, onUpdate }: { value: string | null; fieldKey: string; grant: Grant; onUpdate: (updates: Partial<Grant>) => void }) {
   const [editing, setEditing] = useState(false)
-  const [value, setValue] = useState(grant.deadline ?? '')
+  const [inputVal, setInputVal] = useState(value ?? '')
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -49,13 +81,13 @@ function EditableDeadlineCell({ grant, onUpdate }: { grant: Grant; onUpdate: (up
   }, [editing])
 
   function save() {
-    const newDeadline = value || null
-    if (newDeadline !== grant.deadline) onUpdate({ deadline: newDeadline })
+    const newVal = inputVal || null
+    if (newVal !== value) onUpdate({ [fieldKey]: newVal })
     setEditing(false)
   }
 
   function cancel() {
-    setValue(grant.deadline ?? '')
+    setInputVal(value ?? '')
     setEditing(false)
   }
 
@@ -65,8 +97,8 @@ function EditableDeadlineCell({ grant, onUpdate }: { grant: Grant; onUpdate: (up
         <input
           ref={inputRef}
           type="date"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={inputVal}
+          onChange={(e) => setInputVal(e.target.value)}
           onBlur={save}
           onKeyDown={(e) => {
             if (e.key === 'Enter') save()
@@ -82,9 +114,9 @@ function EditableDeadlineCell({ grant, onUpdate }: { grant: Grant; onUpdate: (up
     <td
       className="group/deadline cursor-pointer whitespace-nowrap py-3 pr-3 text-sm text-gray-600"
       onClick={(e) => { e.stopPropagation(); setEditing(true) }}
-      title="Click to edit deadline"
+      title="Click to edit"
     >
-      {formatDate(grant.deadline)}
+      {formatDate(value)}
       <svg className="ml-1 inline h-3 w-3 text-gray-300 opacity-0 transition-opacity group-hover/deadline:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
       </svg>
@@ -158,16 +190,18 @@ function EditableDateField({
   )
 }
 
-// --- Multi-Person Filter Dropdown ---
+// --- Multi-select Checkbox Filter Dropdown ---
 
-function PersonFilterDropdown({
-  allPeople,
+function CheckboxFilterDropdown({
+  allItems,
   selected,
   onChange,
+  label,
 }: {
-  allPeople: string[]
+  allItems: string[]
   selected: string[]
   onChange: (next: string[]) => void
+  label: string
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -185,7 +219,7 @@ function PersonFilterDropdown({
     else onChange([...selected, name])
   }
 
-  const label = selected.length === 0 ? 'All People' : selected.length === 1 ? selected[0] : `${selected.length} selected`
+  const displayLabel = selected.length === 0 ? label : selected.length === 1 ? selected[0] : `${selected.length} selected`
 
   return (
     <div className="relative" ref={ref}>
@@ -193,14 +227,14 @@ function PersonFilterDropdown({
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
       >
-        {label}
+        {displayLabel}
         <svg className={`h-4 w-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
       {open && (
         <div className="absolute left-0 z-20 mt-1 max-h-64 w-56 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
-          {allPeople.map((name) => (
+          {allItems.map((name) => (
             <label key={name} className="flex cursor-pointer items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50">
               <input
                 type="checkbox"
@@ -211,8 +245,8 @@ function PersonFilterDropdown({
               {name}
             </label>
           ))}
-          {allPeople.length === 0 && (
-            <p className="px-3 py-2 text-xs italic text-gray-400">No people found</p>
+          {allItems.length === 0 && (
+            <p className="px-3 py-2 text-xs italic text-gray-400">None available</p>
           )}
         </div>
       )}
@@ -382,17 +416,12 @@ function ExpandedGrantRow({
   const showTimeline = grant.deadline && activeStatuses.has(grant.status)
   const milestones = showTimeline ? calculateMilestones(grant.deadline!) : []
 
-  // Compute auto-calculated deadline hints from deadline-calculator
-  const autoMilestones = grant.deadline ? calculateMilestones(grant.deadline) : []
-  const autoAdmin = autoMilestones.find((m) => m.key === 'internal_admin_docs')
-  const autoScience = autoMilestones.find((m) => m.key === 'internal_science_docs')
-
   const idcAmount = computeIdc(grant)
   const totalAmount = computeTotal(grant)
 
   return (
     <tr>
-      <td colSpan={9} className="bg-gray-50 px-4 py-4">
+      <td colSpan={13} className="bg-gray-50 px-4 py-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <PiChips pis={grant.pi} onUpdate={(newPis) => onUpdate({ pi: newPis })} />
 
@@ -400,7 +429,6 @@ function ExpandedGrantRow({
           <div className="sm:col-span-2 lg:col-span-3">
             <span className="text-xs font-semibold uppercase text-gray-400">Funding</span>
             <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              {/* Direct Costs */}
               <div>
                 <label className="text-[10px] font-medium text-gray-500">Direct Costs</label>
                 <input
@@ -412,7 +440,6 @@ function ExpandedGrantRow({
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
-              {/* IDC Category */}
               <div>
                 <label className="text-[10px] font-medium text-gray-500">IDC Category</label>
                 <select
@@ -426,7 +453,6 @@ function ExpandedGrantRow({
                   ))}
                 </select>
               </div>
-              {/* IDC Rate */}
               <div>
                 <label className="text-[10px] font-medium text-gray-500">IDC Rate (%)</label>
                 <input
@@ -438,12 +464,10 @@ function ExpandedGrantRow({
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
-              {/* Computed IDC */}
               <div>
                 <label className="text-[10px] font-medium text-gray-500">IDC Amount</label>
                 <p className="mt-1 text-sm text-gray-600">{formatCurrency(idcAmount || null)}</p>
               </div>
-              {/* Computed Total */}
               <div>
                 <label className="text-[10px] font-medium text-gray-500">Total</label>
                 <p className="mt-1 text-sm font-bold text-gray-900">{formatCurrency(totalAmount || null)}</p>
@@ -463,22 +487,6 @@ function ExpandedGrantRow({
               <p className="text-sm text-gray-700">{formatDate(grant.startDate)}</p>
             </div>
           )}
-
-          {/* Admin & Science Deadlines */}
-          <EditableDateField
-            label="Admin Deadline"
-            value={grant.adminDeadline}
-            hintValue={autoAdmin?.dateStr ?? null}
-            hintLabel="Auto"
-            onSave={(v) => onUpdate({ adminDeadline: v })}
-          />
-          <EditableDateField
-            label="Science Deadline"
-            value={grant.scienceDeadline}
-            hintValue={autoScience?.dateStr ?? null}
-            hintLabel="Auto"
-            onSave={(v) => onUpdate({ scienceDeadline: v })}
-          />
 
           <PiChips
             pis={grant.keyPersonnel}
@@ -594,47 +602,70 @@ function DeadlineAlerts({ grantList }: { grantList: Grant[] }) {
   )
 }
 
+// --- Date sort helper ---
+
+function compareDates(a: string | null, b: string | null): number {
+  if (!a && !b) return 0
+  if (!a) return 1
+  if (!b) return -1
+  return new Date(a).getTime() - new Date(b).getTime()
+}
+
 // --- Main Page ---
 
 export default function GrantsPage() {
   const { grants: allGrants, updateGrant, deleteGrant, toggleMilestone, milestoneCompletions } = useGrantsStore()
-  const [diseaseTab, setDiseaseTab] = useState<string | null>(null)
+  const [typeTab, setTypeTab] = useState<GrantType | null>(null)
   const [statusFilter, setStatusFilter] = useState<GrantStatus | 'all'>('all')
-  const [typeFilter, setTypeFilter] = useState<GrantType | 'all'>('all')
   const [personFilter, setPersonFilter] = useState<string[]>([])
+  const [diseaseFilter, setDiseaseFilter] = useState<string[]>([])
   const [agencyFilter, setAgencyFilter] = useState<string>('all')
   const [sortKey, setSortKey] = useState<SortKey>('deadline')
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
-  const diseaseFiltered = useMemo(
-    () => filterByDisease(allGrants, diseaseTab),
-    [allGrants, diseaseTab]
+  // Filter by grant type tab first
+  const typeFiltered = useMemo(
+    () => typeTab ? allGrants.filter((g) => g.grantType === typeTab) : allGrants,
+    [allGrants, typeTab]
   )
 
-  // Collect all unique people from PI + key personnel across filtered grants
+  // Collect all unique people from PI + key personnel across type-filtered grants
   const allPeople = useMemo(() => {
     const names = new Set<string>()
-    diseaseFiltered.forEach((g) => {
+    typeFiltered.forEach((g) => {
       g.pi.forEach((n) => names.add(n))
       g.keyPersonnel.forEach((n) => names.add(n))
     })
     return [...names].sort()
-  }, [diseaseFiltered])
+  }, [typeFiltered])
+
+  // Collect all unique diseases across type-filtered grants
+  const allDiseases = useMemo(() => {
+    const diseases = new Set<string>()
+    typeFiltered.forEach((g) => {
+      g.diseases.forEach((d) => diseases.add(d))
+    })
+    return [...diseases].sort()
+  }, [typeFiltered])
 
   const agencies = useMemo(
-    () => [...new Set(diseaseFiltered.map((g) => g.agency).filter(Boolean))].sort(),
-    [diseaseFiltered]
+    () => [...new Set(typeFiltered.map((g) => g.agency).filter(Boolean))].sort(),
+    [typeFiltered]
   )
 
   const filtered = useMemo(() => {
-    let result = [...diseaseFiltered]
+    let result = [...typeFiltered]
     if (statusFilter !== 'all') result = result.filter((g) => g.status === statusFilter)
-    if (typeFilter !== 'all') result = result.filter((g) => g.grantType === typeFilter)
     if (personFilter.length > 0) {
       result = result.filter((g) =>
         personFilter.some((name) => g.pi.includes(name) || g.keyPersonnel.includes(name))
+      )
+    }
+    if (diseaseFilter.length > 0) {
+      result = result.filter((g) =>
+        diseaseFilter.some((d) => g.diseases.includes(d))
       )
     }
     if (agencyFilter !== 'all') result = result.filter((g) => g.agency === agencyFilter)
@@ -647,31 +678,29 @@ export default function GrantsPage() {
         case 'agency': cmp = a.agency.localeCompare(b.agency); break
         case 'type': cmp = a.grantType.localeCompare(b.grantType); break
         case 'total': cmp = computeTotal(a) - computeTotal(b); break
-        case 'deadline':
-          if (!a.deadline && !b.deadline) cmp = 0
-          else if (!a.deadline) cmp = 1
-          else if (!b.deadline) cmp = -1
-          else cmp = new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
-          break
+        case 'deadline': cmp = compareDates(a.deadline, b.deadline); break
+        case 'adminDeadline': cmp = compareDates(a.adminDeadline, b.adminDeadline); break
+        case 'scienceDeadline': cmp = compareDates(a.scienceDeadline, b.scienceDeadline); break
+        case 'notificationDate': cmp = compareDates(a.notificationDate, b.notificationDate); break
         case 'status': cmp = a.status.localeCompare(b.status); break
       }
       return sortDir === 'asc' ? cmp : -cmp
     })
 
     return result
-  }, [diseaseFiltered, statusFilter, typeFilter, personFilter, agencyFilter, sortKey, sortDir])
+  }, [typeFiltered, statusFilter, personFilter, diseaseFilter, agencyFilter, sortKey, sortDir])
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
     else { setSortKey(key); setSortDir('asc') }
   }
 
-  const hasFilters = statusFilter !== 'all' || typeFilter !== 'all' || personFilter.length > 0 || agencyFilter !== 'all'
+  const hasFilters = statusFilter !== 'all' || personFilter.length > 0 || diseaseFilter.length > 0 || agencyFilter !== 'all'
 
   function clearFilters() {
     setStatusFilter('all')
-    setTypeFilter('all')
     setPersonFilter([])
+    setDiseaseFilter([])
     setAgencyFilter('all')
   }
 
@@ -707,7 +736,7 @@ export default function GrantsPage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <DiseaseTabs activeTab={diseaseTab} onChange={setDiseaseTab} />
+        <GrantTypeTabs activeTab={typeTab} onChange={setTypeTab} />
       </div>
 
       <DeadlineAlerts grantList={filtered} />
@@ -721,17 +750,18 @@ export default function GrantsPage() {
               <option key={key} value={key}>{label}</option>
             ))}
           </select>
-          <PersonFilterDropdown
-            allPeople={allPeople}
+          <CheckboxFilterDropdown
+            allItems={allPeople}
             selected={personFilter}
             onChange={setPersonFilter}
+            label="All People"
           />
-          <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as GrantType | 'all')} className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700">
-            <option value="all">All Types</option>
-            {Object.entries(grantTypeLabels).map(([key, label]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
+          <CheckboxFilterDropdown
+            allItems={allDiseases}
+            selected={diseaseFilter}
+            onChange={setDiseaseFilter}
+            label="All Diseases"
+          />
           <select value={agencyFilter} onChange={(e) => setAgencyFilter(e.target.value)} className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700">
             <option value="all">All Agencies</option>
             {agencies.map((a) => <option key={a} value={a}>{a}</option>)}
@@ -744,7 +774,7 @@ export default function GrantsPage() {
         </div>
 
         <div className="overflow-x-auto rounded-xl border border-gray-200">
-          <table className="w-full min-w-[1000px]">
+          <table className="w-full min-w-[1400px]">
             <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
                 <th className="w-8 py-3 pl-4 pr-2"></th>
@@ -753,7 +783,10 @@ export default function GrantsPage() {
                 <SortHeader label="Agency" field="agency" />
                 <SortHeader label="Type" field="type" />
                 <SortHeader label="Total" field="total" />
-                <SortHeader label="Deadline" field="deadline" />
+                <SortHeader label="Sponsor Deadline" field="deadline" />
+                <SortHeader label="Admin Deadline" field="adminDeadline" />
+                <SortHeader label="Science Deadline" field="scienceDeadline" />
+                <SortHeader label="Notification" field="notificationDate" />
                 <SortHeader label="Status" field="status" />
                 <th className="w-16 py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"></th>
               </tr>
@@ -834,7 +867,10 @@ export default function GrantsPage() {
                     <td className="whitespace-nowrap py-3 pr-3 text-sm font-medium text-gray-700">
                       {formatCurrency(computeTotal(grant) || null)}
                     </td>
-                    <EditableDeadlineCell grant={grant} onUpdate={(updates) => updateGrant(grant.id, updates)} />
+                    <EditableDeadlineCell value={grant.deadline} fieldKey="deadline" grant={grant} onUpdate={(updates) => updateGrant(grant.id, updates)} />
+                    <EditableDeadlineCell value={grant.adminDeadline} fieldKey="adminDeadline" grant={grant} onUpdate={(updates) => updateGrant(grant.id, updates)} />
+                    <EditableDeadlineCell value={grant.scienceDeadline} fieldKey="scienceDeadline" grant={grant} onUpdate={(updates) => updateGrant(grant.id, updates)} />
+                    <EditableDeadlineCell value={grant.notificationDate} fieldKey="notificationDate" grant={grant} onUpdate={(updates) => updateGrant(grant.id, updates)} />
                     <td className="whitespace-nowrap py-3 pr-3" onClick={(e) => e.stopPropagation()}>
                       <select
                         value={grant.status}
@@ -888,7 +924,7 @@ export default function GrantsPage() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="py-8 text-center text-sm text-gray-400 italic">
+                  <td colSpan={13} className="py-8 text-center text-sm text-gray-400 italic">
                     No grants match the selected filters.
                   </td>
                 </tr>
