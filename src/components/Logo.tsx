@@ -29,15 +29,15 @@ export default function Logo({ className = 'h-8' }: { className?: string }) {
       <circle cx="20" cy="35" r="1.5" fill="currentColor" opacity="0.35" />
 
       {/* Central node — accent color ring + core */}
-      <circle cx="20" cy="20" r="5.5" fill="none" stroke="#b45309" strokeWidth="1.5" opacity="0.5" />
-      <circle cx="20" cy="20" r="3.5" fill="#b45309" opacity="0.85" />
+      <circle cx="20" cy="20" r="5.5" fill="none" stroke="#c2410c" strokeWidth="1.5" opacity="0.5" />
+      <circle cx="20" cy="20" r="3.5" fill="#c2410c" opacity="0.85" />
 
       {/* Text */}
       <text
         x="48"
         y="28"
         fill="currentColor"
-        fontFamily="Inter, system-ui, sans-serif"
+        fontFamily="Plus Jakarta Sans, system-ui, sans-serif"
         fontWeight="700"
         fontSize="22"
         letterSpacing="3"

@@ -12,6 +12,7 @@ export type Task = {
   status: TaskStatus
   priority: TaskPriority
   createdAt: string
+  milestoneKey?: string
 }
 
 export const taskStatusLabels: Record<TaskStatus, string> = {

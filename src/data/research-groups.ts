@@ -24,7 +24,7 @@ export const researchGroups: ResearchGroup[] = [
       'Cell-based assay lab for MOG antibody testing',
       '\u03B3\u03B4 T cell animal models (EAE)',
     ],
-    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Takahisa Mikami', 'Joao Oliveira', 'Marcelo Matiello', 'Tanuja Chitnis'],
+    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Takahisa Mikami', 'Joao Oliveira', 'Marcelo Matiello'],
     accentColor: 'blue-500',
   },
   {
@@ -70,7 +70,7 @@ export const researchGroups: ResearchGroup[] = [
       'Immunopathogenesis lab studies',
       'Exosome and protein trafficking research',
     ],
-    keyInvestigators: ['Michael Levy', 'Monique Anderson', 'Phil Bilodeau'],
+    keyInvestigators: ['Michael Levy', 'Monique Anderson', 'Phil Bilodeau', 'Shamik Bhattacharyya', 'Mattia Wruble', 'Anastasia Vishnevetsky'],
     accentColor: 'amber-600',
   },
   {
@@ -85,7 +85,7 @@ export const researchGroups: ResearchGroup[] = [
       'Advanced MRI imaging protocols (central vein sign)',
       'Novel biomarker investigation',
     ],
-    keyInvestigators: ['Jimmy Nguyen', 'Michael Levy', 'Shamik Bhattacharyya'],
+    keyInvestigators: ['Jimmy Nguyen', 'Phil Bilodeau', 'João Vitor Mahler', 'Natalia Drosu', 'Natasha Bobrowski-Khoury', 'Takahisa Mikami', 'Monique Anderson', 'Michael Levy', 'Shamik Bhattacharyya'],
     accentColor: 'rose-500',
   },
   {
@@ -130,7 +130,7 @@ export const researchGroups: ResearchGroup[] = [
       'Translational folate metabolism studies',
       'Collaborative neurodevelopmental research network',
     ],
-    keyInvestigators: ['Natasha Bobrowski-Khoury', 'Michael Levy', 'Phil Bilodeau'],
+    keyInvestigators: ['Natasha Bobrowski-Khoury', 'Jimmy Nguyen', 'Natalia Drosu', 'Takahisa Mikami', 'Monique Anderson', 'Joao Oliveira', 'Michael Levy', 'Phil Bilodeau'],
     accentColor: 'cyan-500',
   },
 ]

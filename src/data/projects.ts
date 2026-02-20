@@ -1,4 +1,4 @@
-export type ProjectStage = 'not_started' | 'in_progress' | 'submitted' | 'accepted' | 'published' | 'completed'
+export type ProjectStage = 'not_started' | 'in_progress' | 'submitted' | 'completed' | 'accepted' | 'published'
 
 export type Project = {
   id: string
@@ -849,8 +849,8 @@ export const projectStageLabels: Record<ProjectStage, string> = {
   not_started: 'Not Started',
   in_progress: 'In Progress',
   submitted: 'Submitted',
-  accepted: 'Accepted',
   completed: 'Completed',
+  accepted: 'Accepted',
   published: 'Published',
 }
 
@@ -858,7 +858,7 @@ export const projectStageColors: Record<ProjectStage, string> = {
   not_started: 'bg-gray-100 text-gray-700',
   in_progress: 'bg-blue-100 text-blue-700',
   submitted: 'bg-amber-100 text-amber-700',
-  accepted: 'bg-teal-100 text-teal-700',
   completed: 'bg-purple-100 text-purple-700',
+  accepted: 'bg-teal-100 text-teal-700',
   published: 'bg-emerald-100 text-emerald-700',
 }

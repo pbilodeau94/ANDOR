@@ -7,8 +7,8 @@ import TeamMemberChips from '@/components/portal/TeamMemberChips'
 import CheckboxFilterDropdown from '@/components/portal/CheckboxFilterDropdown'
 import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels, knownDiseases } from '@/data/grants'
 import { useGrantsStore } from '@/data/use-grants-store'
+import { useTasksStore } from '@/data/use-tasks-store'
 import {
-  calculateMilestones,
   getNextMilestone,
   getUrgency,
   urgencyColors,
@@ -371,17 +371,10 @@ function AddGrantForm({
 function ExpandedGrantRow({
   grant,
   onUpdate,
-  milestoneCompletions,
-  onToggleMilestone,
 }: {
   grant: Grant
   onUpdate: (updates: Partial<Grant>) => void
-  milestoneCompletions: Record<string, boolean>
-  onToggleMilestone: (milestoneKey: string) => void
 }) {
-  const showTimeline = grant.deadline && activeStatuses.has(grant.status)
-  const milestones = showTimeline ? calculateMilestones(grant.deadline!) : []
-
   const idcAmount = computeIdc(grant)
   const totalAmount = computeTotal(grant)
 
@@ -509,42 +502,6 @@ function ExpandedGrantRow({
             </div>
             <div className="mt-2 space-y-1">
               <LinkedTasks grantId={grant.id} />
-              {showTimeline && milestones.map((m) => {
-                const done = milestoneCompletions[m.key] ?? false
-                const urgency = getUrgency(m.dateStr)
-                const today = new Date()
-                today.setHours(0, 0, 0, 0)
-                const isPast = m.date < today
-                return (
-                  <label
-                    key={m.key}
-                    className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2 ${
-                      done ? 'border-gray-100 bg-gray-50 opacity-60' : isPast ? 'border-gray-100 bg-gray-50 opacity-60' : urgencyColors[urgency]
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={done}
-                      onChange={() => onToggleMilestone(m.key)}
-                      className="rounded border-gray-300 text-[var(--color-primary)]"
-                    />
-                    <div className="w-20 shrink-0 text-xs font-semibold">
-                      {formatShortDate(m.dateStr)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <span className={`text-xs font-medium ${done ? 'line-through' : ''}`}>{m.label}</span>
-                      <span className={`ml-2 inline-flex rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-                        m.owner === 'pi' ? 'bg-blue-100 text-blue-700' : m.owner === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'
-                      }`}>
-                        {m.owner === 'pi' ? 'PI' : m.owner === 'admin' ? 'Admin' : 'Both'}
-                      </span>
-                    </div>
-                    {!done && !isPast && urgency !== 'future' && urgency !== 'ok' && (
-                      <span className="shrink-0 text-xs font-semibold">{urgencyLabels[urgency]}</span>
-                    )}
-                  </label>
-                )
-              })}
             </div>
           </div>
         </div>
@@ -612,7 +569,8 @@ function compareDates(a: string | null, b: string | null): number {
 // --- Main Page ---
 
 export default function GrantsPage() {
-  const { grants: allGrants, addGrant, updateGrant, deleteGrant, toggleMilestone, milestoneCompletions } = useGrantsStore()
+  const { grants: allGrants, addGrant, updateGrant, deleteGrant } = useGrantsStore()
+  const { syncMilestoneTasks } = useTasksStore()
   const [showAddForm, setShowAddForm] = useState(false)
   const [typeTab, setTypeTab] = useState<GrantType | null>(null)
   const [statusFilter, setStatusFilter] = useState<string[]>([])
@@ -623,6 +581,14 @@ export default function GrantsPage() {
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const syncedRef = useRef(false)
+
+  // Sync milestone tasks from grants on load
+  useEffect(() => {
+    if (syncedRef.current || !allGrants.length) return
+    syncedRef.current = true
+    syncMilestoneTasks(allGrants)
+  }, [allGrants, syncMilestoneTasks])
 
   // Filter by grant type tab first
   const typeFiltered = useMemo(
@@ -934,8 +900,6 @@ export default function GrantsPage() {
                       key={`${grant.id}-expanded`}
                       grant={grant}
                       onUpdate={(updates) => updateGrant(grant.id, updates)}
-                      milestoneCompletions={milestoneCompletions[grant.id] ?? {}}
-                      onToggleMilestone={(key) => toggleMilestone(grant.id, key)}
                     />
                   )}
                 </>

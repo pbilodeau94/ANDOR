@@ -5,7 +5,6 @@ import SectionWrapper from '@/components/SectionWrapper'
 import { useTasksStore } from '@/data/use-tasks-store'
 import { useGrantsStore } from '@/data/use-grants-store'
 import { useProjectsStore } from '@/data/use-projects-store'
-import { calculateMilestones, getUrgency } from '@/data/deadline-calculator'
 import { team } from '@/data/team'
 import {
   taskStatusLabels,
@@ -14,9 +13,6 @@ import {
   taskPriorityColors,
 } from '@/data/tasks'
 import type { Task, TaskStatus, TaskPriority } from '@/data/tasks'
-import type { GrantStatus } from '@/data/grants'
-
-const activeGrantStatuses = new Set<GrantStatus>(['not_started', 'in_progress'])
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '\u2014'
@@ -307,6 +303,11 @@ function TaskCard({
                 Project: {projectTitleMap.get(task.projectId)}
               </span>
             )}
+            {task.milestoneKey && (
+              <span className="inline-flex rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">
+                Deadline milestone
+              </span>
+            )}
           </div>
         </div>
 
@@ -445,142 +446,23 @@ function TaskCard({
   )
 }
 
-// --- Milestone Card (same visual style as TaskCard) ---
-
-type MilestoneItem = {
-  id: string
-  grantId: string
-  grantTitle: string
-  milestoneKey: string
-  title: string
-  description: string
-  dueDate: string
-  owner: 'pi' | 'admin' | 'both'
-  done: boolean
-}
-
-function MilestoneCard({
-  item,
-  onToggle,
-}: {
-  item: MilestoneItem
-  onToggle: () => void
-}) {
-  const [expanded, setExpanded] = useState(false)
-  const overdue = !item.done && isOverdue(item.dueDate)
-  const urgency = getUrgency(item.dueDate)
-
-  const priorityFromUrgency: TaskPriority =
-    urgency === 'overdue' || urgency === 'urgent' ? 'high' : urgency === 'soon' ? 'medium' : 'low'
-
-  const ownerLabel = item.owner === 'pi' ? 'PI' : item.owner === 'admin' ? 'Admin' : 'PI & Admin'
-
-  return (
-    <div
-      className={`rounded-xl border bg-white transition-shadow hover:shadow-sm ${
-        overdue ? 'border-red-200' : 'border-gray-200'
-      } ${item.done ? 'opacity-60' : ''}`}
-    >
-      <div
-        className="flex cursor-pointer items-start gap-3 p-4"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onToggle()
-          }}
-          className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors ${
-            item.done
-              ? 'border-emerald-500 bg-emerald-500 text-white'
-              : 'border-gray-300 hover:border-gray-400'
-          }`}
-        >
-          {item.done && (
-            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          )}
-        </button>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span
-              className={`text-sm font-medium ${
-                item.done ? 'text-gray-400 line-through' : 'text-gray-900'
-              }`}
-            >
-              {item.title}
-            </span>
-            <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${taskPriorityColors[priorityFromUrgency]}`}>
-              {taskPriorityLabels[priorityFromUrgency]}
-            </span>
-          </div>
-
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-400">
-            <span className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium ${
-              item.owner === 'pi' ? 'bg-blue-100 text-blue-700' : item.owner === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'
-            }`}>
-              {ownerLabel}
-            </span>
-            <span className={`inline-flex items-center gap-1 ${overdue ? 'font-semibold text-red-600' : ''}`}>
-              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              {formatDate(item.dueDate)}
-              {overdue && ' (overdue)'}
-            </span>
-            <span className="inline-flex rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-600">
-              Grant: {item.grantTitle}
-            </span>
-            <span className="inline-flex rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">
-              Deadline milestone
-            </span>
-          </div>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-2">
-          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-            item.done ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700'
-          }`}>
-            {item.done ? 'Completed' : 'Pending'}
-          </span>
-          <svg
-            className={`h-4 w-4 text-gray-400 transition-transform ${expanded ? 'rotate-90' : ''}`}
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
-      </div>
-
-      {expanded && (
-        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
-          <p className="text-sm text-gray-600">{item.description}</p>
-          <p className="mt-2 text-xs text-gray-400">
-            This milestone is automatically calculated from the grant&apos;s sponsor deadline.
-          </p>
-        </div>
-      )}
-    </div>
-  )
-}
-
-// --- Unified display item for sorting ---
-
-type DisplayItem =
-  | { kind: 'task'; task: Task }
-  | { kind: 'milestone'; milestone: MilestoneItem }
-
 // --- Main Page ---
 
 export default function TasksPage() {
-  const { tasks, addTask, updateTask, deleteTask } = useTasksStore()
-  const { grants, milestoneCompletions, toggleMilestone } = useGrantsStore()
+  const { tasks, addTask, updateTask, deleteTask, syncMilestoneTasks } = useTasksStore()
+  const { grants } = useGrantsStore()
   const { projects } = useProjectsStore()
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [sourceFilter, setSourceFilter] = useState<string>('')
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const syncedRef = useRef(false)
+
+  // Sync milestone tasks from grants on load
+  useEffect(() => {
+    if (syncedRef.current || !grants.length) return
+    syncedRef.current = true
+    syncMilestoneTasks(grants)
+  }, [grants, syncMilestoneTasks])
 
   const grantOptions = useMemo(
     () => grants.map((g) => ({ id: g.id, title: g.title })),
@@ -604,86 +486,33 @@ export default function TasksPage() {
     return map
   }, [projects])
 
-  // Generate milestone items from active grants
-  const milestoneItems: MilestoneItem[] = useMemo(() => {
-    const items: MilestoneItem[] = []
-    for (const grant of grants) {
-      if (!grant.deadline || !activeGrantStatuses.has(grant.status)) continue
-      const milestones = calculateMilestones(grant.deadline)
-      const grantCompletions = milestoneCompletions[grant.id] ?? {}
-      for (const m of milestones) {
-        items.push({
-          id: `ms-${grant.id}-${m.key}`,
-          grantId: grant.id,
-          grantTitle: grant.title,
-          milestoneKey: m.key,
-          title: m.label,
-          description: m.description,
-          dueDate: m.dateStr,
-          owner: m.owner,
-          done: grantCompletions[m.key] ?? false,
-        })
-      }
-    }
-    return items
-  }, [grants, milestoneCompletions])
+  const filtered = useMemo(() => {
+    let result = [...tasks]
+    if (statusFilter) result = result.filter((t) => t.status === statusFilter)
+    if (sourceFilter === 'grant') result = result.filter((t) => t.grantId)
+    else if (sourceFilter === 'project') result = result.filter((t) => t.projectId)
+    else if (sourceFilter === 'milestone') result = result.filter((t) => t.milestoneKey)
+    else if (sourceFilter === 'standalone') result = result.filter((t) => !t.grantId && !t.projectId)
 
-  // Build unified display list
-  const filtered: DisplayItem[] = useMemo(() => {
-    // Filter regular tasks
-    let taskItems = [...tasks]
-    if (statusFilter === 'completed') taskItems = taskItems.filter((t) => t.status === 'completed')
-    else if (statusFilter === 'pending') taskItems = taskItems.filter((t) => t.status === 'pending')
-    else if (statusFilter === 'in_progress') taskItems = taskItems.filter((t) => t.status === 'in_progress')
-
-    if (sourceFilter === 'grant') taskItems = taskItems.filter((t) => t.grantId)
-    else if (sourceFilter === 'project') taskItems = taskItems.filter((t) => t.projectId)
-    else if (sourceFilter === 'standalone') taskItems = taskItems.filter((t) => !t.grantId && !t.projectId)
-    else if (sourceFilter === 'milestone') taskItems = [] // milestones-only view
-
-    // Filter milestone items
-    let msItems = [...milestoneItems]
-    if (statusFilter === 'completed') msItems = msItems.filter((m) => m.done)
-    else if (statusFilter === 'pending' || statusFilter === 'in_progress') msItems = msItems.filter((m) => !m.done)
-    // Only show milestones for: all, grant-linked, or milestone-only views
-    if (sourceFilter === 'project' || sourceFilter === 'standalone') msItems = []
-
-    // Build unified list
-    const items: DisplayItem[] = [
-      ...taskItems.map((t): DisplayItem => ({ kind: 'task', task: t })),
-      ...msItems.map((m): DisplayItem => ({ kind: 'milestone', milestone: m })),
-    ]
-
-    // Sort: incomplete first, then by due date
-    items.sort((a, b) => {
-      const aCompleted = a.kind === 'task' ? a.task.status === 'completed' : a.milestone.done
-      const bCompleted = b.kind === 'task' ? b.task.status === 'completed' : b.milestone.done
-      if (aCompleted !== bCompleted) return aCompleted ? 1 : -1
-
-      // Priority sort for tasks
-      const aPriority = a.kind === 'task' ? a.task.priority : 'medium'
-      const bPriority = b.kind === 'task' ? b.task.priority : 'medium'
+    result.sort((a, b) => {
+      if (a.status === 'completed' && b.status !== 'completed') return 1
+      if (a.status !== 'completed' && b.status === 'completed') return -1
       const priorityOrder = { high: 0, medium: 1, low: 2 }
-      const pCmp = priorityOrder[aPriority] - priorityOrder[bPriority]
+      const pCmp = priorityOrder[a.priority] - priorityOrder[b.priority]
       if (pCmp !== 0) return pCmp
-
-      const aDue = a.kind === 'task' ? a.task.dueDate : a.milestone.dueDate
-      const bDue = b.kind === 'task' ? b.task.dueDate : b.milestone.dueDate
-      if (aDue && bDue) return aDue.localeCompare(bDue)
-      if (aDue) return -1
-      if (bDue) return 1
+      if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate)
+      if (a.dueDate) return -1
+      if (b.dueDate) return 1
       return 0
     })
 
-    return items
-  }, [tasks, milestoneItems, statusFilter, sourceFilter])
+    return result
+  }, [tasks, statusFilter, sourceFilter])
 
-  const totalTasks = tasks.length + milestoneItems.length
-  const totalPending = tasks.filter((t) => t.status === 'pending').length + milestoneItems.filter((m) => !m.done).length
+  const totalPending = tasks.filter((t) => t.status === 'pending').length
   const totalInProgress = tasks.filter((t) => t.status === 'in_progress').length
-  const totalCompleted = tasks.filter((t) => t.status === 'completed').length + milestoneItems.filter((m) => m.done).length
-  const totalOverdue = tasks.filter((t) => t.status !== 'completed' && isOverdue(t.dueDate)).length +
-    milestoneItems.filter((m) => !m.done && isOverdue(m.dueDate)).length
+  const totalCompleted = tasks.filter((t) => t.status === 'completed').length
+  const totalOverdue = tasks.filter((t) => t.status !== 'completed' && isOverdue(t.dueDate)).length
 
   return (
     <>
@@ -692,7 +521,7 @@ export default function TasksPage() {
           <div>
             <h1 className="text-3xl font-bold text-[var(--color-primary)]">Tasks</h1>
             <p className="mt-2 text-gray-600">
-              {totalTasks} tasks &middot; {totalPending} pending &middot; {totalInProgress} in progress &middot; {totalCompleted} completed
+              {tasks.length} tasks &middot; {totalPending} pending &middot; {totalInProgress} in progress &middot; {totalCompleted} completed
               {totalOverdue > 0 && (
                 <span className="ml-1 font-semibold text-red-600">&middot; {totalOverdue} overdue</span>
               )}
@@ -744,40 +573,32 @@ export default function TasksPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
             <p className="mt-3 text-sm text-gray-500">
-              {totalTasks === 0
+              {tasks.length === 0
                 ? 'No tasks yet. Add tasks here or from the Grants/Projects pages.'
                 : 'No tasks match the selected filter.'}
             </p>
           </div>
         ) : (
           <div className="space-y-2">
-            {filtered.map((item) =>
-              item.kind === 'task' ? (
-                <TaskCard
-                  key={item.task.id}
-                  task={item.task}
-                  updateTask={updateTask}
-                  deleteTask={deleteTask}
-                  grantTitleMap={grantTitleMap}
-                  projectTitleMap={projectTitleMap}
-                  grantOptions={grantOptions}
-                  projectOptions={projectOptions}
-                  confirmDeleteId={confirmDeleteId}
-                  setConfirmDeleteId={setConfirmDeleteId}
-                />
-              ) : (
-                <MilestoneCard
-                  key={item.milestone.id}
-                  item={item.milestone}
-                  onToggle={() => toggleMilestone(item.milestone.grantId, item.milestone.milestoneKey)}
-                />
-              )
-            )}
+            {filtered.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                updateTask={updateTask}
+                deleteTask={deleteTask}
+                grantTitleMap={grantTitleMap}
+                projectTitleMap={projectTitleMap}
+                grantOptions={grantOptions}
+                projectOptions={projectOptions}
+                confirmDeleteId={confirmDeleteId}
+                setConfirmDeleteId={setConfirmDeleteId}
+              />
+            ))}
           </div>
         )}
 
         <p className="mt-4 text-xs text-gray-400">
-          Showing {filtered.length} of {totalTasks} items &middot; Click a task to edit &middot; Deadline milestones are auto-generated from grant deadlines
+          Showing {filtered.length} of {tasks.length} tasks &middot; Click a task to edit &middot; Tasks saved to browser
         </p>
       </SectionWrapper>
     </>

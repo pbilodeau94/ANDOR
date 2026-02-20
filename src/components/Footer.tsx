@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
@@ -48,7 +49,25 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-gray-700 pt-6 text-center text-xs text-gray-500">
+        {/* Institutional Logos */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-8 rounded-lg bg-white/95 px-6 py-4 sm:gap-12">
+          <Image
+            src="/mgb-logo.png"
+            alt="Mass General Brigham"
+            width={180}
+            height={29}
+            className="h-7 w-auto"
+          />
+          <Image
+            src="/hms-logo.png"
+            alt="Harvard Medical School"
+            width={180}
+            height={59}
+            className="h-10 w-auto"
+          />
+        </div>
+
+        <div className="mt-6 border-t border-gray-700 pt-6 text-center text-xs text-gray-500">
           &copy; {new Date().getFullYear()} ANDOR Research Group. All rights reserved.
         </div>
       </div>

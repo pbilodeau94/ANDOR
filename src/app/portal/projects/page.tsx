@@ -11,6 +11,7 @@ import TeamMemberChips from '@/components/portal/TeamMemberChips'
 import CheckboxFilterDropdown from '@/components/portal/CheckboxFilterDropdown'
 import { projectStageLabels, projectStageColors } from '@/data/projects'
 import { useProjectsStore } from '@/data/use-projects-store'
+import { publications } from '@/data/publications'
 import type { ProjectStage, Project } from '@/data/projects'
 
 type SortKey = 'title' | 'lead' | 'pi' | 'disease' | 'stage' | 'researchType'
@@ -20,8 +21,8 @@ const boardColumns: BoardColumn<ProjectStage>[] = [
   { key: 'not_started', label: 'Not Started', color: 'bg-gray-100 text-gray-700' },
   { key: 'in_progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700' },
   { key: 'submitted', label: 'Submitted', color: 'bg-amber-100 text-amber-700' },
-  { key: 'accepted', label: 'Accepted', color: 'bg-teal-100 text-teal-700' },
   { key: 'completed', label: 'Completed', color: 'bg-purple-100 text-purple-700' },
+  { key: 'accepted', label: 'Accepted', color: 'bg-teal-100 text-teal-700' },
   { key: 'published', label: 'Published', color: 'bg-emerald-100 text-emerald-700' },
 ]
 
@@ -361,12 +362,6 @@ export default function ProjectsPage() {
     return result
   }, [stageFiltered, diseaseFilter, typeFilter, piFilter, sortKey, sortDir])
 
-  // Published projects shown as paper list
-  const publishedProjects = useMemo(
-    () => allProjects.filter((p) => p.stage === 'published'),
-    [allProjects]
-  )
-
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
@@ -418,55 +413,53 @@ export default function ProjectsPage() {
 
       <SectionWrapper>
         {stageTab === 'published' ? (
-          /* Published = paper list with journal links */
-          publishedProjects.length > 0 ? (
-            <div className="space-y-2">
-              {publishedProjects.map((project) => {
-                const isPubMed = project.publicationUrl?.includes('pubmed.ncbi.nlm.nih.gov')
-                const isDoi = project.publicationUrl?.includes('doi.org')
-                return (
-                  <div key={project.id} className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
-                    <div className="min-w-0 flex-1">
-                      {project.publicationUrl ? (
-                        <a
-                          href={project.publicationUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm font-medium text-[var(--color-primary)] hover:underline"
-                        >
-                          {project.title}
-                        </a>
-                      ) : (
-                        <span className="text-sm font-medium text-gray-900">{project.title}</span>
-                      )}
-                      <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-500">
-                        <span>{project.pi || project.lead}</span>
-                        {project.diseases.length > 0 && (
-                          <>
-                            <span className="text-gray-300">&middot;</span>
-                            <span>{project.diseases.join(', ')}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    {project.publicationUrl && (
+          /* Published = all ANDOR publications + published projects */
+          <div className="space-y-2">
+            <p className="mb-4 text-sm text-gray-500">
+              {publications.length} publications across all research programs
+            </p>
+            {publications.map((pub) => {
+              const pubUrl = pub.pmid
+                ? `https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}/`
+                : pub.doi
+                  ? `https://doi.org/${pub.doi}`
+                  : null
+              return (
+                <div key={pub.id} className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                  <div className="min-w-0 flex-1">
+                    {pubUrl ? (
                       <a
-                        href={project.publicationUrl}
+                        href={pubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shrink-0 rounded bg-gray-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 transition-colors hover:bg-[var(--color-accent)] hover:text-white"
-                        title={isPubMed ? 'View on PubMed' : isDoi ? 'View publication' : 'View paper'}
+                        className="text-sm font-medium text-gray-900 hover:text-[var(--color-accent)]"
                       >
-                        {isPubMed ? 'PubMed' : isDoi ? 'DOI' : 'Link'}
+                        {pub.title}
                       </a>
+                    ) : (
+                      <span className="text-sm font-medium text-gray-900">{pub.title}</span>
                     )}
+                    <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-500">
+                      <span>{pub.journal} ({pub.year})</span>
+                      <span className="text-gray-300">&middot;</span>
+                      <span>{pub.researchGroup}</span>
+                    </div>
+                    <p className="mt-0.5 text-xs text-gray-400 line-clamp-1">{pub.authors}</p>
                   </div>
-                )
-              })}
-            </div>
-          ) : (
-            <p className="py-8 text-center text-sm text-gray-400 italic">No published projects.</p>
-          )
+                  {pub.pmid && (
+                    <a
+                      href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}/`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 rounded bg-gray-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 transition-colors hover:bg-[var(--color-accent)] hover:text-white"
+                    >
+                      PubMed
+                    </a>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         ) : (
           <>
             {/* Filters + Add */}

@@ -103,16 +103,6 @@ export const team: TeamMember[] = [
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/99601',
     imageUrl: '/team/gillani.jpg',
   },
-  {
-    id: 't21',
-    name: 'Tanuja Chitnis',
-    title: 'Professor of Neurology',
-    role: 'faculty',
-    institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/profile/1244171',
-    diseases: ['MOGAD', 'MS'],
-  },
-
   // Fellows
   {
     id: 't8',
