@@ -8,7 +8,6 @@ import ProjectCard from '@/components/portal/ProjectCard'
 import DiseaseTabs from '@/components/DiseaseTabs'
 import { projects, projectStageLabels, projectStageColors } from '@/data/projects'
 import { filterByDisease } from '@/data/disease-utils'
-import { getRelatedGrants, getRelatedAgreements } from '@/data/cross-links'
 import type { ProjectStage, Project } from '@/data/projects'
 
 type SortKey = 'title' | 'lead' | 'pi' | 'disease' | 'stage' | 'researchType'
@@ -23,33 +22,7 @@ const boardColumns: BoardColumn<ProjectStage>[] = [
   { key: 'completed', label: 'Completed', color: 'bg-purple-100 text-purple-700' },
 ]
 
-function RelatedBadges({ label, items }: { label: string; items: { id: string; title: string }[] }) {
-  if (items.length === 0) return null
-  const shown = items.slice(0, 5)
-  const overflow = items.length - shown.length
-  return (
-    <div className="sm:col-span-2 lg:col-span-3">
-      <span className="text-xs font-semibold uppercase text-gray-400">{label}</span>
-      <div className="mt-1 flex flex-wrap gap-1.5">
-        {shown.map((item) => (
-          <span key={item.id} className="rounded-full bg-[var(--color-primary)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--color-primary)] line-clamp-1">
-            {item.title.length > 60 ? item.title.slice(0, 57) + '...' : item.title}
-          </span>
-        ))}
-        {overflow > 0 && (
-          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">
-            +{overflow} more
-          </span>
-        )}
-      </div>
-    </div>
-  )
-}
-
 function ExpandedProjectRow({ project }: { project: Project }) {
-  const relatedGrants = project.diseases.length > 0 ? getRelatedGrants(project.diseases) : []
-  const relatedAgreements = project.diseases.length > 0 ? getRelatedAgreements(project.diseases) : []
-
   return (
     <tr>
       <td colSpan={8} className="bg-gray-50 px-4 py-4">
@@ -84,8 +57,6 @@ function ExpandedProjectRow({ project }: { project: Project }) {
               </div>
             </div>
           )}
-          <RelatedBadges label="Related Grants" items={relatedGrants} />
-          <RelatedBadges label="Related Agreements" items={relatedAgreements} />
         </div>
       </td>
     </tr>

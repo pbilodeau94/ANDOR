@@ -20,8 +20,7 @@ export const team: TeamMember[] = [
     title: 'Division Chief, Neuroimmunology',
     role: 'leadership',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Michael+Levy',
-    imageUrl: 'https://cdn.kyruus.com/providermatch/mas/photos/levy-michael-1710957963494.jpg',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/195498',
     diseases: ['NMOSD', 'MOGAD', 'Neurosarcoidosis'],
   },
   {
@@ -30,8 +29,7 @@ export const team: TeamMember[] = [
     title: 'Associate Professor of Neurology',
     role: 'leadership',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Shamik+Bhattacharyya',
-    imageUrl: 'https://cdn.kyruus.com/providermatch/mas/photos/bhattacharyya-shamik-1626968756218.jpg',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/63498',
     diseases: ['NMOSD'],
   },
   {
@@ -40,8 +38,7 @@ export const team: TeamMember[] = [
     title: 'Instructor in Neurology',
     role: 'leadership',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Phil+Bilodeau',
-    imageUrl: 'https://cdn.kyruus.com/providermatch/mas/photos/bilodeau-phil-1711576173654.jpg',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/214509',
     diseases: ['MOGAD', 'NMOSD', 'Neurosarcoidosis'],
   },
   {
@@ -50,8 +47,7 @@ export const team: TeamMember[] = [
     title: 'Instructor in Neurology',
     role: 'leadership',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Anastasia+Vishnevetsky',
-    imageUrl: 'https://connects.catalyst.harvard.edu/Profiles/profile/photo/91548',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/198765',
     diseases: ['MOGAD', 'NMOSD'],
   },
 
@@ -62,8 +58,7 @@ export const team: TeamMember[] = [
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Monique+Anderson',
-    imageUrl: 'https://static.wixstatic.com/media/4c09b0_3b8a65b08f8f4e2b8c81925bc5dec7b0~mv2.jpg',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/207843',
     diseases: ['Neurosarcoidosis', 'MS'],
   },
   {
@@ -82,7 +77,6 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Takahisa+Mikami',
-    imageUrl: 'https://www.asdfinc.com/wp-content/uploads/mikami.jpg',
     diseases: ['MOGAD'],
   },
 
@@ -94,7 +88,6 @@ export const team: TeamMember[] = [
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Jimmy+Nguyen',
-    imageUrl: 'https://www.massgeneral.org/assets/mgh/images/neurology/nguyen-jimmy.jpg',
     diseases: ['Vasculitis'],
   },
   {
@@ -104,7 +97,6 @@ export const team: TeamMember[] = [
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Rebecca+Gillani',
-    imageUrl: 'https://cdn.kyruus.com/providermatch/mas/photos/gillani-rebecca-1712001234567.jpg',
   },
   {
     id: 't10',
@@ -124,7 +116,6 @@ export const team: TeamMember[] = [
     role: 'staff',
     institution: 'Mass General Brigham',
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Becca+Salky',
-    imageUrl: 'https://www.massgeneral.org/assets/mgh/images/neurology/salky-becca.jpg',
     diseases: ['MOGAD', 'NMOSD'],
   },
   {
@@ -134,7 +125,6 @@ export const team: TeamMember[] = [
     role: 'staff',
     institution: 'Mass General Brigham',
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Gabriela+Romanow',
-    imageUrl: 'https://www.massgeneral.org/assets/mgh/images/neurology/romanow-gabriela.jpg',
     diseases: ['MOGAD'],
   },
 ]

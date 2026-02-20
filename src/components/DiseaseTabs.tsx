@@ -1,6 +1,6 @@
 'use client'
 
-import { diseaseGroups, diseaseGroupIcons } from '@/data/disease-utils'
+import { diseaseGroups } from '@/data/disease-utils'
 
 type DiseaseTabsProps = {
   activeTab: string | null
@@ -8,13 +8,9 @@ type DiseaseTabsProps = {
 }
 
 export default function DiseaseTabs({ activeTab, onChange }: DiseaseTabsProps) {
-  const tabs: { key: string | null; label: string; icon?: string }[] = [
+  const tabs: { key: string | null; label: string }[] = [
     { key: null, label: 'All' },
-    ...diseaseGroups.map((name) => ({
-      key: name,
-      label: name,
-      icon: diseaseGroupIcons[name],
-    })),
+    ...diseaseGroups.map((name) => ({ key: name, label: name })),
   ]
 
   return (
@@ -32,7 +28,6 @@ export default function DiseaseTabs({ activeTab, onChange }: DiseaseTabsProps) {
                   : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
               }`}
             >
-              {tab.icon && <span className="mr-1.5 hidden sm:inline">{tab.icon}</span>}
               {tab.label}
             </button>
           )
