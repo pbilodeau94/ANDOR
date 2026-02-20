@@ -3,7 +3,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
 import SectionWrapper from '@/components/SectionWrapper'
 import DiseaseTabs from '@/components/DiseaseTabs'
-import { grantStatusLabels, grantStatusColors } from '@/data/grants'
+import DiseaseChips from '@/components/portal/DiseaseChips'
+import { grantStatusLabels, grantStatusColors, computeIdc, computeTotal, idcCategoryLabels } from '@/data/grants'
 import { filterByDisease } from '@/data/disease-utils'
 import { useGrantsStore } from '@/data/use-grants-store'
 import {
@@ -14,7 +15,7 @@ import {
   urgencyLabels,
 } from '@/data/deadline-calculator'
 import { team } from '@/data/team'
-import type { GrantStatus, Grant } from '@/data/grants'
+import type { GrantStatus, Grant, IdcCategory } from '@/data/grants'
 import type { Milestone } from '@/data/deadline-calculator'
 
 type SortKey = 'title' | 'pi' | 'agency' | 'deadline' | 'status'
@@ -36,7 +37,7 @@ function formatShortDate(dateStr: string): string {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-// --- Editable Deadline Cell ---
+// --- Editable Deadline Cell (table column) ---
 
 function EditableDeadlineCell({ grant, onUpdate }: { grant: Grant; onUpdate: (updates: Partial<Grant>) => void }) {
   const [editing, setEditing] = useState(false)
@@ -88,6 +89,72 @@ function EditableDeadlineCell({ grant, onUpdate }: { grant: Grant; onUpdate: (up
         <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
       </svg>
     </td>
+  )
+}
+
+// --- Editable Date Field (inline, for use inside divs) ---
+
+function EditableDateField({
+  label,
+  value,
+  hintValue,
+  hintLabel,
+  onSave,
+}: {
+  label: string
+  value: string | null
+  hintValue?: string | null
+  hintLabel?: string
+  onSave: (newValue: string | null) => void
+}) {
+  const [editing, setEditing] = useState(false)
+  const [inputValue, setInputValue] = useState(value ?? '')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (editing && inputRef.current) inputRef.current.focus()
+  }, [editing])
+
+  function save() {
+    const newVal = inputValue || null
+    if (newVal !== value) onSave(newVal)
+    setEditing(false)
+  }
+
+  return (
+    <div>
+      <span className="text-xs font-semibold uppercase text-gray-400">{label}</span>
+      {editing ? (
+        <div className="mt-1">
+          <input
+            ref={inputRef}
+            type="date"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onBlur={save}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') save()
+              if (e.key === 'Escape') { setInputValue(value ?? ''); setEditing(false) }
+            }}
+            className="w-40 rounded border border-gray-300 px-2 py-1 text-sm"
+          />
+        </div>
+      ) : (
+        <p
+          className="group/datefield mt-1 cursor-pointer text-sm text-gray-700"
+          onClick={() => { setInputValue(value ?? ''); setEditing(true) }}
+          title="Click to edit"
+        >
+          {value ? formatDate(value) : <span className="italic text-gray-400">Not set</span>}
+          <svg className="ml-1 inline h-3 w-3 text-gray-300 opacity-0 transition-opacity group-hover/datefield:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+          {!value && hintValue && (
+            <span className="ml-1 text-xs text-gray-400">({hintLabel}: {formatDate(hintValue)})</span>
+          )}
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -313,23 +380,81 @@ function ExpandedGrantRow({
   const [editingPersonnel, setEditingPersonnel] = useState(false)
   const [personnelText, setPersonnelText] = useState(grant.keyPersonnel.join(', '))
 
+  // Compute auto-calculated deadline hints from deadline-calculator
+  const autoMilestones = grant.deadline ? calculateMilestones(grant.deadline) : []
+  const autoAdmin = autoMilestones.find((m) => m.key === 'internal_admin_docs')
+  const autoScience = autoMilestones.find((m) => m.key === 'internal_science_docs')
+
   function savePersonnel() {
     const names = personnelText.split(',').map((n) => n.trim()).filter(Boolean)
     onUpdate({ keyPersonnel: names })
     setEditingPersonnel(false)
   }
 
+  const idcAmount = computeIdc(grant)
+  const totalAmount = computeTotal(grant)
+
   return (
     <tr>
       <td colSpan={7} className="bg-gray-50 px-4 py-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <PiChips pis={grant.pi} onUpdate={(newPis) => onUpdate({ pi: newPis })} />
-          {grant.amount != null && (
-            <div>
-              <span className="text-xs font-semibold uppercase text-gray-400">Amount</span>
-              <p className="text-sm text-gray-700">{formatCurrency(grant.amount)}</p>
+
+          {/* Funding Breakdown */}
+          <div className="sm:col-span-2 lg:col-span-3">
+            <span className="text-xs font-semibold uppercase text-gray-400">Funding</span>
+            <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {/* Direct Costs */}
+              <div>
+                <label className="text-[10px] font-medium text-gray-500">Direct Costs</label>
+                <input
+                  type="number"
+                  value={grant.directCosts ?? ''}
+                  onChange={(e) => onUpdate({ directCosts: e.target.value ? Number(e.target.value) : null })}
+                  className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+                  placeholder="—"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+              {/* IDC Category */}
+              <div>
+                <label className="text-[10px] font-medium text-gray-500">IDC Category</label>
+                <select
+                  value={grant.idcCategory}
+                  onChange={(e) => onUpdate({ idcCategory: e.target.value as IdcCategory })}
+                  className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {Object.entries(idcCategoryLabels).map(([key, label]) => (
+                    <option key={key} value={key}>{label}</option>
+                  ))}
+                </select>
+              </div>
+              {/* IDC Rate */}
+              <div>
+                <label className="text-[10px] font-medium text-gray-500">IDC Rate (%)</label>
+                <input
+                  type="number"
+                  value={grant.idcRate}
+                  onChange={(e) => onUpdate({ idcRate: Number(e.target.value) || 0 })}
+                  className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+                  placeholder="0"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+              {/* Computed IDC */}
+              <div>
+                <label className="text-[10px] font-medium text-gray-500">IDC Amount</label>
+                <p className="mt-1 text-sm text-gray-600">{formatCurrency(idcAmount || null)}</p>
+              </div>
+              {/* Computed Total */}
+              <div>
+                <label className="text-[10px] font-medium text-gray-500">Total</label>
+                <p className="mt-1 text-sm font-bold text-gray-900">{formatCurrency(totalAmount || null)}</p>
+              </div>
             </div>
-          )}
+          </div>
+
           {grant.duration && (
             <div>
               <span className="text-xs font-semibold uppercase text-gray-400">Duration</span>
@@ -342,6 +467,23 @@ function ExpandedGrantRow({
               <p className="text-sm text-gray-700">{formatDate(grant.startDate)}</p>
             </div>
           )}
+
+          {/* Admin & Science Deadlines */}
+          <EditableDateField
+            label="Admin Deadline"
+            value={grant.adminDeadline}
+            hintValue={autoAdmin?.dateStr ?? null}
+            hintLabel="Auto"
+            onSave={(v) => onUpdate({ adminDeadline: v })}
+          />
+          <EditableDateField
+            label="Science Deadline"
+            value={grant.scienceDeadline}
+            hintValue={autoScience?.dateStr ?? null}
+            hintLabel="Auto"
+            onSave={(v) => onUpdate({ scienceDeadline: v })}
+          />
+
           <div>
             <span className="text-xs font-semibold uppercase text-gray-400">Key Personnel</span>
             {editingPersonnel ? (
@@ -363,16 +505,12 @@ function ExpandedGrantRow({
               </p>
             )}
           </div>
-          {grant.diseases.length > 0 && (
-            <div>
-              <span className="text-xs font-semibold uppercase text-gray-400">Disease Areas</span>
-              <div className="mt-1 flex flex-wrap gap-1">
-                {grant.diseases.map((d) => (
-                  <span key={d} className="rounded bg-gray-200 px-2 py-0.5 text-xs text-gray-600">{d}</span>
-                ))}
-              </div>
-            </div>
-          )}
+
+          <DiseaseChips
+            diseases={grant.diseases}
+            onUpdate={(newDiseases) => onUpdate({ diseases: newDiseases })}
+          />
+
           {(grant.rfaUrl || grant.rfaPdfUrl) && (
             <div>
               <span className="text-xs font-semibold uppercase text-gray-400">RFA</span>

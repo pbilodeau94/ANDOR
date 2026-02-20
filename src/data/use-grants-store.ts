@@ -54,6 +54,14 @@ function mergeGrants(overrides: GrantOverrides): Grant[] {
       if (typeof merged.pi === 'string') {
         merged.pi = merged.pi ? [merged.pi] : []
       }
+      // Migration: if amount was stored (old format), convert to directCosts
+      if ('amount' in merged && !('directCosts' in updates)) {
+        const legacy = merged as Grant & { amount?: number | null }
+        if (legacy.amount !== undefined) {
+          merged.directCosts = legacy.amount ?? null
+          delete legacy.amount
+        }
+      }
       return merged
     })
 }

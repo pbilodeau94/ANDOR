@@ -7,7 +7,7 @@ export const diseaseMap: Record<string, string[]> = {
   'Autoimmune Encephalitis': ['Autoimmune Encephalitis', 'Encephalitis'],
   Neurosarcoidosis: ['Neurosarcoidosis', 'Sarcoidosis'],
   'CNS Vasculitis': ['Vasculitis'],
-  'Translational Neuroimmunology': ['MS'],
+  'Translational Neuroimmunology': ['MS', 'AD', 'ASD', 'ALS', 'OCD', 'Schizophrenia', 'Superficial siderosis', 'Inflammatory myelopathy'],
 }
 
 /** All disease tab keys (research group names) */

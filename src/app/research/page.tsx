@@ -43,6 +43,7 @@ const programHighlights: Record<string, string[]> = {
   ],
   'Translational Neuroimmunology': [
     'Bench-to-bedside research spanning EBV immunology in multiple sclerosis, including studies of viral particles and T cell responses',
+    'Natalia Drosu\'s research demonstrating that EBV viral particles elicit dominant CD4+ T cell responses in MS, advancing understanding of the viral trigger hypothesis',
     'Investigation of EBV in exosomes as a novel pathway in MS pathogenesis',
     'Research on anti-EBNA-1 antibody thresholds and EBV shedding patterns in MS patients',
     'Gamma-delta (γδ) T cell research using EAE animal models to understand roles in CNS autoimmunity',

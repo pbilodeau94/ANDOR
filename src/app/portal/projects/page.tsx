@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import SectionWrapper from '@/components/SectionWrapper'
 import ViewToggle, { type ViewMode } from '@/components/portal/ViewToggle'
 import BoardView, { type BoardColumn } from '@/components/portal/BoardView'
 import ProjectCard from '@/components/portal/ProjectCard'
 import DiseaseTabs from '@/components/DiseaseTabs'
-import { projects, projectStageLabels, projectStageColors } from '@/data/projects'
+import DiseaseChips from '@/components/portal/DiseaseChips'
+import { projectStageLabels, projectStageColors } from '@/data/projects'
 import { filterByDisease } from '@/data/disease-utils'
+import { useProjectsStore } from '@/data/use-projects-store'
 import type { ProjectStage, Project } from '@/data/projects'
 
 type SortKey = 'title' | 'lead' | 'pi' | 'disease' | 'stage' | 'researchType'
@@ -22,10 +24,75 @@ const boardColumns: BoardColumn<ProjectStage>[] = [
   { key: 'completed', label: 'Completed', color: 'bg-purple-100 text-purple-700' },
 ]
 
-function ExpandedProjectRow({ project }: { project: Project }) {
+// --- Editable Text Cell ---
+
+function EditableTextCell({
+  value,
+  onSave,
+  placeholder,
+}: {
+  value: string
+  onSave: (newValue: string) => void
+  placeholder?: string
+}) {
+  const [editing, setEditing] = useState(false)
+  const [inputValue, setInputValue] = useState(value)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (editing && inputRef.current) inputRef.current.focus()
+  }, [editing])
+
+  function save() {
+    if (inputValue !== value) onSave(inputValue)
+    setEditing(false)
+  }
+
+  if (editing) {
+    return (
+      <td className="whitespace-nowrap py-3 pr-4" onClick={(e) => e.stopPropagation()}>
+        <input
+          ref={inputRef}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') save()
+            if (e.key === 'Escape') { setInputValue(value); setEditing(false) }
+          }}
+          className="w-36 rounded border border-gray-300 px-2 py-1 text-sm"
+          placeholder={placeholder}
+        />
+      </td>
+    )
+  }
+
+  return (
+    <td
+      className="group/editable cursor-pointer whitespace-nowrap py-3 pr-4 text-sm text-gray-600"
+      onClick={(e) => { e.stopPropagation(); setInputValue(value); setEditing(true) }}
+      title="Click to edit"
+    >
+      {value || '\u2014'}
+      <svg className="ml-1 inline h-3 w-3 text-gray-300 opacity-0 transition-opacity group-hover/editable:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+      </svg>
+    </td>
+  )
+}
+
+// --- Expanded Project Row ---
+
+function ExpandedProjectRow({
+  project,
+  onUpdate,
+}: {
+  project: Project
+  onUpdate: (updates: Partial<Project>) => void
+}) {
   return (
     <tr>
-      <td colSpan={8} className="bg-gray-50 px-4 py-4">
+      <td colSpan={9} className="bg-gray-50 px-4 py-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {project.collaboration && (
             <div>
@@ -47,16 +114,10 @@ function ExpandedProjectRow({ project }: { project: Project }) {
               </p>
             </div>
           )}
-          {project.diseases.length > 0 && (
-            <div>
-              <span className="text-xs font-semibold uppercase text-gray-400">Disease Areas</span>
-              <div className="mt-1 flex flex-wrap gap-1">
-                {project.diseases.map((d) => (
-                  <span key={d} className="rounded bg-gray-200 px-2 py-0.5 text-xs text-gray-600">{d}</span>
-                ))}
-              </div>
-            </div>
-          )}
+          <DiseaseChips
+            diseases={project.diseases}
+            onUpdate={(newDiseases) => onUpdate({ diseases: newDiseases })}
+          />
         </div>
       </td>
     </tr>
@@ -64,6 +125,7 @@ function ExpandedProjectRow({ project }: { project: Project }) {
 }
 
 export default function ProjectsPage() {
+  const { projects: allProjects, updateProject, deleteProject } = useProjectsStore()
   const [view, setView] = useState<ViewMode>('table')
   const [diseaseTab, setDiseaseTab] = useState<string | null>(null)
   const [stageFilter, setStageFilter] = useState<ProjectStage | 'all'>('all')
@@ -71,10 +133,11 @@ export default function ProjectsPage() {
   const [sortKey, setSortKey] = useState<SortKey>('title')
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const diseaseFiltered = useMemo(
-    () => filterByDisease(projects, diseaseTab),
-    [diseaseTab]
+    () => filterByDisease(allProjects, diseaseTab),
+    [allProjects, diseaseTab]
   )
 
   const leads = useMemo(
@@ -123,6 +186,12 @@ export default function ProjectsPage() {
     setLeadFilter('all')
   }
 
+  function handleDelete(id: string) {
+    deleteProject(id)
+    setConfirmDeleteId(null)
+    if (expandedId === id) setExpandedId(null)
+  }
+
   function SortHeader({ label, field }: { label: string; field: SortKey }) {
     return (
       <th
@@ -145,7 +214,7 @@ export default function ProjectsPage() {
             <div>
               <h1 className="text-3xl font-bold text-[var(--color-primary)]">Research Projects</h1>
               <p className="mt-2 text-gray-600">
-                {projects.length} projects across all disease areas
+                {allProjects.length} projects across all disease areas
               </p>
             </div>
             <ViewToggle view={view} onChange={setView} />
@@ -158,7 +227,7 @@ export default function ProjectsPage() {
       </div>
 
       <SectionWrapper>
-        {/* Filters — disease dropdown removed in favor of tabs above */}
+        {/* Filters */}
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <select
             value={stageFilter}
@@ -205,6 +274,7 @@ export default function ProjectsPage() {
                     <SortHeader label="Disease" field="disease" />
                     <SortHeader label="Type" field="researchType" />
                     <SortHeader label="Stage" field="stage" />
+                    <th className="w-16 py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -229,8 +299,16 @@ export default function ProjectsPage() {
                         <td className="py-3 pr-4">
                           <div className="max-w-sm text-sm font-medium text-gray-900 line-clamp-2">{project.title}</div>
                         </td>
-                        <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">{project.lead}</td>
-                        <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">{project.pi || '\u2014'}</td>
+                        <EditableTextCell
+                          value={project.lead}
+                          onSave={(v) => updateProject(project.id, { lead: v })}
+                          placeholder="Lead..."
+                        />
+                        <EditableTextCell
+                          value={project.pi}
+                          onSave={(v) => updateProject(project.id, { pi: v })}
+                          placeholder="PI..."
+                        />
                         <td className="py-3 pr-4">
                           <div className="flex flex-wrap gap-1">
                             {project.diseases.length > 0 ? project.diseases.map((d) => (
@@ -239,20 +317,58 @@ export default function ProjectsPage() {
                           </div>
                         </td>
                         <td className="whitespace-nowrap py-3 pr-4 text-sm text-gray-600">{project.researchType || '\u2014'}</td>
-                        <td className="whitespace-nowrap py-3">
-                          <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${projectStageColors[project.stage]}`}>
-                            {projectStageLabels[project.stage]}
-                          </span>
+                        <td className="whitespace-nowrap py-3 pr-4" onClick={(e) => e.stopPropagation()}>
+                          <select
+                            value={project.stage}
+                            onChange={(e) => updateProject(project.id, { stage: e.target.value as ProjectStage })}
+                            className={`rounded-full border-0 px-2.5 py-0.5 text-xs font-medium ${projectStageColors[project.stage]}`}
+                          >
+                            {Object.entries(projectStageLabels).map(([key, label]) => (
+                              <option key={key} value={key}>{label}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="whitespace-nowrap py-3 pr-4" onClick={(e) => e.stopPropagation()}>
+                          {confirmDeleteId === project.id ? (
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => handleDelete(project.id)}
+                                className="rounded bg-red-500 px-2 py-0.5 text-xs text-white hover:bg-red-600"
+                              >
+                                Yes
+                              </button>
+                              <button
+                                onClick={() => setConfirmDeleteId(null)}
+                                className="text-xs text-gray-500"
+                              >
+                                No
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setConfirmDeleteId(project.id)}
+                              className="text-gray-400 hover:text-red-500"
+                              title="Delete project"
+                            >
+                              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          )}
                         </td>
                       </tr>
                       {expandedId === project.id && (
-                        <ExpandedProjectRow key={`${project.id}-expanded`} project={project} />
+                        <ExpandedProjectRow
+                          key={`${project.id}-expanded`}
+                          project={project}
+                          onUpdate={(updates) => updateProject(project.id, updates)}
+                        />
                       )}
                     </>
                   ))}
                   {filtered.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="py-8 text-center text-sm text-gray-400 italic">
+                      <td colSpan={9} className="py-8 text-center text-sm text-gray-400 italic">
                         No projects match the selected filters.
                       </td>
                     </tr>
@@ -262,7 +378,7 @@ export default function ProjectsPage() {
             </div>
 
             <p className="mt-4 text-xs text-gray-400">
-              Showing {filtered.length} of {projects.length} projects
+              Showing {filtered.length} of {allProjects.length} projects &middot; Edits saved to browser
             </p>
           </>
         ) : (

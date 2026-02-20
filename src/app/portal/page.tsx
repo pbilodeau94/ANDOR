@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import SectionWrapper from '@/components/SectionWrapper'
 import DeadlineCard from '@/components/DeadlineCard'
-import { grants, grantStatusLabels } from '@/data/grants'
+import { grants, grantStatusLabels, computeTotal } from '@/data/grants'
 import type { GrantStatus } from '@/data/grants'
 import { projects } from '@/data/projects'
 import { agreements } from '@/data/agreements'
@@ -29,7 +29,7 @@ function getStatusCounts() {
 }
 
 function getTotalFunding() {
-  return grants.reduce((sum, g) => sum + (g.amount || 0), 0)
+  return grants.reduce((sum, g) => sum + computeTotal(g), 0)
 }
 
 function formatCurrency(amount: number): string {

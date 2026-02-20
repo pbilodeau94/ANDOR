@@ -36,7 +36,7 @@ export default function DeadlineCard({ grant }: { grant: Grant }) {
           <p className="mt-1 text-xs text-gray-500">
             {grant.agency} {grant.mechanism && `\u00B7 ${grant.mechanism}`}
           </p>
-          {grant.pi && <p className="mt-0.5 text-xs text-gray-400">PI: {grant.pi}</p>}
+          {grant.pi.length > 0 && <p className="mt-0.5 text-xs text-gray-400">PI: {grant.pi.join(', ')}</p>}
         </div>
         <div className="shrink-0 text-right">
           <div
