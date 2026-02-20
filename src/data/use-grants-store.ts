@@ -5,6 +5,7 @@ import { grants as initialGrants } from './grants'
 import type { Grant, GrantStatus } from './grants'
 
 const STORAGE_KEY = 'andor-grants-overrides'
+const MILESTONE_STORAGE_KEY = 'andor-milestone-completions'
 
 type GrantOverrides = {
   updates: Record<string, Partial<Grant>>
@@ -26,22 +27,45 @@ function saveOverrides(overrides: GrantOverrides) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides))
 }
 
+function loadMilestoneCompletions(): Record<string, Record<string, boolean>> {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = localStorage.getItem(MILESTONE_STORAGE_KEY)
+    if (!raw) return {}
+    return JSON.parse(raw)
+  } catch {
+    return {}
+  }
+}
+
+function saveMilestoneCompletions(completions: Record<string, Record<string, boolean>>) {
+  localStorage.setItem(MILESTONE_STORAGE_KEY, JSON.stringify(completions))
+}
+
 function mergeGrants(overrides: GrantOverrides): Grant[] {
   const deletedSet = new Set(overrides.deleted)
   return initialGrants
     .filter((g) => !deletedSet.has(g.id))
     .map((g) => {
       const updates = overrides.updates[g.id]
-      return updates ? { ...g, ...updates } : g
+      if (!updates) return g
+      const merged = { ...g, ...updates }
+      // Migration: if pi was stored as a string (old format), convert to array
+      if (typeof merged.pi === 'string') {
+        merged.pi = merged.pi ? [merged.pi] : []
+      }
+      return merged
     })
 }
 
 export function useGrantsStore() {
   const [overrides, setOverrides] = useState<GrantOverrides>({ updates: {}, deleted: [] })
+  const [milestoneCompletions, setMilestoneCompletions] = useState<Record<string, Record<string, boolean>>>({})
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     setOverrides(loadOverrides())
+    setMilestoneCompletions(loadMilestoneCompletions())
     setLoaded(true)
   }, [])
 
@@ -73,10 +97,27 @@ export function useGrantsStore() {
     })
   }, [])
 
-  const resetAll = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY)
-    setOverrides({ updates: {}, deleted: [] })
+  const toggleMilestone = useCallback((grantId: string, milestoneKey: string) => {
+    setMilestoneCompletions((prev) => {
+      const grantMilestones = prev[grantId] ?? {}
+      const next = {
+        ...prev,
+        [grantId]: {
+          ...grantMilestones,
+          [milestoneKey]: !grantMilestones[milestoneKey],
+        },
+      }
+      saveMilestoneCompletions(next)
+      return next
+    })
   }, [])
 
-  return { grants: allGrants, updateGrant, deleteGrant, resetAll }
+  const resetAll = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEY)
+    localStorage.removeItem(MILESTONE_STORAGE_KEY)
+    setOverrides({ updates: {}, deleted: [] })
+    setMilestoneCompletions({})
+  }, [])
+
+  return { grants: allGrants, updateGrant, deleteGrant, toggleMilestone, milestoneCompletions, resetAll }
 }

@@ -1,4 +1,4 @@
-export type GrantStatus = 'not_started' | 'in_progress' | 'submitted' | 'funded' | 'completed'
+export type GrantStatus = 'not_started' | 'in_progress' | 'submitted' | 'funded' | 'completed' | 'not_funded'
 
 export type GrantDocumentType = 'biosketch' | 'budget' | 'letter_of_support' | 'specific_aims' | 'other'
 
@@ -12,7 +12,7 @@ export type GrantDocument = {
 export type Grant = {
   id: string
   title: string
-  pi: string
+  pi: string[]
   lead: string
   agency: string
   mechanism: string
@@ -33,7 +33,7 @@ export const grants: Grant[] = [
   {
     id: 'g1',
     title: 'AAN Temporal and Functional Role of γδ T Cells in Central Nervous System Autoimmunity',
-    pi: 'Phil Bilodeau',
+    pi: ['Phil Bilodeau'],
     lead: 'Phil Bilodeau',
     agency: 'AAN',
     mechanism: 'Career Development Award',
@@ -51,7 +51,7 @@ export const grants: Grant[] = [
   {
     id: 'g2',
     title: 'Biorepository in rare neuroimmune disorders',
-    pi: '',
+    pi: [],
     lead: '',
     agency: 'NIAID',
     mechanism: 'Resource Related Projects',
@@ -69,7 +69,7 @@ export const grants: Grant[] = [
   {
     id: 'g3',
     title: 'K99 Temporal and Functional Role of γδ T Cells in Central Nervous System Autoimmunity',
-    pi: 'Phil Bilodeau',
+    pi: ['Phil Bilodeau'],
     lead: 'Phil Bilodeau',
     agency: 'NIH',
     mechanism: 'K99/R00',
@@ -87,7 +87,7 @@ export const grants: Grant[] = [
   {
     id: 'g4',
     title: 'Animal models of NMOSD',
-    pi: 'Michael Levy',
+    pi: ['Michael Levy'],
     lead: 'Michael Levy',
     agency: 'NIH',
     mechanism: 'R01',
@@ -105,7 +105,7 @@ export const grants: Grant[] = [
   {
     id: 'g5',
     title: 'MOGAD serum and CSF biomarkers',
-    pi: 'Michael Levy',
+    pi: ['Michael Levy'],
     lead: 'Michael Levy',
     agency: 'NIH',
     mechanism: 'R01',
@@ -123,7 +123,7 @@ export const grants: Grant[] = [
   {
     id: 'g6',
     title: 'γδ T cell depletion in MOGAD',
-    pi: '',
+    pi: [],
     lead: '',
     agency: 'NIH',
     mechanism: 'Preclinical Proof of Concept Studies for Rare Diseases',
@@ -141,7 +141,7 @@ export const grants: Grant[] = [
   {
     id: 'g7',
     title: 'Determinants of Age-Dependent Tropism in MOG Antibody\u2013Associated Disease',
-    pi: '',
+    pi: [],
     lead: '',
     agency: 'NIAID',
     mechanism: 'R01',
@@ -159,7 +159,7 @@ export const grants: Grant[] = [
   {
     id: 'g8',
     title: 'Deep phenotyping of DR15-restricted CD4+ T cells specific for Epstein-Barr virus epitopes in the spinal fluid and blood of people with multiple sclerosis',
-    pi: '',
+    pi: [],
     lead: '',
     agency: 'NIAID',
     mechanism: 'R21',
@@ -177,7 +177,7 @@ export const grants: Grant[] = [
   {
     id: 'g9',
     title: 'PROTECT-MOG: Pragmatic Randomized Evaluation of Continuing Therapy for MOGAD',
-    pi: 'Michael Levy',
+    pi: ['Michael Levy'],
     lead: '',
     agency: 'PCORI',
     mechanism: 'Clinical Trial',
@@ -195,7 +195,7 @@ export const grants: Grant[] = [
   {
     id: 'g10',
     title: 'AAN Clinical Research Training Scholarship',
-    pi: 'Jimmy Nguyen',
+    pi: ['Jimmy Nguyen'],
     lead: 'Jimmy Nguyen',
     agency: 'AAN',
     mechanism: 'Training',
@@ -213,7 +213,7 @@ export const grants: Grant[] = [
   {
     id: 'g11',
     title: 'AAN/Alzheimer\'s Association Training Scholarship',
-    pi: 'Jimmy Nguyen',
+    pi: ['Jimmy Nguyen'],
     lead: 'Jimmy Nguyen',
     agency: 'AAN',
     mechanism: 'Training',
@@ -231,7 +231,7 @@ export const grants: Grant[] = [
   {
     id: 'g12',
     title: 'NIH UE5 (renewal)',
-    pi: 'Jimmy Nguyen',
+    pi: ['Jimmy Nguyen'],
     lead: 'Jimmy Nguyen',
     agency: 'NIH',
     mechanism: 'Training',
@@ -249,7 +249,7 @@ export const grants: Grant[] = [
   {
     id: 'g13',
     title: 'AHA Innovative Project Award (LOI)',
-    pi: 'Jimmy Nguyen',
+    pi: ['Jimmy Nguyen'],
     lead: 'Jimmy Nguyen',
     agency: 'American Heart Association',
     mechanism: '',
@@ -267,7 +267,7 @@ export const grants: Grant[] = [
   {
     id: 'g14',
     title: 'AAN Sacco Brain Health Fellowship',
-    pi: 'Jimmy Nguyen',
+    pi: ['Jimmy Nguyen'],
     lead: 'Jimmy Nguyen',
     agency: 'AAN',
     mechanism: '',
@@ -285,7 +285,7 @@ export const grants: Grant[] = [
   {
     id: 'g15',
     title: 'NIH K23 Training Grant',
-    pi: 'Jimmy Nguyen',
+    pi: ['Jimmy Nguyen'],
     lead: 'Jimmy Nguyen',
     agency: 'NIH',
     mechanism: 'K23',
@@ -303,7 +303,7 @@ export const grants: Grant[] = [
   {
     id: 'g16',
     title: 'NIH R01',
-    pi: 'Jimmy Nguyen',
+    pi: ['Jimmy Nguyen'],
     lead: 'Jimmy Nguyen',
     agency: 'NIH',
     mechanism: 'R01',
@@ -326,6 +326,7 @@ export const grantStatusLabels: Record<GrantStatus, string> = {
   submitted: 'Submitted',
   funded: 'Funded',
   completed: 'Completed',
+  not_funded: 'Not Funded',
 }
 
 export const grantStatusColors: Record<GrantStatus, string> = {
@@ -334,4 +335,5 @@ export const grantStatusColors: Record<GrantStatus, string> = {
   submitted: 'bg-amber-100 text-amber-700',
   funded: 'bg-emerald-100 text-emerald-700',
   completed: 'bg-purple-100 text-purple-700',
+  not_funded: 'bg-red-50 text-red-700',
 }

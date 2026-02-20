@@ -4,7 +4,7 @@ export type Publication = {
   authors: string
   journal: string
   year: number
-  doi: string
+  doi?: string
   pmid?: string
   researchGroup: string
 }

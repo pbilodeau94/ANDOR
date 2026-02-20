@@ -4,7 +4,9 @@ import { useState } from 'react'
 import Hero from '@/components/Hero'
 import SectionWrapper from '@/components/SectionWrapper'
 import DiseaseTabs from '@/components/DiseaseTabs'
+import PublicationCard from '@/components/PublicationCard'
 import { researchGroups } from '@/data/research-groups'
+import { publications } from '@/data/publications'
 
 const programHighlights: Record<string, string[]> = {
   MOGAD: [
@@ -148,6 +150,25 @@ export default function ResearchPage() {
                 ) : (
                   <p className="mt-4 text-sm italic text-gray-400">No highlights listed yet</p>
                 )}
+
+                {/* Selected Publications */}
+                {(() => {
+                  const groupPubs = publications.filter((p) => p.researchGroup === group.name)
+                  return (
+                    <div className="mt-8">
+                      <h3 className="text-lg font-semibold text-gray-900">Selected Publications</h3>
+                      {groupPubs.length > 0 ? (
+                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                          {groupPubs.map((pub) => (
+                            <PublicationCard key={pub.id} pub={pub} />
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="mt-4 text-sm italic text-gray-400">Publications coming soon</p>
+                      )}
+                    </div>
+                  )
+                })()}
               </div>
             </div>
           </SectionWrapper>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import SectionWrapper from '@/components/SectionWrapper'
 import DiseaseTabs from '@/components/DiseaseTabs'
 import { grantStatusLabels, grantStatusColors } from '@/data/grants'
@@ -13,10 +13,11 @@ import {
   urgencyColors,
   urgencyLabels,
 } from '@/data/deadline-calculator'
+import { team } from '@/data/team'
 import type { GrantStatus, Grant } from '@/data/grants'
 import type { Milestone } from '@/data/deadline-calculator'
 
-type SortKey = 'title' | 'pi' | 'agency' | 'amount' | 'deadline' | 'status'
+type SortKey = 'title' | 'pi' | 'agency' | 'deadline' | 'status'
 type SortDir = 'asc' | 'desc'
 
 const activeStatuses = new Set<GrantStatus>(['not_started', 'in_progress'])
@@ -35,70 +36,258 @@ function formatShortDate(dateStr: string): string {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-/** Get a specific milestone date for a grant */
-function getMilestoneDate(deadline: string | null, key: string): string | null {
-  if (!deadline) return null
-  const milestones = calculateMilestones(deadline)
-  const m = milestones.find((ms) => ms.key === key)
-  return m?.dateStr ?? null
-}
+// --- Editable Deadline Cell ---
 
-function MilestoneDateCell({ deadline, milestoneKey }: { deadline: string | null; milestoneKey: string }) {
-  const dateStr = getMilestoneDate(deadline, milestoneKey)
-  if (!dateStr) return <td className="whitespace-nowrap py-3 pr-3 text-xs text-gray-400">{'\u2014'}</td>
+function EditableDeadlineCell({ grant, onUpdate }: { grant: Grant; onUpdate: (updates: Partial<Grant>) => void }) {
+  const [editing, setEditing] = useState(false)
+  const [value, setValue] = useState(grant.deadline ?? '')
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const urgency = getUrgency(dateStr)
+  useEffect(() => {
+    if (editing && inputRef.current) inputRef.current.focus()
+  }, [editing])
+
+  function save() {
+    const newDeadline = value || null
+    if (newDeadline !== grant.deadline) onUpdate({ deadline: newDeadline })
+    setEditing(false)
+  }
+
+  function cancel() {
+    setValue(grant.deadline ?? '')
+    setEditing(false)
+  }
+
+  if (editing) {
+    return (
+      <td className="whitespace-nowrap py-3 pr-3" onClick={(e) => e.stopPropagation()}>
+        <input
+          ref={inputRef}
+          type="date"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') save()
+            if (e.key === 'Escape') cancel()
+          }}
+          className="w-36 rounded border border-gray-300 px-2 py-1 text-sm"
+        />
+      </td>
+    )
+  }
 
   return (
-    <td className="whitespace-nowrap py-3 pr-3">
-      <div className={`inline-flex rounded px-1.5 py-0.5 text-xs font-medium ${
-        urgency === 'overdue' || urgency === 'urgent' ? urgencyColors[urgency] :
-        urgency === 'soon' ? 'text-amber-700' : 'text-gray-600'
-      }`}>
-        {formatShortDate(dateStr)}
-      </div>
+    <td
+      className="group/deadline cursor-pointer whitespace-nowrap py-3 pr-3 text-sm text-gray-600"
+      onClick={(e) => { e.stopPropagation(); setEditing(true) }}
+      title="Click to edit deadline"
+    >
+      {formatDate(grant.deadline)}
+      <svg className="ml-1 inline h-3 w-3 text-gray-300 opacity-0 transition-opacity group-hover/deadline:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+      </svg>
     </td>
   )
 }
 
-function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+// --- Multi-Person Filter Dropdown ---
 
+function PersonFilterDropdown({
+  allPeople,
+  selected,
+  onChange,
+}: {
+  allPeople: string[]
+  selected: string[]
+  onChange: (next: string[]) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  function toggle(name: string) {
+    if (selected.includes(name)) onChange(selected.filter((n) => n !== name))
+    else onChange([...selected, name])
+  }
+
+  const label = selected.length === 0 ? 'All People' : selected.length === 1 ? selected[0] : `${selected.length} selected`
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+      >
+        {label}
+        <svg className={`h-4 w-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute left-0 z-20 mt-1 max-h-64 w-56 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+          {allPeople.map((name) => (
+            <label key={name} className="flex cursor-pointer items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50">
+              <input
+                type="checkbox"
+                checked={selected.includes(name)}
+                onChange={() => toggle(name)}
+                className="rounded border-gray-300 text-[var(--color-primary)]"
+              />
+              {name}
+            </label>
+          ))}
+          {allPeople.length === 0 && (
+            <p className="px-3 py-2 text-xs italic text-gray-400">No people found</p>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// --- PI Chips (editable in expanded row) ---
+
+function PiChips({
+  pis,
+  onUpdate,
+}: {
+  pis: string[]
+  onUpdate: (newPis: string[]) => void
+}) {
+  const [adding, setAdding] = useState(false)
+  const [inputValue, setInputValue] = useState('')
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const teamNames = useMemo(() => team.map((m) => m.name), [])
+
+  useEffect(() => {
+    if (adding && inputRef.current) inputRef.current.focus()
+  }, [adding])
+
+  function handleInput(val: string) {
+    setInputValue(val)
+    if (val.trim()) {
+      const lower = val.toLowerCase()
+      setSuggestions(teamNames.filter((n) => n.toLowerCase().includes(lower) && !pis.includes(n)))
+    } else {
+      setSuggestions([])
+    }
+  }
+
+  function addPi(name: string) {
+    if (!pis.includes(name)) onUpdate([...pis, name])
+    setInputValue('')
+    setSuggestions([])
+    setAdding(false)
+  }
+
+  function removePi(name: string) {
+    onUpdate(pis.filter((n) => n !== name))
+  }
+
+  return (
+    <div>
+      <span className="text-xs font-semibold uppercase text-gray-400">Principal Investigator(s)</span>
+      <div className="mt-1 flex flex-wrap items-center gap-1.5">
+        {pis.map((name) => (
+          <span key={name} className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--color-primary)]">
+            {name}
+            <button onClick={() => removePi(name)} className="ml-0.5 text-[var(--color-primary)]/60 hover:text-[var(--color-primary)]">&times;</button>
+          </span>
+        ))}
+        {adding ? (
+          <div className="relative">
+            <input
+              ref={inputRef}
+              value={inputValue}
+              onChange={(e) => handleInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && inputValue.trim()) addPi(inputValue.trim())
+                if (e.key === 'Escape') { setAdding(false); setInputValue(''); setSuggestions([]) }
+              }}
+              onBlur={() => { setTimeout(() => { setAdding(false); setInputValue(''); setSuggestions([]) }, 150) }}
+              className="w-40 rounded border border-gray-300 px-2 py-0.5 text-xs"
+              placeholder="Add PI..."
+            />
+            {suggestions.length > 0 && (
+              <div className="absolute left-0 z-10 mt-1 w-48 rounded border border-gray-200 bg-white py-1 shadow-lg">
+                {suggestions.map((s) => (
+                  <button key={s} onMouseDown={() => addPi(s)} className="block w-full px-3 py-1 text-left text-xs text-gray-700 hover:bg-gray-50">
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <button onClick={() => setAdding(true)} className="text-xs text-[var(--color-accent)] hover:underline">+ Add PI</button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// --- Milestone Task List ---
+
+function MilestoneTaskList({
+  milestones,
+  grantId,
+  completions,
+  onToggle,
+}: {
+  milestones: Milestone[]
+  grantId: string
+  completions: Record<string, boolean>
+  onToggle: (milestoneKey: string) => void
+}) {
   return (
     <div className="sm:col-span-2 lg:col-span-3">
       <span className="text-xs font-semibold uppercase text-gray-400">MGB Proposal Timeline</span>
       <div className="mt-2 space-y-1">
         {milestones.map((m) => {
+          const done = completions[m.key] ?? false
           const urgency = getUrgency(m.dateStr)
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
           const isPast = m.date < today
+
           return (
-            <div
+            <label
               key={m.key}
-              className={`flex items-center gap-3 rounded-lg border px-3 py-2 ${
-                isPast ? 'border-gray-100 bg-gray-50 opacity-60' : urgencyColors[urgency]
+              className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2 ${
+                done ? 'border-gray-100 bg-gray-50 opacity-60' : isPast ? 'border-gray-100 bg-gray-50 opacity-60' : urgencyColors[urgency]
               }`}
             >
+              <input
+                type="checkbox"
+                checked={done}
+                onChange={() => onToggle(m.key)}
+                className="rounded border-gray-300 text-[var(--color-primary)]"
+              />
               <div className="w-20 shrink-0 text-xs font-semibold">
                 {formatShortDate(m.dateStr)}
               </div>
-              <div className={`h-2 w-2 shrink-0 rounded-full ${
-                isPast ? 'bg-gray-300'
-                  : urgency === 'overdue' ? 'bg-red-500'
-                  : urgency === 'urgent' ? 'bg-orange-500'
-                  : urgency === 'soon' ? 'bg-amber-500'
-                  : 'bg-emerald-500'
-              }`} />
               <div className="min-w-0 flex-1">
-                <span className="text-xs font-medium">{m.label}</span>
-                <span className="ml-2 text-xs opacity-70">
-                  ({m.owner === 'pi' ? 'PI' : m.owner === 'admin' ? 'Admin' : 'PI + Admin'})
+                <span className={`text-xs font-medium ${done ? 'line-through' : ''}`}>{m.label}</span>
+                <span className={`ml-2 inline-flex rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
+                  m.owner === 'pi' ? 'bg-blue-100 text-blue-700' : m.owner === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700'
+                }`}>
+                  {m.owner === 'pi' ? 'PI' : m.owner === 'admin' ? 'Admin' : 'Both'}
                 </span>
               </div>
-              {!isPast && urgency !== 'future' && urgency !== 'ok' && (
+              {!done && !isPast && urgency !== 'future' && urgency !== 'ok' && (
                 <span className="shrink-0 text-xs font-semibold">{urgencyLabels[urgency]}</span>
               )}
-            </div>
+            </label>
           )
         })}
       </div>
@@ -106,7 +295,19 @@ function MilestoneTimeline({ milestones }: { milestones: Milestone[] }) {
   )
 }
 
-function ExpandedGrantRow({ grant, onUpdate }: { grant: Grant; onUpdate: (updates: Partial<Grant>) => void }) {
+// --- Expanded Grant Row ---
+
+function ExpandedGrantRow({
+  grant,
+  onUpdate,
+  milestoneCompletions,
+  onToggleMilestone,
+}: {
+  grant: Grant
+  onUpdate: (updates: Partial<Grant>) => void
+  milestoneCompletions: Record<string, boolean>
+  onToggleMilestone: (milestoneKey: string) => void
+}) {
   const showTimeline = grant.deadline && activeStatuses.has(grant.status)
   const milestones = showTimeline ? calculateMilestones(grant.deadline!) : []
   const [editingPersonnel, setEditingPersonnel] = useState(false)
@@ -120,8 +321,15 @@ function ExpandedGrantRow({ grant, onUpdate }: { grant: Grant; onUpdate: (update
 
   return (
     <tr>
-      <td colSpan={12} className="bg-gray-50 px-4 py-4">
+      <td colSpan={7} className="bg-gray-50 px-4 py-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <PiChips pis={grant.pi} onUpdate={(newPis) => onUpdate({ pi: newPis })} />
+          {grant.amount != null && (
+            <div>
+              <span className="text-xs font-semibold uppercase text-gray-400">Amount</span>
+              <p className="text-sm text-gray-700">{formatCurrency(grant.amount)}</p>
+            </div>
+          )}
           {grant.duration && (
             <div>
               <span className="text-xs font-semibold uppercase text-gray-400">Duration</span>
@@ -206,12 +414,21 @@ function ExpandedGrantRow({ grant, onUpdate }: { grant: Grant; onUpdate: (update
               <p className="text-sm text-gray-700">{grant.notes}</p>
             </div>
           )}
-          {showTimeline && <MilestoneTimeline milestones={milestones} />}
+          {showTimeline && (
+            <MilestoneTaskList
+              milestones={milestones}
+              grantId={grant.id}
+              completions={milestoneCompletions}
+              onToggle={onToggleMilestone}
+            />
+          )}
         </div>
       </td>
     </tr>
   )
 }
+
+// --- Deadline Alerts Banner ---
 
 function DeadlineAlerts({ grantList }: { grantList: Grant[] }) {
   const alerts = grantList
@@ -258,11 +475,13 @@ function DeadlineAlerts({ grantList }: { grantList: Grant[] }) {
   )
 }
 
+// --- Main Page ---
+
 export default function GrantsPage() {
-  const { grants: allGrants, updateGrant, deleteGrant } = useGrantsStore()
+  const { grants: allGrants, updateGrant, deleteGrant, toggleMilestone, milestoneCompletions } = useGrantsStore()
   const [diseaseTab, setDiseaseTab] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<GrantStatus | 'all'>('all')
-  const [piFilter, setPiFilter] = useState<string>('all')
+  const [personFilter, setPersonFilter] = useState<string[]>([])
   const [agencyFilter, setAgencyFilter] = useState<string>('all')
   const [sortKey, setSortKey] = useState<SortKey>('deadline')
   const [sortDir, setSortDir] = useState<SortDir>('asc')
@@ -274,10 +493,16 @@ export default function GrantsPage() {
     [allGrants, diseaseTab]
   )
 
-  const pis = useMemo(
-    () => [...new Set(diseaseFiltered.map((g) => g.pi).filter(Boolean))].sort(),
-    [diseaseFiltered]
-  )
+  // Collect all unique people from PI + key personnel across filtered grants
+  const allPeople = useMemo(() => {
+    const names = new Set<string>()
+    diseaseFiltered.forEach((g) => {
+      g.pi.forEach((n) => names.add(n))
+      g.keyPersonnel.forEach((n) => names.add(n))
+    })
+    return [...names].sort()
+  }, [diseaseFiltered])
+
   const agencies = useMemo(
     () => [...new Set(diseaseFiltered.map((g) => g.agency).filter(Boolean))].sort(),
     [diseaseFiltered]
@@ -286,16 +511,19 @@ export default function GrantsPage() {
   const filtered = useMemo(() => {
     let result = [...diseaseFiltered]
     if (statusFilter !== 'all') result = result.filter((g) => g.status === statusFilter)
-    if (piFilter !== 'all') result = result.filter((g) => g.pi === piFilter)
+    if (personFilter.length > 0) {
+      result = result.filter((g) =>
+        personFilter.some((name) => g.pi.includes(name) || g.keyPersonnel.includes(name))
+      )
+    }
     if (agencyFilter !== 'all') result = result.filter((g) => g.agency === agencyFilter)
 
     result.sort((a, b) => {
       let cmp = 0
       switch (sortKey) {
         case 'title': cmp = a.title.localeCompare(b.title); break
-        case 'pi': cmp = (a.pi || '').localeCompare(b.pi || ''); break
+        case 'pi': cmp = (a.pi[0] || '').localeCompare(b.pi[0] || ''); break
         case 'agency': cmp = a.agency.localeCompare(b.agency); break
-        case 'amount': cmp = (a.amount || 0) - (b.amount || 0); break
         case 'deadline':
           if (!a.deadline && !b.deadline) cmp = 0
           else if (!a.deadline) cmp = 1
@@ -308,18 +536,18 @@ export default function GrantsPage() {
     })
 
     return result
-  }, [diseaseFiltered, statusFilter, piFilter, agencyFilter, sortKey, sortDir])
+  }, [diseaseFiltered, statusFilter, personFilter, agencyFilter, sortKey, sortDir])
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
     else { setSortKey(key); setSortDir('asc') }
   }
 
-  const hasFilters = statusFilter !== 'all' || piFilter !== 'all' || agencyFilter !== 'all'
+  const hasFilters = statusFilter !== 'all' || personFilter.length > 0 || agencyFilter !== 'all'
 
   function clearFilters() {
     setStatusFilter('all')
-    setPiFilter('all')
+    setPersonFilter([])
     setAgencyFilter('all')
   }
 
@@ -369,10 +597,11 @@ export default function GrantsPage() {
               <option key={key} value={key}>{label}</option>
             ))}
           </select>
-          <select value={piFilter} onChange={(e) => setPiFilter(e.target.value)} className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700">
-            <option value="all">All PIs</option>
-            {pis.map((pi) => <option key={pi} value={pi}>{pi}</option>)}
-          </select>
+          <PersonFilterDropdown
+            allPeople={allPeople}
+            selected={personFilter}
+            onChange={setPersonFilter}
+          />
           <select value={agencyFilter} onChange={(e) => setAgencyFilter(e.target.value)} className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700">
             <option value="all">All Agencies</option>
             {agencies.map((a) => <option key={a} value={a}>{a}</option>)}
@@ -385,18 +614,14 @@ export default function GrantsPage() {
         </div>
 
         <div className="overflow-x-auto rounded-xl border border-gray-200">
-          <table className="w-full min-w-[1100px]">
+          <table className="w-full min-w-[800px]">
             <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
                 <th className="w-8 py-3 pl-4 pr-2"></th>
                 <SortHeader label="Grant" field="title" />
-                <SortHeader label="PI" field="pi" />
+                <SortHeader label="PI(s)" field="pi" />
                 <SortHeader label="Agency" field="agency" />
-                <SortHeader label="Amount" field="amount" />
-                <th className="whitespace-nowrap py-3 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Budget</th>
-                <th className="whitespace-nowrap py-3 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Admin</th>
-                <th className="whitespace-nowrap py-3 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Science</th>
-                <SortHeader label="Sponsor" field="deadline" />
+                <SortHeader label="Deadline" field="deadline" />
                 <SortHeader label="Status" field="status" />
                 <th className="w-16 py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"></th>
               </tr>
@@ -421,10 +646,17 @@ export default function GrantsPage() {
                       <div className="max-w-xs text-sm font-medium text-gray-900 line-clamp-2">{grant.title}</div>
                       {grant.mechanism && <div className="mt-0.5 text-xs text-gray-400">{grant.mechanism}</div>}
                     </td>
-                    <td className="whitespace-nowrap py-3 pr-3 text-sm text-gray-600">
-                      <div>{grant.pi || '\u2014'}</div>
-                      {grant.keyPersonnel.length > 0 && (
-                        <div className="mt-0.5 max-w-[140px] truncate text-xs text-gray-400">{grant.keyPersonnel.join(', ')}</div>
+                    <td className="whitespace-nowrap py-3 pr-3">
+                      {grant.pi.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {grant.pi.map((name) => (
+                            <span key={name} className="inline-flex rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-xs font-medium text-[var(--color-primary)]">
+                              {name}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400">{'\u2014'}</span>
                       )}
                     </td>
                     <td className="whitespace-nowrap py-3 pr-3 text-sm">
@@ -456,11 +688,7 @@ export default function GrantsPage() {
                         </a>
                       )}
                     </td>
-                    <td className="whitespace-nowrap py-3 pr-3 text-sm text-gray-600">{formatCurrency(grant.amount)}</td>
-                    <MilestoneDateCell deadline={grant.deadline} milestoneKey="finalize_budget" />
-                    <MilestoneDateCell deadline={grant.deadline} milestoneKey="admin_component" />
-                    <MilestoneDateCell deadline={grant.deadline} milestoneKey="science_component" />
-                    <td className="whitespace-nowrap py-3 pr-3 text-sm text-gray-600">{formatDate(grant.deadline)}</td>
+                    <EditableDeadlineCell grant={grant} onUpdate={(updates) => updateGrant(grant.id, updates)} />
                     <td className="whitespace-nowrap py-3 pr-3" onClick={(e) => e.stopPropagation()}>
                       <select
                         value={grant.status}
@@ -506,13 +734,15 @@ export default function GrantsPage() {
                       key={`${grant.id}-expanded`}
                       grant={grant}
                       onUpdate={(updates) => updateGrant(grant.id, updates)}
+                      milestoneCompletions={milestoneCompletions[grant.id] ?? {}}
+                      onToggleMilestone={(key) => toggleMilestone(grant.id, key)}
                     />
                   )}
                 </>
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="py-8 text-center text-sm text-gray-400 italic">
+                  <td colSpan={7} className="py-8 text-center text-sm text-gray-400 italic">
                     No grants match the selected filters.
                   </td>
                 </tr>

@@ -7,7 +7,7 @@ export type TeamMember = {
   role: TeamRole
   institution: string
   profileUrl?: string
-  catalystUrl: string
+  catalystUrl?: string
   imageUrl?: string
   diseases?: string[]
 }
@@ -94,7 +94,7 @@ export const team: TeamMember[] = [
     id: 't9',
     name: 'Rebecca Gillani',
     title: 'Research Fellow',
-    role: 'fellow',
+    role: 'staff',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Rebecca+Gillani',
   },
@@ -115,7 +115,6 @@ export const team: TeamMember[] = [
     title: 'Project Manager',
     role: 'staff',
     institution: 'Mass General Brigham',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Becca+Salky',
     diseases: ['MOGAD', 'NMOSD'],
   },
   {
@@ -124,7 +123,6 @@ export const team: TeamMember[] = [
     title: 'Community Engagement & Relations',
     role: 'staff',
     institution: 'Mass General Brigham',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Gabriela+Romanow',
     diseases: ['MOGAD'],
   },
 ]

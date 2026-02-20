@@ -22,6 +22,7 @@ function getStatusCounts() {
     submitted: 0,
     funded: 0,
     completed: 0,
+    not_funded: 0,
   }
   grants.forEach((g) => counts[g.status]++)
   return counts

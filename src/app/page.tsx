@@ -31,6 +31,7 @@ export default function HomePage() {
   return (
     <>
       <Hero
+        variant="centered"
         showLogo
         subtitle="MGB Neurology &middot; Division of Neuroimmunology"
         title="ANDOR Research Group"
