@@ -5,6 +5,7 @@ import SectionWrapper from '@/components/SectionWrapper'
 import { useTasksStore } from '@/data/use-tasks-store'
 import { useGrantsStore } from '@/data/use-grants-store'
 import { useProjectsStore } from '@/data/use-projects-store'
+import { team } from '@/data/team'
 import {
   taskStatusLabels,
   taskStatusColors,
@@ -39,6 +40,7 @@ function AddTaskForm({
   onAdd: (task: {
     title: string
     description: string
+    assignee?: string
     grantId: string | null
     projectId: string | null
     dueDate: string | null
@@ -51,6 +53,7 @@ function AddTaskForm({
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [assignee, setAssignee] = useState('')
   const [grantId, setGrantId] = useState('')
   const [projectId, setProjectId] = useState('')
   const [dueDate, setDueDate] = useState('')
@@ -67,6 +70,7 @@ function AddTaskForm({
     onAdd({
       title: title.trim(),
       description: description.trim(),
+      assignee: assignee || undefined,
       grantId: grantId || null,
       projectId: projectId || null,
       dueDate: dueDate || null,
@@ -75,6 +79,7 @@ function AddTaskForm({
     })
     setTitle('')
     setDescription('')
+    setAssignee('')
     setGrantId('')
     setProjectId('')
     setDueDate('')
@@ -119,6 +124,19 @@ function AddTaskForm({
             placeholder="Optional details..."
             rows={2}
           />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-gray-500">Assignee</label>
+          <select
+            value={assignee}
+            onChange={(e) => setAssignee(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
+          >
+            <option value="">Unassigned</option>
+            {team.map((m) => (
+              <option key={m.id} value={m.name}>{m.name}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="text-xs font-medium text-gray-500">Due Date</label>
@@ -187,7 +205,7 @@ function AddTaskForm({
   )
 }
 
-// --- Task Card ---
+// --- Editable Task Card ---
 
 function TaskCard({
   task,
@@ -195,6 +213,8 @@ function TaskCard({
   deleteTask,
   grantTitleMap,
   projectTitleMap,
+  grantOptions,
+  projectOptions,
   confirmDeleteId,
   setConfirmDeleteId,
 }: {
@@ -203,24 +223,34 @@ function TaskCard({
   deleteTask: (id: string) => void
   grantTitleMap: Map<string, string>
   projectTitleMap: Map<string, string>
+  grantOptions: { id: string; title: string }[]
+  projectOptions: { id: string; title: string }[]
   confirmDeleteId: string | null
   setConfirmDeleteId: (id: string | null) => void
 }) {
+  const [expanded, setExpanded] = useState(false)
+  const [editTitle, setEditTitle] = useState(task.title)
+  const [editDesc, setEditDesc] = useState(task.description)
   const overdue = task.status !== 'completed' && isOverdue(task.dueDate)
 
   return (
     <div
-      className={`rounded-xl border bg-white p-4 transition-shadow hover:shadow-sm ${
+      className={`rounded-xl border bg-white transition-shadow hover:shadow-sm ${
         overdue ? 'border-red-200' : 'border-gray-200'
       } ${task.status === 'completed' ? 'opacity-60' : ''}`}
     >
-      <div className="flex items-start gap-3">
+      {/* Summary row */}
+      <div
+        className="flex cursor-pointer items-start gap-3 p-4"
+        onClick={() => setExpanded(!expanded)}
+      >
         <button
-          onClick={() =>
+          onClick={(e) => {
+            e.stopPropagation()
             updateTask(task.id, {
               status: task.status === 'completed' ? 'pending' : 'completed',
             })
-          }
+          }}
           className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors ${
             task.status === 'completed'
               ? 'border-emerald-500 bg-emerald-500 text-white'
@@ -248,11 +278,12 @@ function TaskCard({
             </span>
           </div>
 
-          {task.description && (
-            <p className="mt-0.5 text-xs text-gray-500">{task.description}</p>
-          )}
-
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-gray-400">
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-400">
+            {task.assignee && (
+              <span className="inline-flex items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600">
+                {task.assignee}
+              </span>
+            )}
             {task.dueDate && (
               <span className={`inline-flex items-center gap-1 ${overdue ? 'font-semibold text-red-600' : ''}`}>
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -262,22 +293,20 @@ function TaskCard({
                 {overdue && ' (overdue)'}
               </span>
             )}
-
             {task.grantId && grantTitleMap.has(task.grantId) && (
-              <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-600">
+              <span className="inline-flex rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-600">
                 Grant: {grantTitleMap.get(task.grantId)}
               </span>
             )}
-
             {task.projectId && projectTitleMap.has(task.projectId) && (
-              <span className="inline-flex items-center gap-1 rounded bg-violet-50 px-1.5 py-0.5 text-[10px] font-medium text-violet-600">
+              <span className="inline-flex rounded bg-violet-50 px-1.5 py-0.5 text-[10px] font-medium text-violet-600">
                 Project: {projectTitleMap.get(task.projectId)}
               </span>
             )}
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2" onClick={(e) => e.stopPropagation()}>
           <select
             value={task.status}
             onChange={(e) => updateTask(task.id, { status: e.target.value as TaskStatus })}
@@ -287,35 +316,127 @@ function TaskCard({
               <option key={key} value={key}>{label}</option>
             ))}
           </select>
-
-          {confirmDeleteId === task.id ? (
-            <div className="flex gap-1">
-              <button
-                onClick={() => { deleteTask(task.id); setConfirmDeleteId(null) }}
-                className="rounded bg-red-500 px-2 py-0.5 text-xs text-white hover:bg-red-600"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                className="text-xs text-gray-500"
-              >
-                No
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setConfirmDeleteId(task.id)}
-              className="text-gray-400 hover:text-red-500"
-              title="Delete task"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </button>
-          )}
+          <svg
+            className={`h-4 w-4 text-gray-400 transition-transform ${expanded ? 'rotate-90' : ''}`}
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
         </div>
       </div>
+
+      {/* Expanded edit panel */}
+      {expanded && (
+        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3" onClick={(e) => e.stopPropagation()}>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <label className="text-[10px] font-medium text-gray-500">Title</label>
+              <input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                onBlur={() => { if (editTitle.trim() && editTitle !== task.title) updateTask(task.id, { title: editTitle.trim() }) }}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="text-[10px] font-medium text-gray-500">Description</label>
+              <textarea
+                value={editDesc}
+                onChange={(e) => setEditDesc(e.target.value)}
+                onBlur={() => { if (editDesc !== task.description) updateTask(task.id, { description: editDesc }) }}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+                rows={2}
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-medium text-gray-500">Assignee</label>
+              <select
+                value={task.assignee ?? ''}
+                onChange={(e) => updateTask(task.id, { assignee: e.target.value || undefined })}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              >
+                <option value="">Unassigned</option>
+                {team.map((m) => (
+                  <option key={m.id} value={m.name}>{m.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] font-medium text-gray-500">Due Date</label>
+              <input
+                type="date"
+                value={task.dueDate ?? ''}
+                onChange={(e) => updateTask(task.id, { dueDate: e.target.value || null })}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-medium text-gray-500">Priority</label>
+              <select
+                value={task.priority}
+                onChange={(e) => updateTask(task.id, { priority: e.target.value as TaskPriority })}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              >
+                {Object.entries(taskPriorityLabels).map(([key, label]) => (
+                  <option key={key} value={key}>{label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] font-medium text-gray-500">Linked Grant</label>
+              <select
+                value={task.grantId ?? ''}
+                onChange={(e) => updateTask(task.id, { grantId: e.target.value || null })}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              >
+                <option value="">None</option>
+                {grantOptions.map((g) => (
+                  <option key={g.id} value={g.id}>{g.title}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] font-medium text-gray-500">Linked Project</label>
+              <select
+                value={task.projectId ?? ''}
+                onChange={(e) => updateTask(task.id, { projectId: e.target.value || null })}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              >
+                <option value="">None</option>
+                {projectOptions.map((p) => (
+                  <option key={p.id} value={p.id}>{p.title}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="mt-3 flex justify-end">
+            {confirmDeleteId === task.id ? (
+              <div className="flex gap-2">
+                <span className="text-xs text-gray-500">Delete this task?</span>
+                <button
+                  onClick={() => { deleteTask(task.id); setConfirmDeleteId(null) }}
+                  className="rounded bg-red-500 px-2 py-0.5 text-xs text-white hover:bg-red-600"
+                >
+                  Yes, delete
+                </button>
+                <button
+                  onClick={() => setConfirmDeleteId(null)}
+                  className="text-xs text-gray-500 hover:text-gray-700"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmDeleteId(task.id)}
+                className="text-xs text-gray-400 hover:text-red-500"
+              >
+                Delete task
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -437,7 +558,9 @@ export default function TasksPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
             <p className="mt-3 text-sm text-gray-500">
-              {tasks.length === 0 ? 'No tasks yet. Click "Add Task" to get started.' : 'No tasks match the selected filter.'}
+              {tasks.length === 0
+                ? 'No tasks yet. Add tasks here or from the Grants/Projects pages.'
+                : 'No tasks match the selected filter.'}
             </p>
           </div>
         ) : (
@@ -450,6 +573,8 @@ export default function TasksPage() {
                 deleteTask={deleteTask}
                 grantTitleMap={grantTitleMap}
                 projectTitleMap={projectTitleMap}
+                grantOptions={grantOptions}
+                projectOptions={projectOptions}
                 confirmDeleteId={confirmDeleteId}
                 setConfirmDeleteId={setConfirmDeleteId}
               />
@@ -458,7 +583,7 @@ export default function TasksPage() {
         )}
 
         <p className="mt-4 text-xs text-gray-400">
-          Showing {filtered.length} of {tasks.length} tasks &middot; Tasks saved to browser
+          Showing {filtered.length} of {tasks.length} tasks &middot; Click a task to edit &middot; Tasks saved to browser
         </p>
       </SectionWrapper>
     </>

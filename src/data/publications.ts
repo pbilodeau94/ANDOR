@@ -7,6 +7,7 @@ export type Publication = {
   doi?: string
   pmid?: string
   researchGroup: string
+  featured?: boolean
 }
 
 export const publications: Publication[] = [
@@ -17,7 +18,8 @@ export const publications: Publication[] = [
       "journal": "J Infect Dis",
       "year": 2026,
       "pmid": "41493209",
-      "researchGroup": "EBV and MS"
+      "researchGroup": "EBV and MS",
+      "featured": true
   },
   {
       "id": "pub2",
@@ -26,7 +28,8 @@ export const publications: Publication[] = [
       "journal": "Neurol Neuroimmunol Neuroinflamm",
       "year": 2026,
       "pmid": "41637688",
-      "researchGroup": "NMOSD"
+      "researchGroup": "NMOSD",
+      "featured": true
   },
   {
       "id": "pub3",
@@ -35,7 +38,8 @@ export const publications: Publication[] = [
       "journal": "JAMA Neurol",
       "year": 2026,
       "pmid": "41489860",
-      "researchGroup": "CNS Vasculitis"
+      "researchGroup": "CNS Vasculitis",
+      "featured": true
   },
   {
       "id": "pub4",
@@ -44,7 +48,8 @@ export const publications: Publication[] = [
       "journal": "Neurol Neuroimmunol Neuroinflamm",
       "year": 2026,
       "pmid": "41494145",
-      "researchGroup": "NMOSD"
+      "researchGroup": "NMOSD",
+      "featured": true
   },
   {
       "id": "pub5",
@@ -53,7 +58,8 @@ export const publications: Publication[] = [
       "journal": "Ann Clin Transl Neurol",
       "year": 2025,
       "pmid": "40963302",
-      "researchGroup": "Neurosarcoidosis"
+      "researchGroup": "Neurosarcoidosis",
+      "featured": true
   },
   {
       "id": "pub6",
@@ -63,7 +69,8 @@ export const publications: Publication[] = [
       "year": 2025,
       "doi": "10.1212/CPJ.0000000000200429",
       "pmid": "39830676",
-      "researchGroup": "Neurosarcoidosis"
+      "researchGroup": "Neurosarcoidosis",
+      "featured": true
   },
   {
       "id": "pub7",
@@ -72,7 +79,8 @@ export const publications: Publication[] = [
       "journal": "Mult Scler Relat Disord",
       "year": 2025,
       "pmid": "41421010",
-      "researchGroup": "MOGAD"
+      "researchGroup": "MOGAD",
+      "featured": true
   },
   {
       "id": "pub8",
@@ -82,267 +90,195 @@ export const publications: Publication[] = [
       "year": 2025,
       "doi": "10.1016/j.msard.2025.106269",
       "pmid": "39827742",
-      "researchGroup": "MOGAD"
+      "researchGroup": "MOGAD",
+      "featured": true
   },
   {
       "id": "pub9",
-      "title": "Safety and efficacy of anti-IL-17A use in multiple sclerosis and comorbid rheumatological disease: A multi-center exploratory study.",
-      "authors": "Madill E, Galetta K, Opeyemi O, Pua DK, Gandelman S, Chitnis T, Bhattacharyya S",
-      "journal": "J Clin Neurosci",
-      "year": 2025,
-      "doi": "10.1016/j.jocn.2025.111211",
-      "pmid": "40174548",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub10",
-      "title": "Urgent Issues in Multiple Sclerosis: A Practical Guide for Non-Neurologists.",
-      "authors": "Udawatta M, Matiello M",
-      "journal": "Med Clin North Am",
-      "year": 2025,
-      "doi": "10.1016/j.mcna.2024.10.001",
-      "pmid": "39893020",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub11",
       "title": "Validity of model for predicting risk of relapse in MOGAD.",
       "authors": "Jiang M, Bilodeau PA, Healy B, Yeh EA, Giovannoni G, Hawkes C, Lechner-Scott J, Levy M",
       "journal": "Mult Scler Relat Disord",
       "year": 2025,
       "pmid": "41238291",
-      "researchGroup": "MOGAD"
+      "researchGroup": "MOGAD",
+      "featured": true
   },
   {
-      "id": "pub12",
+      "id": "pub10",
       "title": "A transcutaneous electrical nerve stimulation device for the relief of neuropathic pain in NMOSD: A randomized, double-blind, sham-controlled trial.",
       "authors": "Vishnevetsky A, Romanow G, Levy M",
       "journal": "Mult Scler J Exp Transl Clin",
       "year": 2024,
       "doi": "10.1177/20552173241301018",
       "pmid": "39651334",
-      "researchGroup": "NMOSD"
+      "researchGroup": "NMOSD",
+      "featured": true
   },
   {
-      "id": "pub13",
+      "id": "pub11",
       "title": "An evaluation of ravulizumab for the treatment of neuromyelitis optica spectrum disorder.",
       "authors": "Balaban DT, Levy M, Borrow R, Anderson MR",
       "journal": "Expert Opin Biol Ther",
       "year": 2024,
       "doi": "10.1080/14712598.2024.2423002",
       "pmid": "39460545",
-      "researchGroup": "NMOSD"
+      "researchGroup": "NMOSD",
+      "featured": true
   },
   {
-      "id": "pub14",
+      "id": "pub12",
       "title": "Assessment of international MOGAD diagnostic criteria in patients with overlapping MOG-associated disease and multiple sclerosis phenotypes.",
       "authors": "Manzano GS, Levy M, Salky R, Mateen FJ, Klawiter EC, Chitnis T, Vasileiou ES, Sotirchos ES, Gibbons E, Huda S, Jacob A, Matiello M",
       "journal": "J Neurol",
       "year": 2024,
       "doi": "10.1007/s00415-024-12585-w",
       "pmid": "39066792",
-      "researchGroup": "MOGAD"
+      "researchGroup": "MOGAD",
+      "featured": true
   },
   {
-      "id": "pub15",
-      "title": "Assessment of international MOGAD diagnostic criteria in patients with overlapping MOG-associated disease and multiple sclerosis phenotypes.",
-      "authors": "Manzano GS, Levy M, Salky R, Mateen FJ, Klawiter EC, Chitnis T, Vasileiou ES, Sotirchos ES, Gibbons E, Huda S, Jacob A, Matiello M",
-      "journal": "J Neurol",
-      "year": 2024,
-      "doi": "10.1007/s00415-024-12585-w",
-      "pmid": "39066792",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub16",
-      "title": "Association of HLA-DRB1*15:01 Status with Transcriptomic Pattern of B cells in CSF in Multiple Sclerosis (P7-6.011).",
-      "authors": "Mikami T, Levy M",
-      "journal": "Neurology",
-      "year": 2024,
-      "doi": "10.1212/WNL.0000000000208131",
-      "pmid": "39977876",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub17",
+      "id": "pub13",
       "title": "CD4 T cells restricted to DRB1*15:01 recognize two Epstein-Barr virus glycoproteins capable of intracellular antigen presentation.",
       "authors": "Drosu N, Anderson M, Bilodeau PA, Nishiyama S, Mikami T, Bobrowski-Khoury N, Cabot J, Housman D, Levy M",
       "journal": "Proc Natl Acad Sci U S A",
       "year": 2024,
       "doi": "10.1073/pnas.2416097121",
       "pmid": "39432795",
-      "researchGroup": "EBV and MS"
+      "researchGroup": "EBV and MS",
+      "featured": true
   },
   {
-      "id": "pub18",
+      "id": "pub14",
       "title": "Coeliac disease as a model for understanding multiple sclerosis.",
       "authors": "Drosu N, Bjornevik K, Cortese M, Levy M, Sollid LM",
       "journal": "Nat Rev Neurol",
       "year": 2024,
       "doi": "10.1038/s41582-024-01025-y",
       "pmid": "39379493",
-      "researchGroup": "EBV and MS"
+      "researchGroup": "EBV and MS",
+      "featured": true
   },
   {
-      "id": "pub19",
+      "id": "pub15",
       "title": "Effectiveness of immunotherapies in relapsing myelin oligodendrocyte glycoprotein antibody-associated disease.",
       "authors": "Bilodeau PA, Vishnevetsky A, Molazadeh N, Lotan I, Anderson M, Romanow G, Salky R, Healy BC, Matiello M, Chitnis T, Levy M",
       "journal": "Mult Scler",
       "year": 2024,
       "doi": "10.1177/13524585241226830",
       "pmid": "38314479",
-      "researchGroup": "MOGAD"
+      "researchGroup": "MOGAD",
+      "featured": true
   },
   {
-      "id": "pub20",
+      "id": "pub16",
       "title": "Extra-Limbic Seronegative Encephalitis Preceding Recurrent Hodgkin's Lymphoma and Gastric Diffuse Large B-Cell Lymphoma: A Case Report.",
       "authors": "Li C, Fisher D, Bhattacharyya S",
       "journal": "Neurohospitalist",
       "year": 2024,
       "doi": "10.1177/19418744241265393",
       "pmid": "39308461",
-      "researchGroup": "Autoimmune Encephalitis"
+      "researchGroup": "Autoimmune Encephalitis",
+      "featured": true
   },
   {
-      "id": "pub21",
+      "id": "pub17",
       "title": "Herpes Simplex Virus Encephalitis in Patients With Autoimmune Conditions or Exposure to Immunomodulatory Medications.",
       "authors": "Tang A, Yoshida K, Lahey H, Wilcox DR, Guan H, Costenbader K, Solomon D, Miyawaki EK, Bhattacharyya S",
       "journal": "Neurology",
       "year": 2024,
       "doi": "10.1212/WNL.0000000000209297",
       "pmid": "38696733",
-      "researchGroup": "Autoimmune Encephalitis"
+      "researchGroup": "Autoimmune Encephalitis",
+      "featured": true
   },
   {
-      "id": "pub22",
+      "id": "pub18",
       "title": "In the era of antiviral trials for MS, the answer lies in the details.",
       "authors": "Drosu N, Bjornevik K, Bilodeau PA, Yeh A, Lechner-Scott J, Hawkes CH, Giovannoni G, Levy M",
       "journal": "Mult Scler Relat Disord",
       "year": 2024,
       "doi": "10.1016/j.msard.2024.105444",
       "pmid": "38241758",
-      "researchGroup": "EBV and MS"
+      "researchGroup": "EBV and MS",
+      "featured": true
   },
   {
-      "id": "pub23",
-      "title": "Instability of excitatory synapses in experimental autoimmune encephalomyelitis and the outcome for excitatory circuit inputs to individual cortical neurons.",
-      "authors": "Gillani RL, Kironde EN, Whiteman S, Zwang TJ, Bacskai BJ",
-      "journal": "Brain Behav Immun",
-      "year": 2024,
-      "doi": "10.1016/j.bbi.2024.03.039",
-      "pmid": "38552924",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub24",
-      "title": "Instability of excitatory synapses in experimental autoimmune encephalomyelitis and the outcome for excitatory circuit inputs to individual cortical neurons.",
-      "authors": "Gillani RL, Kironde EN, Whiteman S, Zwang TJ, Bacskai BJ",
-      "journal": "bioRxiv",
-      "year": 2024,
-      "doi": "10.1101/2024.01.23.576662",
-      "pmid": "38328177",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub25",
+      "id": "pub19",
       "title": "Long-term MRI and clinical stability in an HIV-positive patient with multiple sclerosis on tenofovir: A case report.",
       "authors": "Drosu N, Bjornevik K, Bilodeau P, Levy M",
       "journal": "Mult Scler Relat Disord",
       "year": 2024,
       "doi": "10.1016/j.msard.2023.105397",
       "pmid": "38246000",
-      "researchGroup": "EBV and MS"
+      "researchGroup": "EBV and MS",
+      "featured": true
   },
   {
-      "id": "pub26",
+      "id": "pub20",
       "title": "Mr. Machiavelli's Choice for Treatment of MOG Antibody Disease: Do the benefits of long-term corticosteroids justify the means?",
       "authors": "Levy M, Yeh A, Hawkes C, Lechner-Scott J, Giovannoni G",
       "journal": "Mult Scler Relat Disord",
       "year": 2024,
       "doi": "10.1016/j.msard.2024.105794",
       "pmid": "39111225",
-      "researchGroup": "MOGAD"
+      "researchGroup": "MOGAD",
+      "featured": true
   },
   {
-      "id": "pub27",
+      "id": "pub21",
       "title": "Practical Neurology",
       "authors": "Vishnevetsky A, Wilcox DR, Farhad K, Varma-Doyle A, O’Neal MA, Robbins NM",
       "journal": "Long-term neurologic complications of COVID-19: a practical overview",
       "year": 2024,
-      "researchGroup": "Autoimmune Encephalitis"
+      "researchGroup": "Autoimmune Encephalitis",
+      "featured": true
   },
   {
-      "id": "pub28",
+      "id": "pub22",
       "title": "Predictors of relapsing disease course following index event in myelin oligodendrocyte glycoprotein antibody-associated disease (MOGAD).",
       "authors": "Molazadeh N, Bilodeau PA, Salky R, Bose G, Lotan I, Romanow G, Anderson MR, Matiello M, Chitnis T, Levy M",
       "journal": "J Neurol Sci",
       "year": 2024,
       "doi": "10.1016/j.jns.2024.122909",
       "pmid": "38335710",
-      "researchGroup": "MOGAD"
+      "researchGroup": "MOGAD",
+      "featured": true
   },
   {
-      "id": "pub29",
+      "id": "pub23",
       "title": "Stroke associated with sarcoidosis: A systematic review of reported cases.",
       "authors": "Pua DKA, Anand P, Bhattacharyya S",
       "journal": "J Neurol Sci",
       "year": 2024,
       "doi": "10.1016/j.jns.2024.123080",
       "pmid": "38850770",
-      "researchGroup": "Neurosarcoidosis"
+      "researchGroup": "Neurosarcoidosis",
+      "featured": true
   },
   {
-      "id": "pub30",
-      "title": "Vitamin D3 as an add-on treatment for multiple sclerosis: A systematic review and meta-analysis of randomized controlled trials.",
-      "authors": "Mahler JV, Solti M, Apóstolos-Pereira SL, Adoni T, Silva GD, Callegaro D",
-      "journal": "Mult Scler Relat Disord",
-      "year": 2024,
-      "doi": "10.1016/j.msard.2024.105433",
-      "pmid": "38211504",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub31",
+      "id": "pub24",
       "title": "Characteristics of Progressive Multifocal Leukoencephalopathy Associated With Sarcoidosis Without Therapeutic Immune Suppression.",
       "authors": "McEntire CRS, Fletcher A, Toledano M, Epstein S, White E, Tan CS, Mao-Draayer Y, Banks SA, Aksamit AJ, Gelfand JM, Thakur KT, Anand P, Cortese I, Bhattacharyya S",
       "journal": "JAMA Neurol",
       "year": 2023,
       "doi": "10.1001/jamaneurol.2023.0841",
       "pmid": "37093609",
-      "researchGroup": "Neurosarcoidosis"
+      "researchGroup": "Neurosarcoidosis",
+      "featured": true
   },
   {
-      "id": "pub32",
-      "title": "Early neurofilament light and glial fibrillary acidic protein levels improve predictive models of multiple sclerosis outcomes.",
-      "authors": "Bose G, Healy BC, Saxena S, Saleh F, Paul A, Barro C, Lokhande HA, Polgar-Turcsanyi M, Anderson M, Glanz BI, Guttmann CRG, Bakshi R, Weiner HL, Chitnis T",
-      "journal": "Mult Scler Relat Disord",
-      "year": 2023,
-      "doi": "10.1016/j.msard.2023.104695",
-      "pmid": "37060852",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub33",
-      "title": "Editorial: MOGAD, current knowledge and future trends.",
-      "authors": "Siritho S, Pandit L, Matiello M",
-      "journal": "Front Neurol",
-      "year": 2023,
-      "doi": "10.3389/fneur.2023.1283217",
-      "pmid": "37840927",
-      "researchGroup": "MOGAD"
-  },
-  {
-      "id": "pub34",
+      "id": "pub25",
       "title": "Low mortality rate in a large cohort of myelin oligodendrocyte glycoprotein antibody disease (MOGAD).",
       "authors": "Lotan I, Romanow G, Salky R, Molazadeh N, Vishnevetsky A, Anderson M, Bilodeau PA, Cutter G, Levy M",
       "journal": "Ann Clin Transl Neurol",
       "year": 2023,
       "doi": "10.1002/acn3.51750",
       "pmid": "36852731",
-      "researchGroup": "MOGAD"
+      "researchGroup": "MOGAD",
+      "featured": true
   },
   {
-      "id": "pub35",
+      "id": "pub26",
       "title": "Multiple types of relapses in MOG antibody disease.",
       "authors": "Levy M, Molazadeh N, Bilodeau PA, Vishnevetsky A, Lotan I, Salky R, Anderson M, Romanow G, Lechner-Scott J, Yeh EA, Giovannoni G",
       "journal": "Mult Scler Relat Disord",
@@ -352,7 +288,7 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub36",
+      "id": "pub27",
       "title": "Progression independent of relapses in aquaporin4-IgG-seropositive neuromyelitis optica spectrum disorder, myelin oligodendrocyte glycoprotein antibody-associated disease, and multiple sclerosis.",
       "authors": "Molazadeh N, Akaishi T, Bose G, Nishiyama S, Chitnis T, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -362,107 +298,51 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub37",
+      "id": "pub28",
       "title": "Progression independent of relapses in aquaporin4-IgG-seropositive neuromyelitis optica spectrum disorder, myelin oligodendrocyte glycoprotein antibody-associated disease, and multiple sclerosis.",
       "authors": "Molazadeh N, Akaishi T, Bose G, Nishiyama S, Chitnis T, Levy M",
       "journal": "Mult Scler Relat Disord",
       "year": 2023,
       "doi": "10.1016/j.msard.2023.105093",
       "pmid": "37949025",
-      "researchGroup": "NMOSD"
+      "researchGroup": "NMOSD",
+      "featured": true
   },
   {
-      "id": "pub38",
-      "title": "Progression independent of relapses in aquaporin4-IgG-seropositive neuromyelitis optica spectrum disorder, myelin oligodendrocyte glycoprotein antibody-associated disease, and multiple sclerosis.",
-      "authors": "Molazadeh N, Akaishi T, Bose G, Nishiyama S, Chitnis T, Levy M",
-      "journal": "Mult Scler Relat Disord",
-      "year": 2023,
-      "doi": "10.1016/j.msard.2023.105093",
-      "pmid": "37949025",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub39",
+      "id": "pub29",
       "title": "Quantifying the economic burden to patients of relapse events from neuromyelitis optica spectrum disorders: A cross-sectional survey.",
       "authors": "Rice DR, Holroyd KB, Pua DK, Levy M, Mateen FJ, Bhattacharyya S",
       "journal": "Mult Scler Relat Disord",
       "year": 2023,
       "doi": "10.1016/j.msard.2023.104580",
       "pmid": "36805175",
-      "researchGroup": "NMOSD"
+      "researchGroup": "NMOSD",
+      "featured": true
   },
   {
-      "id": "pub40",
-      "title": "Anti-SARS-CoV-2 monoclonal antibodies for the treatment of active COVID-19 in multiple sclerosis: An observational study.",
-      "authors": "Manzano GS, Rice DR, Klawiter EC, Matiello M, Gillani RL, Tauhid SS, Bakshi R, Mateen FJ",
-      "journal": "Mult Scler",
-      "year": 2022,
-      "doi": "10.1177/13524585221092309",
-      "pmid": "35475382",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub41",
-      "title": "Disease modifying therapy management of multiple sclerosis after stem cell therapies: A retrospective case series.",
-      "authors": "Manzano GS, Holroyd KB, Kaplan T, Bhattacharyya S, Chitnis T, Hotan G, Zurawski J, Galetta KM, Mateen FJ",
-      "journal": "Mult Scler Relat Disord",
-      "year": 2022,
-      "doi": "10.1016/j.msard.2022.103861",
-      "pmid": "35576727",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub42",
-      "title": "Early Predictors of Clinical and MRI Outcomes Using Least Absolute Shrinkage and Selection Operator (LASSO) in Multiple Sclerosis.",
-      "authors": "Bose G, Healy BC, Lokhande HA, Sotiropoulos MG, Polgar-Turcsanyi M, Anderson M, Glanz BI, Guttman CRG, Bakshi R, Weiner HL, Chitnis T",
-      "journal": "Ann Neurol",
-      "year": 2022,
-      "doi": "10.1002/ana.26370",
-      "pmid": "35429009",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub43",
+      "id": "pub30",
       "title": "EBV as the \"gluten of MS\" hypothesis provides a rationale for trialing antiviral therapies.",
       "authors": "Drosu N, Giovannoni G, Lechner-Scott J, Hawkes C, Yeh A, Levy M",
       "journal": "Mult Scler Relat Disord",
       "year": 2022,
       "doi": "10.1016/j.msard.2022.104007",
       "pmid": "35803161",
-      "researchGroup": "EBV and MS"
+      "researchGroup": "EBV and MS",
+      "featured": true
   },
   {
-      "id": "pub44",
-      "title": "Letter to the editor: Should we stop using post-contrast sequences in the follow-up MRI of patients with multiple sclerosis?",
-      "authors": "Mahler JV, Silva GD",
-      "journal": "J Neurol Sci",
-      "year": 2022,
-      "doi": "10.1016/j.jns.2022.120421",
-      "pmid": "36126371",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub45",
+      "id": "pub31",
       "title": "Neurologic disease activity in people with multiple sclerosis treated with immune checkpoint inhibitors.",
       "authors": "Conway SE, Pua DKA, Holroyd KB, Galetta K, Bhattacharyya S",
       "journal": "Mult Scler",
       "year": 2022,
       "doi": "10.1177/13524585221117949",
       "pmid": "35957594",
-      "researchGroup": "Autoimmune Encephalitis"
+      "researchGroup": "Autoimmune Encephalitis",
+      "featured": true
   },
   {
-      "id": "pub46",
-      "title": "Neurologic disease activity in people with multiple sclerosis treated with immune checkpoint inhibitors.",
-      "authors": "Conway SE, Pua DKA, Holroyd KB, Galetta K, Bhattacharyya S",
-      "journal": "Mult Scler",
-      "year": 2022,
-      "doi": "10.1177/13524585221117949",
-      "pmid": "35957594",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub47",
+      "id": "pub32",
       "title": "Positive Predictive Value of MOG-IgG for Clinically Defined MOG-AD Within a Real-World Cohort.",
       "authors": "Manzano GS, Salky R, Mateen FJ, Klawiter EC, Chitnis T, Levy M, Matiello M",
       "journal": "Front Neurol",
@@ -472,17 +352,18 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub48",
+      "id": "pub33",
       "title": "Transitioning immunotherapy in neuromyelitis optica spectrum disorder - when and how to switch.",
       "authors": "Vishnevetsky A, Kaplan TB, Levy M",
       "journal": "Expert Opin Biol Ther",
       "year": 2022,
       "doi": "10.1080/14712598.2022.2145879",
       "pmid": "36369948",
-      "researchGroup": "NMOSD"
+      "researchGroup": "NMOSD",
+      "featured": true
   },
   {
-      "id": "pub49",
+      "id": "pub34",
       "title": "Treatment outcomes of first-ever episode of severe optic neuritis.",
       "authors": "Galetta K, Ryan S, Manzano G, Chibnik LB, Balaban D, Prasad S, Chwalisz BK, Salazar-Camelo A, Conway S, Levy M, Matiello M",
       "journal": "Mult Scler Relat Disord",
@@ -492,37 +373,40 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub50",
+      "id": "pub35",
       "title": "Upregulated complement receptors correlate with Fc gamma receptor 3A-positive natural killer and natural killer-T cells in neuromyelitis optica spectrum disorder.",
       "authors": "Nishiyama S, Wright AE, Lotan I, Mikami T, Paul F, Aoki M, Levy M",
       "journal": "J Neuroinflammation",
       "year": 2022,
       "doi": "10.1186/s12974-022-02661-1",
       "pmid": "36503481",
-      "researchGroup": "NMOSD"
+      "researchGroup": "NMOSD",
+      "featured": true
   },
   {
-      "id": "pub51",
+      "id": "pub36",
       "title": "Approach to Neurologic Complications in the Immunocompromised Patient.",
       "authors": "Vishnevetsky A, Anand P",
       "journal": "Semin Neurol",
       "year": 2021,
       "doi": "10.1055/s-0041-1733795",
       "pmid": "34619781",
-      "researchGroup": "Autoimmune Encephalitis"
+      "researchGroup": "Autoimmune Encephalitis",
+      "featured": true
   },
   {
-      "id": "pub52",
+      "id": "pub37",
       "title": "Neuroimmunological adverse events associated with immune checkpoint inhibitor: a retrospective, pharmacovigilance study using FAERS database.",
       "authors": "Mikami T, Liaw B, Asada M, Niimura T, Zamami Y, Green-LaRoche D, Pai L, Levy M, Jeyapalan S",
       "journal": "J Neurooncol",
       "year": 2021,
       "doi": "10.1007/s11060-020-03687-2",
       "pmid": "33423151",
-      "researchGroup": "Autoimmune Encephalitis"
+      "researchGroup": "Autoimmune Encephalitis",
+      "featured": true
   },
   {
-      "id": "pub53",
+      "id": "pub38",
       "title": "Neuromyelitis Optica Spectrum Disorder: Clinical Burden and Cost of Relapses and Disease-Related Care in US Clinical Practice.",
       "authors": "Royston M, Kielhorn A, Weycker D, Shaff M, Houde L, Tanvir I, Bhattacharyya S, Levy M",
       "journal": "Neurol Ther",
@@ -532,7 +416,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub54",
+      "id": "pub39",
       "title": "Probing the association between Multiple Sclerosis and Epstein Barr Virus from a therapeutic perspective.",
       "authors": "Drosu N, Giovannoni G, Pohl D, Hawkes C, Lechner-Scott J, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -542,7 +426,7 @@ export const publications: Publication[] = [
       "researchGroup": "EBV and MS"
   },
   {
-      "id": "pub55",
+      "id": "pub40",
       "title": "Quantifying the relationship between disability progression and quality of life in patients treated for NMOSD: Insights from the SAkura studies.",
       "authors": "Levy M, Haycox AR, Becker U, Costantino C, Damonte E, Klingelschmitt G, von Büdingen HC, Wallenstein G, Maio DD, Szczechowski L",
       "journal": "Mult Scler Relat Disord",
@@ -552,16 +436,17 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub56",
+      "id": "pub41",
       "title": "Unilateral Relapsing Primary Angiitis of the CNS: An Entity Suggesting Differences in the Immune Response Between the Cerebral Hemispheres.",
       "authors": "AbdelRazek MA, Hillis JM, Guo Y, Martinez-Lage M, Gholipour T, Sloane J, Cho T, Matiello M",
       "journal": "Neurol Neuroimmunol Neuroinflamm",
       "year": 2021,
       "pmid": "33402525",
-      "researchGroup": "CNS Vasculitis"
+      "researchGroup": "CNS Vasculitis",
+      "featured": true
   },
   {
-      "id": "pub57",
+      "id": "pub42",
       "title": "\"Rocking the boat\" with a new drug for neuromyelitis optica spectrum disorder.",
       "authors": "Levy M, Lechner-Scott J, Hawkes C, Giovannoni G",
       "journal": "Mult Scler Relat Disord",
@@ -570,7 +455,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub58",
+      "id": "pub43",
       "title": "A Case of Bilaterally Synchronized Faciobrachial Dystonic Seizures in Anti-Leucine-Rich Glioma Inactivated-1 Encephalitis.",
       "authors": "Mikami T, Amano E, Iizuka T, Machida A",
       "journal": "Mov Disord Clin Pract",
@@ -580,7 +465,7 @@ export const publications: Publication[] = [
       "researchGroup": "Autoimmune Encephalitis"
   },
   {
-      "id": "pub59",
+      "id": "pub44",
       "title": "Eastern equine encephalitis and use of IV immunoglobulin therapy and high-dose steroids.",
       "authors": "Wilcox DR, Collens SI, Solomon IH, Mateen FJ, Mukerji SS",
       "journal": "Neurol Neuroimmunol Neuroinflamm",
@@ -590,7 +475,7 @@ export const publications: Publication[] = [
       "researchGroup": "Autoimmune Encephalitis"
   },
   {
-      "id": "pub60",
+      "id": "pub45",
       "title": "Interleukin-6 receptor blockade for the treatment of NMOSD.",
       "authors": "Levy M",
       "journal": "Lancet Neurol",
@@ -599,7 +484,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub61",
+      "id": "pub46",
       "title": "New therapies for neuromyelitis optica spectrum disorder.",
       "authors": "Levy M, Fujihara K, Palace J",
       "journal": "Lancet Neurol",
@@ -608,7 +493,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub62",
+      "id": "pub47",
       "title": "Tenofovir prodrugs potently inhibit Epstein-Barr virus lytic DNA replication by targeting the viral DNA polymerase.",
       "authors": "Drosu NC, Edelman ER, Housman DE",
       "journal": "Proc Natl Acad Sci U S A",
@@ -618,7 +503,7 @@ export const publications: Publication[] = [
       "researchGroup": "EBV and MS"
   },
   {
-      "id": "pub63",
+      "id": "pub48",
       "title": "A pilot safety study of ublituximab, a monoclonal antibody against CD20, in acute relapses of neuromyelitis optica spectrum disorder.",
       "authors": "Mealy MA, Levy M",
       "journal": "Medicine (Baltimore)",
@@ -628,7 +513,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub64",
+      "id": "pub49",
       "title": "Assessment of Patients with Neuromyelitis Optica Spectrum Disorder Using the EQ-5D.",
       "authors": "Mealy MA, Boscoe A, Caro J, Levy M",
       "journal": "Int J MS Care",
@@ -638,7 +523,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub65",
+      "id": "pub50",
       "title": "Autoantibodies in neuropsychiatric lupus: still looking.",
       "authors": "Bhattacharyya S",
       "journal": "Rheumatology (Oxford)",
@@ -648,7 +533,7 @@ export const publications: Publication[] = [
       "researchGroup": "Autoimmune Encephalitis"
   },
   {
-      "id": "pub66",
+      "id": "pub51",
       "title": "Clinical characteristics of myelin oligodendrocyte glycoprotein antibody neuromyelitis optica spectrum disorder.",
       "authors": "Salama S, Pardo S, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -657,7 +542,7 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub67",
+      "id": "pub52",
       "title": "Clinical characteristics of myelin oligodendrocyte glycoprotein antibody neuromyelitis optica spectrum disorder.",
       "authors": "Salama S, Pardo S, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -666,17 +551,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub68",
-      "title": "Editorial on: Eculizumab in aquaporin-4-positive neuromyelitis optica spectrum disorder.",
-      "authors": "Pardo S, Giovannoni G, Hawkes C, Lechner-Scott J, Waubant E, Levy M",
-      "journal": "Mult Scler Relat Disord",
-      "year": 2019,
-      "doi": "10.1016/j.msard.2019.07.001",
-      "pmid": "31324299",
-      "researchGroup": "NMOSD"
-  },
-  {
-      "id": "pub69",
+      "id": "pub53",
       "title": "Expanding the spectrum of MOG antibody disease.",
       "authors": "Levy M",
       "journal": "Mult Scler",
@@ -686,7 +561,7 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub70",
+      "id": "pub54",
       "title": "MOG antibody-associated encephalomyelitis/encephalitis.",
       "authors": "Salama S, Khan M, Pardo S, Izbudak I, Levy M",
       "journal": "Mult Scler",
@@ -696,7 +571,7 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub71",
+      "id": "pub55",
       "title": "MOG antibody-associated encephalomyelitis/encephalitis.",
       "authors": "Salama S, Khan M, Pardo S, Izbudak I, Levy M",
       "journal": "Mult Scler",
@@ -706,7 +581,7 @@ export const publications: Publication[] = [
       "researchGroup": "Autoimmune Encephalitis"
   },
   {
-      "id": "pub72",
+      "id": "pub56",
       "title": "MOG-IgG myelitis coexisting with systemic lupus erythematosus in the post-partum setting.",
       "authors": "Bilodeau PA, Kumar V, Rodriguez AE, Li CT, Sanchez-Alvarez C, Thanarajasingam U, Zalewski NL, Flanagan EP",
       "journal": "Mult Scler",
@@ -716,7 +591,7 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub73",
+      "id": "pub57",
       "title": "Neuroimmunology, Bielekova B, Birnbaum G, and Lisak RP eds",
       "authors": "Bhattacharyya S, Samuels MA",
       "journal": "Neurologic Complications of Systemic Autoimmune Diseases",
@@ -724,7 +599,7 @@ export const publications: Publication[] = [
       "researchGroup": "Autoimmune Encephalitis"
   },
   {
-      "id": "pub74",
+      "id": "pub58",
       "title": "Review of Treatment for Central Spinal Neuropathic Pain and Its Effect on Quality of Life: Implications for Neuromyelitis Optica Spectrum Disorder.",
       "authors": "Mealy MA, Kozachik SL, Levy M",
       "journal": "Pain Manag Nurs",
@@ -734,17 +609,18 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub75",
+      "id": "pub59",
       "title": "Teaching NeuroImages: Corkscrew medullary veins in active neurosarcoidosis.",
       "authors": "Caton MT, Yau WW, Huang RY, Bhattacharyya S",
       "journal": "Neurology",
       "year": 2019,
       "doi": "10.1212/WNL.0000000000008460",
       "pmid": "31685713",
-      "researchGroup": "Neurosarcoidosis"
+      "researchGroup": "Neurosarcoidosis",
+      "featured": true
   },
   {
-      "id": "pub76",
+      "id": "pub60",
       "title": "Clinical and radiological characteristics of neuromyelitis optica spectrum disorder in the North Egyptian Nile Delta.",
       "authors": "Salama S, Marouf H, Ihab Reda M, Mansour AR, ELKholy O, Levy M",
       "journal": "J Neuroimmunol",
@@ -754,7 +630,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub77",
+      "id": "pub61",
       "title": "Could antiretrovirals be treating EBV in MS? A case report.",
       "authors": "Drosu NC, Edelman ER, Housman DE",
       "journal": "Mult Scler Relat Disord",
@@ -763,7 +639,7 @@ export const publications: Publication[] = [
       "researchGroup": "EBV and MS"
   },
   {
-      "id": "pub78",
+      "id": "pub62",
       "title": "Effect of CXCR2 Inhibition on Behavioral Outcomes and Pathology in Rat Model of Neuromyelitis Optica.",
       "authors": "Jones MV, Levy M",
       "journal": "J Immunol Res",
@@ -773,7 +649,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub79",
+      "id": "pub63",
       "title": "Investigational drugs in development to prevent neuromyelitis optica relapses.",
       "authors": "Paul F, Murphy O, Pardo S, Levy M",
       "journal": "Expert Opin Investig Drugs",
@@ -783,7 +659,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub80",
+      "id": "pub64",
       "title": "Long-term disability in neuromyelitis optica spectrum disorder with a history of myelitis is associated with age at onset, delay in diagnosis/preventive treatment, MRI lesion length and presence of symptomatic brain lesions.",
       "authors": "Mealy MA, Mossburg SE, Kim SH, Messina S, Borisow N, Lopez-Gonzalez R, Ospina JP, Scheel M, Yeshokumar AK, Awad A, Leite MI, Arango JJ, Paul F, Palace J, Kim HJ, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -793,7 +669,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub81",
+      "id": "pub65",
       "title": "MOG antibody disease: A review of MOG antibody seropositive neuromyelitis optica spectrum disorder.",
       "authors": "Narayan R, Simpson A, Fritsche K, Salama S, Pardo S, Mealy M, Paul F, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -802,7 +678,7 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub82",
+      "id": "pub66",
       "title": "MOG antibody disease: A review of MOG antibody seropositive neuromyelitis optica spectrum disorder.",
       "authors": "Narayan R, Simpson A, Fritsche K, Salama S, Pardo S, Mealy M, Paul F, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -811,7 +687,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub83",
+      "id": "pub67",
       "title": "Mortality in neuromyelitis optica is strongly associated with African ancestry.",
       "authors": "Mealy MA, Kessler RA, Rimler Z, Reid A, Totonis L, Cutter G, Kister I, Levy M",
       "journal": "Neurol Neuroimmunol Neuroinflamm",
@@ -820,17 +696,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub84",
-      "title": "Multiple Sclerosis and Autoimmune Neurology of the Central Nervous System.",
-      "authors": "Galetta KM, Bhattacharyya S",
-      "journal": "Med Clin North Am",
-      "year": 2018,
-      "doi": "10.1016/j.mcna.2018.10.004",
-      "pmid": "30704684",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub85",
+      "id": "pub68",
       "title": "Outcomes from acute attacks of neuromyelitis optica spectrum disorder correlate with severity of attack, age and delay to treatment.",
       "authors": "Banerjee A, Ng J, Coleman J, Ospina JP, Mealy M, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -840,7 +706,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub86",
+      "id": "pub69",
       "title": "Plasmapheresis for acute attacks in neuromyelitis optica spectrum disorders.",
       "authors": "Levy M",
       "journal": "Neurol Neuroimmunol Neuroinflamm",
@@ -850,7 +716,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub87",
+      "id": "pub70",
       "title": "Refining the Nosology of Antigen-Specific Diseases Within the Spectrum of Neuromyelitis Optica.",
       "authors": "Levy M, Giovannoni G, Hawkes C, Waubant E",
       "journal": "Mult Scler Relat Disord",
@@ -860,7 +726,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub88",
+      "id": "pub71",
       "title": "Vaccines and the association with relapses in patients with neuromyelitis optica spectrum disorder.",
       "authors": "Mealy MA, Cook LJ, Pache F, Velez DL, Borisow N, Becker D, Arango JAJ, Paul F, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -870,7 +736,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub89",
+      "id": "pub72",
       "title": "Anti-aquaporin-4 titer is not predictive of disease course in neuromyelitis optica spectrum disorder: A multicenter cohort study.",
       "authors": "Kessler RA, Mealy MA, Jimenez-Arango JA, Quan C, Paul F, López R, Hopkins S, Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -879,7 +745,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub90",
+      "id": "pub73",
       "title": "Aquaporin-4 serostatus does not predict response to immunotherapy in neuromyelitis optica spectrum disorders.",
       "authors": "Mealy MA, Kim SH, Schmidt F, López R, Jimenez Arango JA, Paul F, Wingerchuk DM, Greenberg BM, Kim HJ, Levy M",
       "journal": "Mult Scler",
@@ -889,7 +755,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub91",
+      "id": "pub74",
       "title": "Evaluation of comorbidities and health care resource use among patients with highly active neuromyelitis optica.",
       "authors": "Ajmera MR, Boscoe A, Mauskopf J, Candrilli SD, Levy M",
       "journal": "J Neurol Sci",
@@ -899,7 +765,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub92",
+      "id": "pub75",
       "title": "Female hormonal exposures and neuromyelitis optica symptom onset in a multicenter study.",
       "authors": "Bove R, Elsone L, Alvarez E, Borisow N, Cortez MM, Mateen FJ, Mealy MA, Mutch K, Tobyne S, Ruprecht K, Buckle G, Levy M, Wingerchuk DM, Paul F, Cross AH, Weinshenker B, Jacob A, Klawiter EC, Chitnis T",
       "journal": "Neurol Neuroimmunol Neuroinflamm",
@@ -909,7 +775,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub93",
+      "id": "pub76",
       "title": "Early indicators of relapses vs pseudorelapses in neuromyelitis optica spectrum disorder.",
       "authors": "Kessler RA, Mealy MA, Levy M",
       "journal": "Neurol Neuroimmunol Neuroinflamm",
@@ -918,7 +784,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub94",
+      "id": "pub77",
       "title": "Insufficient treatment of severe depression in neuromyelitis optica spectrum disorder.",
       "authors": "Chavarro VS, Mealy MA, Simpson A, Lacheta A, Pache F, Ruprecht K, Gold SM, Paul F, Brandt AU, Levy M",
       "journal": "Neurol Neuroimmunol Neuroinflamm",
@@ -928,16 +794,17 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub95",
+      "id": "pub78",
       "title": "Primary angiitis of the central nervous system: avoiding misdiagnosis and missed diagnosis of a rare disease.",
       "authors": "Bhattacharyya S, Berkowitz AL",
       "journal": "Pract Neurol",
       "year": 2016,
       "pmid": "26837371",
-      "researchGroup": "CNS Vasculitis"
+      "researchGroup": "CNS Vasculitis",
+      "featured": true
   },
   {
-      "id": "pub96",
+      "id": "pub79",
       "title": "Spinal Movement Disorders in Neuromyelitis Optica: An Under-recognized Phenomenon.",
       "authors": "Abboud H, Fernandez HH, Mealy MA, Levy M",
       "journal": "Mov Disord Clin Pract",
@@ -947,7 +814,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub97",
+      "id": "pub80",
       "title": "The Type I Interferon Response Determines Differences in Choroid Plexus Susceptibility between Newborns and Adults in Herpes Simplex Virus Encephalitis.",
       "authors": "Wilcox DR, Folmsbee SS, Muller WJ, Longnecker R",
       "journal": "mBio",
@@ -957,7 +824,7 @@ export const publications: Publication[] = [
       "researchGroup": "Autoimmune Encephalitis"
   },
   {
-      "id": "pub98",
+      "id": "pub81",
       "title": "Treatment of Neuromyelitis Optica Spectrum Disorder: Acute, Preventive, and Symptomatic.",
       "authors": "Kessler RA, Mealy MA, Levy M",
       "journal": "Curr Treat Options Neurol",
@@ -967,7 +834,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub99",
+      "id": "pub82",
       "title": "Bevacizumab is safe in acute relapses of neuromyelitis optica.",
       "authors": "Mealy MA, Shin K, John G, Levy M",
       "journal": "Clin Exp Neuroimmunol",
@@ -977,7 +844,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub100",
+      "id": "pub83",
       "title": "Differential reliance on autophagy for protection from HSV encephalitis between newborns and adults.",
       "authors": "Wilcox DR, Wadhwani NR, Longnecker R, Muller WJ",
       "journal": "PLoS Pathog",
@@ -986,7 +853,7 @@ export const publications: Publication[] = [
       "researchGroup": "Autoimmune Encephalitis"
   },
   {
-      "id": "pub101",
+      "id": "pub84",
       "title": "Favorable outcome of granulocyte colony-stimulating factor use in neuromyelitis optica patients presenting with agranulocytosis in the setting of rituximab.",
       "authors": "Mealy MA, Levy M",
       "journal": "J Neuroimmunol",
@@ -996,7 +863,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub102",
+      "id": "pub85",
       "title": "Longitudinally extensive optic neuritis as an MRI biomarker distinguishes neuromyelitis optica from multiple sclerosis.",
       "authors": "Mealy MA, Whetstone A, Orman G, Izbudak I, Calabresi PA, Levy M",
       "journal": "J Neurol Sci",
@@ -1006,7 +873,7 @@ export const publications: Publication[] = [
       "researchGroup": "MOGAD"
   },
   {
-      "id": "pub103",
+      "id": "pub86",
       "title": "Longitudinally extensive optic neuritis as an MRI biomarker distinguishes neuromyelitis optica from multiple sclerosis.",
       "authors": "Mealy MA, Whetstone A, Orman G, Izbudak I, Calabresi PA, Levy M",
       "journal": "J Neurol Sci",
@@ -1016,17 +883,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub104",
-      "title": "Longitudinally extensive optic neuritis as an MRI biomarker distinguishes neuromyelitis optica from multiple sclerosis.",
-      "authors": "Mealy MA, Whetstone A, Orman G, Izbudak I, Calabresi PA, Levy M",
-      "journal": "J Neurol Sci",
-      "year": 2015,
-      "doi": "10.1016/j.jns.2015.05.013",
-      "pmid": "26026942",
-      "researchGroup": "EBV and MS"
-  },
-  {
-      "id": "pub105",
+      "id": "pub87",
       "title": "Pathogenic aquaporin-4 reactive T cells are sufficient to induce mouse model of neuromyelitis optica.",
       "authors": "Jones MV, Huang H, Calabresi PA, Levy M",
       "journal": "Acta Neuropathol Commun",
@@ -1035,7 +892,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub106",
+      "id": "pub88",
       "title": "The ethics of placebo controlled clinical trials in NMO - A balance of risks.",
       "authors": "Levy M",
       "journal": "Mult Scler Relat Disord",
@@ -1044,7 +901,7 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
   {
-      "id": "pub107",
+      "id": "pub89",
       "title": "Treatment of acute relapses in neuromyelitis optica: Steroids alone versus steroids plus plasma exchange.",
       "authors": "Abboud H, Petrak A, Mealy M, Sasidharan S, Siddique L, Levy M",
       "journal": "Mult Scler",
@@ -1054,4 +911,3 @@ export const publications: Publication[] = [
       "researchGroup": "NMOSD"
   },
 ]
-

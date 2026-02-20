@@ -1,19 +1,19 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import Hero from '@/components/Hero'
 import SectionWrapper from '@/components/SectionWrapper'
 import { researchGroups } from '@/data/research-groups'
 import { publications } from '@/data/publications'
 import { team } from '@/data/team'
 import { programHighlights, whyThisMatters } from '@/data/program-highlights'
-import { extractAndorAuthors } from '@/data/author-utils'
+import PublicationsList from './PublicationsList'
 
 export function generateStaticParams() {
   return researchGroups.map((g) => ({ slug: g.slug }))
 }
 
 export function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  // Use synchronous lookup since generateStaticParams defines all valid slugs
   return params.then(({ slug }) => {
     const group = researchGroups.find((g) => g.slug === slug)
     if (!group) return { title: 'Research | ANDOR' }
@@ -31,6 +31,7 @@ const accentBorderMap: Record<string, string> = {
   'amber-600': 'border-amber-600',
   'rose-500': 'border-rose-500',
   'teal-500': 'border-teal-500',
+  'indigo-500': 'border-indigo-500',
 }
 
 const accentBgMap: Record<string, string> = {
@@ -40,6 +41,7 @@ const accentBgMap: Record<string, string> = {
   'amber-600': 'bg-amber-50',
   'rose-500': 'bg-rose-50',
   'teal-500': 'bg-teal-50',
+  'indigo-500': 'bg-indigo-50',
 }
 
 const accentTextMap: Record<string, string> = {
@@ -49,6 +51,17 @@ const accentTextMap: Record<string, string> = {
   'amber-600': 'text-amber-700',
   'rose-500': 'text-rose-700',
   'teal-500': 'text-teal-700',
+  'indigo-500': 'text-indigo-700',
+}
+
+const borderLeftMap: Record<string, string> = {
+  'blue-500': 'border-l-blue-500',
+  'emerald-500': 'border-l-emerald-500',
+  'violet-500': 'border-l-violet-500',
+  'amber-600': 'border-l-amber-600',
+  'rose-500': 'border-l-rose-500',
+  'teal-500': 'border-l-teal-500',
+  'indigo-500': 'border-l-indigo-500',
 }
 
 export default async function DiseaseResearchPage({
@@ -62,16 +75,13 @@ export default async function DiseaseResearchPage({
 
   const highlights = programHighlights[group.name] ?? []
   const groupPubs = publications.filter((p) => p.researchGroup === group.name)
+  const featuredPubs = groupPubs.filter((p) => p.featured)
   const mattersText = whyThisMatters[group.name]
-  const investigators = extractAndorAuthors(groupPubs, team)
 
-  // Also include keyInvestigators who may not appear on publications
-  const investigatorIds = new Set(investigators.map((m) => m.id))
-  const additionalFromGroup = group.keyInvestigators
+  // Use keyInvestigators from research group data (curated list)
+  const investigators = group.keyInvestigators
     .map((name) => team.find((m) => m.name === name))
-    .filter((m): m is NonNullable<typeof m> => m != null && !investigatorIds.has(m.id))
-
-  const allInvestigators = [...investigators, ...additionalFromGroup]
+    .filter((m): m is NonNullable<typeof m> => m != null)
 
   const borderClass = accentBorderMap[group.accentColor] ?? 'border-gray-400'
   const bgClass = accentBgMap[group.accentColor] ?? 'bg-gray-50'
@@ -85,6 +95,31 @@ export default async function DiseaseResearchPage({
         description={group.description}
       />
 
+      {/* Program Navigation */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-5xl overflow-x-auto px-4 sm:px-6 lg:px-8">
+          <nav className="-mb-px flex gap-1" aria-label="Research programs">
+            {researchGroups.map((g) => {
+              const isActive = g.slug === slug
+              const leftBorder = borderLeftMap[g.accentColor] ?? 'border-l-gray-400'
+              return (
+                <Link
+                  key={g.id}
+                  href={`/research/${g.slug}`}
+                  className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
+                >
+                  {g.name}
+                </Link>
+              )
+            })}
+          </nav>
+        </div>
+      </div>
+
       {/* Why This Matters */}
       {mattersText && (
         <SectionWrapper>
@@ -96,14 +131,11 @@ export default async function DiseaseResearchPage({
       )}
 
       {/* Investigators */}
-      {allInvestigators.length > 0 && (
+      {investigators.length > 0 && (
         <SectionWrapper alt>
           <h2 className="text-2xl font-bold text-[var(--color-primary)]">Investigators</h2>
-          <p className="mt-2 text-sm text-gray-500">
-            ANDOR members who have contributed to {group.name} research
-          </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {allInvestigators.map((member) => (
+            {investigators.map((member) => (
               <div key={member.id} className="flex items-center gap-3 rounded-lg border border-gray-100 bg-white p-3">
                 {member.imageUrl ? (
                   <Image
@@ -165,65 +197,17 @@ export default async function DiseaseResearchPage({
       {/* Publications */}
       <SectionWrapper alt>
         <div className="flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-[var(--color-primary)]">Publications</h2>
+          <h2 className="text-2xl font-bold text-[var(--color-primary)]">Key Publications</h2>
           {groupPubs.length > 0 && (
             <span className="text-sm text-gray-500">
-              {groupPubs.length} paper{groupPubs.length !== 1 ? 's' : ''}
+              {groupPubs.length} total paper{groupPubs.length !== 1 ? 's' : ''}
             </span>
           )}
         </div>
-        {groupPubs.length > 0 ? (
-          <ul className="mt-6 space-y-4">
-            {groupPubs.map((pub) => (
-              <li key={pub.id} className="rounded-lg border border-gray-100 bg-white p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    {pub.pmid ? (
-                      <a
-                        href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}/`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-gray-900 hover:text-[var(--color-accent)]"
-                      >
-                        {pub.title}
-                      </a>
-                    ) : pub.doi ? (
-                      <a
-                        href={`https://doi.org/${pub.doi}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-gray-900 hover:text-[var(--color-accent)]"
-                      >
-                        {pub.title}
-                      </a>
-                    ) : (
-                      <p className="font-medium text-gray-900">{pub.title}</p>
-                    )}
-                    <p className="mt-1 text-sm text-gray-500">
-                      {pub.journal} ({pub.year})
-                    </p>
-                    <p className="mt-1 text-xs leading-relaxed text-gray-400 line-clamp-1">
-                      {pub.authors}
-                    </p>
-                  </div>
-                  {pub.pmid && (
-                    <a
-                      href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}/`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="shrink-0 rounded bg-gray-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 transition-colors hover:bg-[var(--color-accent)] hover:text-white"
-                      title="View on PubMed"
-                    >
-                      PubMed
-                    </a>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-6 text-sm italic text-gray-400">Publications coming soon</p>
-        )}
+        <PublicationsList
+          featuredPubs={JSON.parse(JSON.stringify(featuredPubs))}
+          allPubs={JSON.parse(JSON.stringify(groupPubs))}
+        />
       </SectionWrapper>
     </>
   )

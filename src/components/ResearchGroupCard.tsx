@@ -8,6 +8,7 @@ const colorMap: Record<string, string> = {
   'amber-600': 'border-l-amber-600',
   'rose-500': 'border-l-rose-500',
   'teal-500': 'border-l-teal-500',
+  'indigo-500': 'border-l-indigo-500',
 }
 
 type Props = {

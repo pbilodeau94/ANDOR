@@ -112,15 +112,6 @@ export const team: TeamMember[] = [
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/profile/1244171',
     diseases: ['MOGAD', 'MS'],
   },
-  {
-    id: 't22',
-    name: 'Giovanna Manzano',
-    title: 'Assistant Professor of Neurology',
-    role: 'faculty',
-    institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/159134',
-    diseases: ['Autoimmune Encephalitis'],
-  },
 
   // Fellows
   {

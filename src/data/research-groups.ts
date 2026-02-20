@@ -55,7 +55,7 @@ export const researchGroups: ResearchGroup[] = [
       'ExTINGUISH and CIELO clinical trial involvement',
       'Patient-reported outcome measures development',
     ],
-    keyInvestigators: ['Giovanna Manzano'],
+    keyInvestigators: ['Mattia Wruble', 'Shamik Bhattacharyya', 'Phil Bilodeau'],
     accentColor: 'violet-500',
   },
   {
@@ -93,7 +93,7 @@ export const researchGroups: ResearchGroup[] = [
     name: 'EBV and MS',
     slug: 'ebv-ms',
     description:
-      'Our EBV and MS program bridges bench and bedside, spanning EBV immunology in multiple sclerosis, exosome biology, and novel antibody discovery. These studies aim to identify new therapeutic targets and diagnostic biomarkers for autoimmune neurological diseases.',
+      'Our EBV and MS program investigates the role of Epstein-Barr virus in triggering multiple sclerosis. Through virology, immunology, and translational research, we aim to understand EBV-driven CNS autoimmunity and develop antiviral therapeutic strategies.',
     patientCount: '',
     infrastructure: [
       'Flow cytometry and single-cell transcriptomics',
@@ -102,5 +102,20 @@ export const researchGroups: ResearchGroup[] = [
     ],
     keyInvestigators: ['Natalia Drosu', 'Michael Levy', 'Phil Bilodeau', 'Monique Anderson', 'Taka Mikami'],
     accentColor: 'teal-500',
+  },
+  {
+    id: 'rg7',
+    name: 'Neuro-Rheumatology',
+    slug: 'neuro-rheum',
+    description:
+      'Our Neuro-Rheumatology program at Brigham and Women\u2019s Hospital focuses on neurological manifestations of systemic autoimmune diseases, including neuropsychiatric lupus (neuroSLE), rheumatoid pachymeningitis, and other rheumatological conditions affecting the nervous system.',
+    patientCount: '',
+    infrastructure: [
+      'Multidisciplinary neuro-rheumatology clinic (BWH)',
+      'NeuroSLE patient registry',
+      'Collaborative rheumatology and neurology protocols',
+    ],
+    keyInvestigators: ['Shamik Bhattacharyya', 'Mattia Wruble', 'Douglas Wilcox', 'Phil Bilodeau'],
+    accentColor: 'indigo-500',
   },
 ]

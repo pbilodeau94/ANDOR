@@ -10,8 +10,8 @@ import Link from 'next/link'
 const uniquePubCount = new Set(publications.map((p) => p.title)).size
 
 const heroStats = [
-  { value: '6', label: 'Research Groups' },
-  { value: '15', label: 'Investigators' },
+  { value: '7', label: 'Research Programs' },
+  { value: '15+', label: 'Investigators' },
   { value: '60+', label: 'Active Projects' },
   { value: '700+', label: 'Registry Patients' },
 ]
@@ -19,7 +19,7 @@ const heroStats = [
 const impactStats = [
   { value: String(uniquePubCount) + '+', label: 'Publications' },
   { value: '69', label: 'Research Projects' },
-  { value: '3', label: 'Clinical Trials' },
+  { value: '6+', label: 'Clinical Trials' },
   { value: '7', label: 'Partner Institutions' },
 ]
 
