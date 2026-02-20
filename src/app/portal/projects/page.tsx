@@ -7,6 +7,7 @@ import BoardView, { type BoardColumn } from '@/components/portal/BoardView'
 import ProjectCard from '@/components/portal/ProjectCard'
 import DiseaseTabs from '@/components/DiseaseTabs'
 import DiseaseChips from '@/components/portal/DiseaseChips'
+import LinkedTasks from '@/components/portal/LinkedTasks'
 import { projectStageLabels, projectStageColors } from '@/data/projects'
 import { filterByDisease } from '@/data/disease-utils'
 import { useProjectsStore } from '@/data/use-projects-store'
@@ -118,6 +119,7 @@ function ExpandedProjectRow({
             diseases={project.diseases}
             onUpdate={(newDiseases) => onUpdate({ diseases: newDiseases })}
           />
+          <LinkedTasks projectId={project.id} />
         </div>
       </td>
     </tr>

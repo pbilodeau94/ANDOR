@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import SectionWrapper from '@/components/SectionWrapper'
 import DeadlineCard from '@/components/DeadlineCard'
+import TaskSummary from '@/components/portal/TaskSummary'
 import { grants, grantStatusLabels, computeTotal } from '@/data/grants'
 import type { GrantStatus } from '@/data/grants'
 import { projects } from '@/data/projects'
@@ -59,7 +60,7 @@ export default function PortalDashboard() {
 
       {/* Summary Cards */}
       <SectionWrapper>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <div className="rounded-xl border border-gray-200 bg-white p-5">
             <div className="text-sm text-gray-500">Total Grants</div>
             <div className="mt-1 text-3xl font-bold text-[var(--color-primary)]">{grants.length}</div>
@@ -78,6 +79,7 @@ export default function PortalDashboard() {
             <div className="text-sm text-gray-500">Funded</div>
             <div className="mt-1 text-3xl font-bold text-emerald-600">{statusCounts.funded}</div>
           </div>
+          <TaskSummary />
         </div>
       </SectionWrapper>
 
@@ -129,7 +131,7 @@ export default function PortalDashboard() {
       {/* Quick Links */}
       <SectionWrapper alt>
         <h2 className="text-xl font-bold text-[var(--color-primary)]">Quick Links</h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {[
             {
               href: '/portal/grants',
@@ -142,6 +144,12 @@ export default function PortalDashboard() {
               title: 'Projects Tracker',
               description: 'Research projects with Table and Board views',
               count: `${projects.length} projects`,
+            },
+            {
+              href: '/portal/tasks',
+              title: 'Tasks',
+              description: 'Tasks assigned to investigators, linked to grants and projects',
+              count: 'By person',
             },
             {
               href: '/portal/agreements',

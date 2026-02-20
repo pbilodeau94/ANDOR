@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react'
 import DiseaseChips from '@/components/portal/DiseaseChips'
+import LinkedTasks from '@/components/portal/LinkedTasks'
 import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels } from '@/data/grants'
 import { useGrantsStore } from '@/data/use-grants-store'
 import {
@@ -549,6 +550,7 @@ function ExpandedGrantRow({
               <p className="text-sm text-gray-700">{grant.notes}</p>
             </div>
           )}
+          <LinkedTasks grantId={grant.id} />
           {showTimeline && (
             <MilestoneTaskList
               milestones={milestones}
