@@ -10,44 +10,43 @@ import { publications } from '@/data/publications'
 
 const programHighlights: Record<string, string[]> = {
   MOGAD: [
-    'One of the largest single-center MOGAD registries in the world (>350 patients), enabling natural history and biomarker discovery studies',
-    'Key contributions to the international consensus diagnostic criteria for MOGAD, establishing the clinical framework for diagnosis worldwide',
-    'Pioneering research on age-dependent relapse risk and differential treatment responses, informing personalized treatment strategies',
-    'Active cell-based assay laboratory for MOG antibody testing, supporting both clinical care and translational research',
-    'Multi-center collaborations studying serum and CSF biomarkers for disease activity and prognosis',
+    'Contributions to the international consensus diagnostic criteria for MOGAD, defining the clinical framework for diagnosis worldwide',
+    'Characterization of age-dependent relapse risk and differential treatment responses across the lifespan, informing personalized therapy',
+    'Development of cell-based assays for MOG antibody detection with improved sensitivity and specificity over commercial testing',
+    'Prospective studies defining serum and CSF biomarkers of disease activity including neurofilament light chain and GFAP',
+    'Multi-center studies of treatment outcomes comparing rituximab, IVIG, and mycophenolate in MOGAD',
   ],
   NMOSD: [
-    'BEST-NMOSD: a PCORI-funded pragmatic clinical trial comparing disease-modifying treatments in neuromyelitis optica spectrum disorder — one of the first head-to-head treatment trials in NMOSD',
-    'Comprehensive multi-center cohort (Alexion-funded) studying treatment effectiveness and disease mechanisms across institutions',
-    'Prospective registry with >180 patients tracking longitudinal outcomes, treatment responses, and biomarker trajectories',
-    'Research on comparative effectiveness of rituximab, tocilizumab, and FDA-approved therapies in real-world settings',
-    'Development of animal models to study aquaporin-4 antibody-mediated pathology and test therapeutic interventions',
+    'BEST-NMOSD: one of the first head-to-head pragmatic trials comparing disease-modifying treatments in NMOSD',
+    'Comparative effectiveness studies of rituximab, tocilizumab, and FDA-approved therapies (eculizumab, inebilizumab, satralizumab) in real-world settings',
+    'Multi-center cohort studies characterizing treatment effectiveness and disease mechanisms across institutions',
+    'Development of animal models to study aquaporin-4 antibody-mediated pathology and novel therapeutic interventions',
+    'Longitudinal biomarker studies tracking treatment response and relapse prediction in >180 patients',
   ],
   'Autoimmune Encephalitis': [
-    'Published and implemented a standardized diagnostic algorithm that measurably improved care for patients with suspected autoimmune encephalitis',
-    'Active involvement in the ExTINGUISH and CIELO clinical trials for autoimmune encephalitis treatment',
+    'Development and implementation of a standardized diagnostic algorithm that measurably improved care for suspected autoimmune encephalitis',
+    'Participation in the ExTINGUISH and CIELO clinical trials evaluating new treatments for autoimmune encephalitis',
     'Development and validation of patient-reported outcome measures specific to autoimmune encephalitis',
-    'Registry of ~100 patients including seronegative encephalitis cases, enabling studies of diagnostic biomarkers',
+    'Characterization of seronegative encephalitis through a registry of ~100 patients, identifying diagnostic biomarkers and treatment patterns',
   ],
   Neurosarcoidosis: [
-    'Discovery of protein trafficking changes involving VPS37A in neurosarcoidosis, advancing understanding of disease mechanisms',
-    'Investigation of immunopathogenesis pathways including exosome biology and cytokine signaling in neurosarcoidosis',
-    'Ann Theodore Foundation-funded laboratory studies characterizing the immune basis of nervous system sarcoidosis',
-    'Clinical registry for studying treatment phenotypes and optimizing therapy for this rare neuroimmunological condition',
+    'Discovery of protein trafficking changes involving VPS37A in neurosarcoidosis, revealing novel disease mechanisms',
+    'Investigation of exosome biology and cytokine signaling pathways in the immunopathogenesis of neurosarcoidosis',
+    'Laboratory studies characterizing the immune basis of nervous system sarcoidosis through tissue and blood profiling',
+    'Clinical studies defining treatment phenotypes and optimizing immunosuppressive therapy for neurosarcoidosis',
   ],
   'CNS Vasculitis': [
-    'Building one of the largest biopsy-confirmed primary CNS vasculitis cohort databases, defining clinicoradiographic phenotypes',
-    'Research on early relapse risk and prognostic factors in biopsy-confirmed CNS vasculitis',
-    'Investigation of novel biomarkers and advanced MRI imaging protocols (central vein sign) for diagnosis',
-    'Case series and mechanistic studies of amyloid-related angiitis and treatment response',
+    'Establishment of one of the largest biopsy-confirmed primary CNS vasculitis cohort databases, defining clinicoradiographic phenotypes',
+    'Research on early relapse risk factors and long-term prognostic markers in biopsy-confirmed CNS vasculitis',
+    'Investigation of advanced MRI imaging protocols including central vein sign for improved non-invasive diagnosis',
+    'Mechanistic studies of amyloid-related angiitis and characterization of treatment response patterns',
   ],
   'Translational Neuroimmunology': [
-    'Bench-to-bedside research spanning EBV immunology in multiple sclerosis, including studies of viral particles and T cell responses',
-    'Natalia Drosu\'s research demonstrating that EBV viral particles elicit dominant CD4+ T cell responses in MS, advancing understanding of the viral trigger hypothesis',
-    'Investigation of EBV in exosomes as a novel pathway in MS pathogenesis',
-    'Research on anti-EBNA-1 antibody thresholds and EBV shedding patterns in MS patients',
-    'Gamma-delta (γδ) T cell research using EAE animal models to understand roles in CNS autoimmunity',
-    'Single-cell transcriptomics and flow cytometry approaches to novel antibody discovery and therapeutic target identification',
+    'Discovery that EBV viral particles elicit dominant CD4+ T cell responses in MS, advancing understanding of the viral trigger hypothesis',
+    'Investigation of EBV in exosomes as a novel pathway in MS pathogenesis and identification of anti-EBNA-1 antibody thresholds',
+    'Gamma-delta (\u03B3\u03B4) T cell research using EAE animal models to understand roles of butyrophilin ligands in CNS autoimmunity',
+    'Single-cell transcriptomics and flow cytometry approaches to novel autoantibody discovery and therapeutic target identification',
+    'Research on folate receptor autoimmunity in autism spectrum disorder, OCD, and schizophrenia',
   ],
 }
 
@@ -155,15 +154,24 @@ export default function ResearchPage() {
                 {/* Selected Publications */}
                 {(() => {
                   const groupPubs = publications.filter((p) => p.researchGroup === group.name)
+                  const shown = groupPubs.slice(0, 6)
+                  const remaining = groupPubs.length - shown.length
                   return (
                     <div className="mt-8">
                       <h3 className="text-lg font-semibold text-gray-900">Selected Publications</h3>
-                      {groupPubs.length > 0 ? (
-                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                          {groupPubs.map((pub) => (
-                            <PublicationCard key={pub.id} pub={pub} />
-                          ))}
-                        </div>
+                      {shown.length > 0 ? (
+                        <>
+                          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                            {shown.map((pub) => (
+                              <PublicationCard key={pub.id} pub={pub} />
+                            ))}
+                          </div>
+                          {remaining > 0 && (
+                            <p className="mt-3 text-xs text-gray-400">
+                              + {remaining} more publication{remaining !== 1 ? 's' : ''}
+                            </p>
+                          )}
+                        </>
                       ) : (
                         <p className="mt-4 text-sm italic text-gray-400">Publications coming soon</p>
                       )}

@@ -36,7 +36,7 @@ export const researchGroups: ResearchGroup[] = [
     infrastructure: [
       'Prospective registry with >180 patients',
       'BEST-NMOSD pragmatic clinical trial (PCORI-funded)',
-      'Multi-center collaboration (Alexion-funded)',
+      'Multi-center collaboration',
       'Biorepository and biomarker studies',
     ],
     keyInvestigators: ['Shamik Bhattacharyya', 'Phil Bilodeau', 'Mattia Wruble', 'Michael Levy'],
@@ -62,11 +62,11 @@ export const researchGroups: ResearchGroup[] = [
     name: 'Neurosarcoidosis',
     slug: 'neurosarcoidosis',
     description:
-      'Neurosarcoidosis occurs when sarcoidosis—a systemic inflammatory disease—affects the nervous system. Our program is investigating the immunopathogenesis of neurosarcoidosis using advanced laboratory techniques and building a comprehensive clinical database to study treatment phenotypes.',
+      'Neurosarcoidosis occurs when sarcoidosis\u2014a systemic inflammatory disease\u2014affects the nervous system. Our program is investigating the immunopathogenesis of neurosarcoidosis using advanced laboratory techniques and building a comprehensive clinical database to study treatment phenotypes.',
     patientCount: '~60',
     infrastructure: [
       'Clinical registry',
-      'Immunopathogenesis lab studies (Ann Theodore Foundation–funded)',
+      'Immunopathogenesis lab studies',
       'Exosome and protein trafficking research',
     ],
     keyInvestigators: ['Michael Levy', 'Monique Anderson', 'Phil Bilodeau'],
@@ -92,12 +92,12 @@ export const researchGroups: ResearchGroup[] = [
     name: 'Translational Neuroimmunology',
     slug: 'translational',
     description:
-      'Our translational research program bridges bench and bedside, spanning EBV immunology in MS, exosome biology, γδ T cell research, and novel antibody discovery. These studies aim to identify new therapeutic targets and diagnostic biomarkers for autoimmune neurological diseases.',
+      'Our translational research program bridges bench and bedside, spanning EBV immunology in MS, exosome biology, \u03B3\u03B4 T cell research, and novel antibody discovery. These studies aim to identify new therapeutic targets and diagnostic biomarkers for autoimmune neurological diseases.',
     patientCount: '',
     infrastructure: [
       'Flow cytometry and single-cell transcriptomics',
       'EBV immunology assays',
-      'γδ T cell animal models (EAE)',
+      '\u03B3\u03B4 T cell animal models (EAE)',
       'Exosome isolation and characterization',
     ],
     keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Natalia Drosu', 'Monique Anderson', 'Taka Mikami'],

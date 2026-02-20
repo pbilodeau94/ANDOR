@@ -40,7 +40,7 @@ export const team: TeamMember[] = [
     title: 'Associate Professor of Neurology, Vice-Chair of Clinical Affairs',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/72102',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/119111',
     imageUrl: '/team/matiello.jpg',
     diseases: ['NMOSD', 'MOGAD', 'MS'],
   },

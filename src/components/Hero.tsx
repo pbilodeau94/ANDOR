@@ -44,7 +44,7 @@ export default function Hero({ title, subtitle, description, cta, children, show
             </div>
           )}
           {subtitle && (
-            <p className="animate-fade-in-up mb-3 text-sm font-semibold uppercase tracking-wider text-teal-200">
+            <p className="animate-fade-in-up mb-3 text-sm font-semibold uppercase tracking-wider text-amber-200">
               {subtitle}
             </p>
           )}

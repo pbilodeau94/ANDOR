@@ -10,16 +10,28 @@ export default function PublicationCard({ pub }: { pub: Publication }) {
         <span>&middot;</span>
         <span>{pub.year}</span>
       </div>
-      {pub.doi && (
-        <a
-          href={`https://doi.org/${pub.doi}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 inline-block text-xs text-[var(--color-accent)] hover:underline"
-        >
-          DOI: {pub.doi}
-        </a>
-      )}
+      <div className="mt-2 flex items-center gap-3">
+        {pub.pmid && (
+          <a
+            href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-[var(--color-accent)] hover:underline"
+          >
+            PubMed
+          </a>
+        )}
+        {pub.doi && (
+          <a
+            href={`https://doi.org/${pub.doi}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-[var(--color-accent)] hover:underline"
+          >
+            DOI
+          </a>
+        )}
+      </div>
     </div>
   )
 }

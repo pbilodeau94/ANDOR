@@ -1,4 +1,4 @@
-export type DocumentType = 'biosketch' | 'budget' | 'letter_of_support' | 'specific_aims' | 'other'
+export type DocumentType = 'biosketch' | 'letter_of_support' | 'other'
 
 export type ResearchDocument = {
   id: string
@@ -68,24 +68,6 @@ export const documents: ResearchDocument[] = [
     lastUpdated: '2025-01-15',
   },
   {
-    id: 'd8',
-    name: 'Budget Justification - K99 γδ T Cells',
-    type: 'budget',
-    investigator: 'Phil Bilodeau',
-    grantId: 'g3',
-    url: '',
-    lastUpdated: '2026-01-20',
-  },
-  {
-    id: 'd9',
-    name: 'Specific Aims - K99 γδ T Cells',
-    type: 'specific_aims',
-    investigator: 'Phil Bilodeau',
-    grantId: 'g3',
-    url: '',
-    lastUpdated: '2026-01-15',
-  },
-  {
     id: 'd10',
     name: 'Letter of Support - MGH Neuroimmunology',
     type: 'letter_of_support',
@@ -94,38 +76,16 @@ export const documents: ResearchDocument[] = [
     url: '',
     lastUpdated: '2026-01-10',
   },
-  {
-    id: 'd11',
-    name: 'Specific Aims - MOGAD Biomarkers R01',
-    type: 'specific_aims',
-    investigator: 'Michael Levy',
-    grantId: 'g5',
-    url: '',
-    lastUpdated: '2026-01-25',
-  },
-  {
-    id: 'd12',
-    name: 'Budget Justification - NMOSD R01',
-    type: 'budget',
-    investigator: 'Michael Levy',
-    grantId: 'g4',
-    url: '',
-    lastUpdated: '2026-01-20',
-  },
 ]
 
 export const documentTypeLabels: Record<DocumentType, string> = {
   biosketch: 'Biosketch',
-  budget: 'Budget',
   letter_of_support: 'Letter of Support',
-  specific_aims: 'Specific Aims',
-  other: 'Other',
+  other: 'Other Support',
 }
 
 export const documentTypeColors: Record<DocumentType, string> = {
   biosketch: 'bg-blue-100 text-blue-700',
-  budget: 'bg-emerald-100 text-emerald-700',
   letter_of_support: 'bg-purple-100 text-purple-700',
-  specific_aims: 'bg-amber-100 text-amber-700',
   other: 'bg-gray-100 text-gray-700',
 }

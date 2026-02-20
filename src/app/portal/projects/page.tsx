@@ -5,11 +5,9 @@ import SectionWrapper from '@/components/SectionWrapper'
 import ViewToggle, { type ViewMode } from '@/components/portal/ViewToggle'
 import BoardView, { type BoardColumn } from '@/components/portal/BoardView'
 import ProjectCard from '@/components/portal/ProjectCard'
-import DiseaseTabs from '@/components/DiseaseTabs'
 import DiseaseChips from '@/components/portal/DiseaseChips'
 import LinkedTasks from '@/components/portal/LinkedTasks'
 import { projectStageLabels, projectStageColors } from '@/data/projects'
-import { filterByDisease } from '@/data/disease-utils'
 import { useProjectsStore } from '@/data/use-projects-store'
 import type { ProjectStage, Project } from '@/data/projects'
 
@@ -101,12 +99,6 @@ function ExpandedProjectRow({
               <p className="text-sm text-gray-700">{project.collaboration}</p>
             </div>
           )}
-          {project.fundingSource && (
-            <div>
-              <span className="text-xs font-semibold uppercase text-gray-400">Funding Source</span>
-              <p className="text-sm text-gray-700">{project.fundingSource}</p>
-            </div>
-          )}
           {project.targetCompletion && (
             <div>
               <span className="text-xs font-semibold uppercase text-gray-400">Target Completion</span>
@@ -119,39 +111,77 @@ function ExpandedProjectRow({
             diseases={project.diseases}
             onUpdate={(newDiseases) => onUpdate({ diseases: newDiseases })}
           />
-          <LinkedTasks projectId={project.id} />
+          <div className="sm:col-span-2 lg:col-span-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase text-gray-400">Tasks</span>
+              <a href="/portal/tasks" className="text-[10px] font-medium text-[var(--color-accent)] hover:underline">
+                All tasks &rarr;
+              </a>
+            </div>
+            <div className="mt-2 space-y-1">
+              <LinkedTasks projectId={project.id} />
+            </div>
+          </div>
         </div>
       </td>
     </tr>
   )
 }
 
+// --- Stage Tabs ---
+
+function StageTabs({ activeTab, onChange }: { activeTab: ProjectStage | null; onChange: (tab: ProjectStage | null) => void }) {
+  const tabs: { key: ProjectStage | null; label: string }[] = [
+    { key: null, label: 'All' },
+    ...Object.entries(projectStageLabels).map(([key, label]) => ({ key: key as ProjectStage, label })),
+  ]
+
+  return (
+    <div className="border-b border-gray-200">
+      <nav className="-mb-px flex gap-1 overflow-x-auto" aria-label="Project stage filters">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.key
+          return (
+            <button
+              key={tab.label}
+              onClick={() => onChange(tab.key)}
+              className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                isActive
+                  ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              }`}
+            >
+              {tab.label}
+            </button>
+          )
+        })}
+      </nav>
+    </div>
+  )
+}
+
 export default function ProjectsPage() {
   const { projects: allProjects, updateProject, deleteProject } = useProjectsStore()
   const [view, setView] = useState<ViewMode>('table')
-  const [diseaseTab, setDiseaseTab] = useState<string | null>(null)
-  const [stageFilter, setStageFilter] = useState<ProjectStage | 'all'>('all')
+  const [stageTab, setStageTab] = useState<ProjectStage | null>(null)
   const [leadFilter, setLeadFilter] = useState<string>('all')
   const [sortKey, setSortKey] = useState<SortKey>('title')
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
-  const diseaseFiltered = useMemo(
-    () => filterByDisease(allProjects, diseaseTab),
-    [allProjects, diseaseTab]
+  const stageFiltered = useMemo(
+    () => stageTab ? allProjects.filter((p) => p.stage === stageTab) : allProjects,
+    [allProjects, stageTab]
   )
 
   const leads = useMemo(
-    () => [...new Set(diseaseFiltered.map((p) => p.lead).filter(Boolean))].sort(),
-    [diseaseFiltered]
+    () => [...new Set(stageFiltered.map((p) => p.lead).filter(Boolean))].sort(),
+    [stageFiltered]
   )
 
   const filtered = useMemo(() => {
-    let result = [...diseaseFiltered]
-    if (stageFilter !== 'all') {
-      result = result.filter((p) => p.stage === stageFilter)
-    }
+    let result = [...stageFiltered]
     if (leadFilter !== 'all') {
       result = result.filter((p) => p.lead === leadFilter)
     }
@@ -170,7 +200,13 @@ export default function ProjectsPage() {
     })
 
     return result
-  }, [diseaseFiltered, stageFilter, leadFilter, sortKey, sortDir])
+  }, [stageFiltered, leadFilter, sortKey, sortDir])
+
+  // Published projects shown as paper list
+  const publishedProjects = useMemo(
+    () => allProjects.filter((p) => p.stage === 'published'),
+    [allProjects]
+  )
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -179,13 +215,6 @@ export default function ProjectsPage() {
       setSortKey(key)
       setSortDir('asc')
     }
-  }
-
-  const hasFilters = stageFilter !== 'all' || leadFilter !== 'all'
-
-  function clearFilters() {
-    setStageFilter('all')
-    setLeadFilter('all')
   }
 
   function handleDelete(id: string) {
@@ -219,49 +248,60 @@ export default function ProjectsPage() {
                 {allProjects.length} projects across all disease areas
               </p>
             </div>
-            <ViewToggle view={view} onChange={setView} />
+            {stageTab !== 'published' && <ViewToggle view={view} onChange={setView} />}
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <DiseaseTabs activeTab={diseaseTab} onChange={setDiseaseTab} />
+        <StageTabs activeTab={stageTab} onChange={setStageTab} />
       </div>
 
       <SectionWrapper>
-        {/* Filters */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <select
-            value={stageFilter}
-            onChange={(e) => setStageFilter(e.target.value as ProjectStage | 'all')}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
-          >
-            <option value="all">All Stages</option>
-            {Object.entries(projectStageLabels).map(([key, label]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
+        {stageTab === 'published' ? (
+          /* Published = simple paper list */
+          publishedProjects.length > 0 ? (
+            <div className="space-y-3">
+              {publishedProjects.map((project) => (
+                <div key={project.id} className="rounded-xl border border-gray-200 bg-white p-4">
+                  <div className="text-sm font-medium text-gray-900">{project.title}</div>
+                  <div className="mt-1 flex flex-wrap gap-3 text-xs text-gray-500">
+                    {project.pi && <span>{project.pi}</span>}
+                    {project.lead && project.lead !== project.pi && <span>{project.lead}</span>}
+                    {project.diseases.length > 0 && (
+                      <span className="text-gray-400">{project.diseases.join(', ')}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="py-8 text-center text-sm text-gray-400 italic">No published projects.</p>
+          )
+        ) : (
+          <>
+            {/* Filters */}
+            <div className="mb-6 flex flex-wrap items-center gap-3">
+              <select
+                value={leadFilter}
+                onChange={(e) => setLeadFilter(e.target.value)}
+                className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
+              >
+                <option value="all">All Leads</option>
+                {leads.map((lead) => (
+                  <option key={lead} value={lead}>{lead}</option>
+                ))}
+              </select>
 
-          <select
-            value={leadFilter}
-            onChange={(e) => setLeadFilter(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
-          >
-            <option value="all">All Leads</option>
-            {leads.map((lead) => (
-              <option key={lead} value={lead}>{lead}</option>
-            ))}
-          </select>
-
-          {hasFilters && (
-            <button
-              onClick={clearFilters}
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-500 hover:bg-gray-50"
-            >
-              Clear filters
-            </button>
-          )}
-        </div>
+              {leadFilter !== 'all' && (
+                <button
+                  onClick={() => setLeadFilter('all')}
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-500 hover:bg-gray-50"
+                >
+                  Clear filter
+                </button>
+              )}
+            </div>
 
         {view === 'table' ? (
           <>
@@ -400,6 +440,8 @@ export default function ProjectsPage() {
               )
             }}
           </BoardView>
+        )}
+          </>
         )}
       </SectionWrapper>
     </>

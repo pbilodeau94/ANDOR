@@ -357,65 +357,6 @@ function TeamMemberChips({
   )
 }
 
-// --- Milestone Task List ---
-
-function MilestoneTaskList({
-  milestones,
-  grantId,
-  completions,
-  onToggle,
-}: {
-  milestones: Milestone[]
-  grantId: string
-  completions: Record<string, boolean>
-  onToggle: (milestoneKey: string) => void
-}) {
-  return (
-    <div className="sm:col-span-2 lg:col-span-3">
-      <span className="text-xs font-semibold uppercase text-gray-400">MGB Proposal Timeline</span>
-      <div className="mt-2 space-y-1">
-        {milestones.map((m) => {
-          const done = completions[m.key] ?? false
-          const urgency = getUrgency(m.dateStr)
-          const today = new Date()
-          today.setHours(0, 0, 0, 0)
-          const isPast = m.date < today
-
-          return (
-            <label
-              key={m.key}
-              className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2 ${
-                done ? 'border-gray-100 bg-gray-50 opacity-60' : isPast ? 'border-gray-100 bg-gray-50 opacity-60' : urgencyColors[urgency]
-              }`}
-            >
-              <input
-                type="checkbox"
-                checked={done}
-                onChange={() => onToggle(m.key)}
-                className="rounded border-gray-300 text-[var(--color-primary)]"
-              />
-              <div className="w-20 shrink-0 text-xs font-semibold">
-                {formatShortDate(m.dateStr)}
-              </div>
-              <div className="min-w-0 flex-1">
-                <span className={`text-xs font-medium ${done ? 'line-through' : ''}`}>{m.label}</span>
-                <span className={`ml-2 inline-flex rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-                  m.owner === 'pi' ? 'bg-blue-100 text-blue-700' : m.owner === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-teal-100 text-teal-700'
-                }`}>
-                  {m.owner === 'pi' ? 'PI' : m.owner === 'admin' ? 'Admin' : 'Both'}
-                </span>
-              </div>
-              {!done && !isPast && urgency !== 'future' && urgency !== 'ok' && (
-                <span className="shrink-0 text-xs font-semibold">{urgencyLabels[urgency]}</span>
-              )}
-            </label>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
 // --- Expanded Grant Row ---
 
 function ExpandedGrantRow({
@@ -550,15 +491,53 @@ function ExpandedGrantRow({
               <p className="text-sm text-gray-700">{grant.notes}</p>
             </div>
           )}
-          <LinkedTasks grantId={grant.id} />
-          {showTimeline && (
-            <MilestoneTaskList
-              milestones={milestones}
-              grantId={grant.id}
-              completions={milestoneCompletions}
-              onToggle={onToggleMilestone}
-            />
-          )}
+          <div className="sm:col-span-2 lg:col-span-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase text-gray-400">Tasks</span>
+              <a href="/portal/tasks" className="text-[10px] font-medium text-[var(--color-accent)] hover:underline">
+                All tasks &rarr;
+              </a>
+            </div>
+            <div className="mt-2 space-y-1">
+              <LinkedTasks grantId={grant.id} />
+              {showTimeline && milestones.map((m) => {
+                const done = milestoneCompletions[m.key] ?? false
+                const urgency = getUrgency(m.dateStr)
+                const today = new Date()
+                today.setHours(0, 0, 0, 0)
+                const isPast = m.date < today
+                return (
+                  <label
+                    key={m.key}
+                    className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2 ${
+                      done ? 'border-gray-100 bg-gray-50 opacity-60' : isPast ? 'border-gray-100 bg-gray-50 opacity-60' : urgencyColors[urgency]
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={done}
+                      onChange={() => onToggleMilestone(m.key)}
+                      className="rounded border-gray-300 text-[var(--color-primary)]"
+                    />
+                    <div className="w-20 shrink-0 text-xs font-semibold">
+                      {formatShortDate(m.dateStr)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className={`text-xs font-medium ${done ? 'line-through' : ''}`}>{m.label}</span>
+                      <span className={`ml-2 inline-flex rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
+                        m.owner === 'pi' ? 'bg-blue-100 text-blue-700' : m.owner === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        {m.owner === 'pi' ? 'PI' : m.owner === 'admin' ? 'Admin' : 'Both'}
+                      </span>
+                    </div>
+                    {!done && !isPast && urgency !== 'future' && urgency !== 'ok' && (
+                      <span className="shrink-0 text-xs font-semibold">{urgencyLabels[urgency]}</span>
+                    )}
+                  </label>
+                )
+              })}
+            </div>
+          </div>
         </div>
       </td>
     </tr>
@@ -671,7 +650,9 @@ export default function GrantsPage() {
 
   const filtered = useMemo(() => {
     let result = [...typeFiltered]
+    // Hide not_funded unless explicitly selected in status filter
     if (statusFilter.length > 0) result = result.filter((g) => statusFilter.includes(g.status))
+    else result = result.filter((g) => g.status !== 'not_funded')
     if (personFilter.length > 0) {
       result = result.filter((g) =>
         personFilter.some((name) => g.pi.includes(name) || g.keyPersonnel.includes(name))

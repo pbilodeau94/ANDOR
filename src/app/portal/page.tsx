@@ -29,8 +29,10 @@ function getStatusCounts() {
   return counts
 }
 
-function getTotalFunding() {
-  return grants.reduce((sum, g) => sum + computeTotal(g), 0)
+function getFundedTotal() {
+  return grants
+    .filter((g) => g.status === 'funded')
+    .reduce((sum, g) => sum + computeTotal(g), 0)
 }
 
 function formatCurrency(amount: number): string {
@@ -44,7 +46,7 @@ function formatCurrency(amount: number): string {
 export default function PortalDashboard() {
   const upcoming = getUpcomingDeadlines()
   const statusCounts = getStatusCounts()
-  const totalFunding = getTotalFunding()
+  const fundedTotal = getFundedTotal()
 
   return (
     <>
@@ -66,9 +68,9 @@ export default function PortalDashboard() {
             <div className="mt-1 text-3xl font-bold text-[var(--color-primary)]">{grants.length}</div>
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-5">
-            <div className="text-sm text-gray-500">Pipeline Value</div>
+            <div className="text-sm text-gray-500">Funded Awards</div>
             <div className="mt-1 text-3xl font-bold text-[var(--color-primary)]">
-              {formatCurrency(totalFunding)}
+              {formatCurrency(fundedTotal)}
             </div>
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-5">
@@ -109,9 +111,9 @@ export default function PortalDashboard() {
 
       {/* Status Breakdown */}
       <SectionWrapper>
-        <h2 className="text-xl font-bold text-[var(--color-primary)]">Grant Pipeline by Status</h2>
+        <h2 className="text-xl font-bold text-[var(--color-primary)]">Grants by Status</h2>
         <div className="mt-6 space-y-3">
-          {(Object.entries(statusCounts) as [GrantStatus, number][]).map(([status, count]) => (
+          {(Object.entries(statusCounts) as [GrantStatus, number][]).filter(([status]) => status !== 'not_funded').map(([status, count]) => (
             <div key={status} className="flex items-center gap-4">
               <div className="w-28 text-sm text-gray-600">{grantStatusLabels[status]}</div>
               <div className="flex-1">
@@ -160,7 +162,7 @@ export default function PortalDashboard() {
             {
               href: '/portal/documents',
               title: 'Documents',
-              description: 'Biosketches, budgets, and support documents',
+              description: 'Biosketches and support documents',
               count: `${documents.length} documents`,
             },
           ].map((link) => (

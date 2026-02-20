@@ -17,7 +17,7 @@ function CardContent({ member }: { member: TeamMember }) {
           <img
             src={member.imageUrl}
             alt={member.name}
-            className="h-14 w-14 rounded-full object-cover"
+            className="h-14 w-14 rounded-full object-cover object-top"
           />
         ) : (
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-lg font-bold text-[var(--color-primary)]">

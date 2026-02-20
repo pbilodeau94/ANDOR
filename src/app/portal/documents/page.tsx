@@ -13,7 +13,7 @@ function formatDate(dateStr: string): string {
   })
 }
 
-const typeOrder: DocumentType[] = ['biosketch', 'specific_aims', 'budget', 'letter_of_support', 'other']
+const typeOrder: DocumentType[] = ['biosketch', 'letter_of_support', 'other']
 
 export default function DocumentsPage() {
   const [investigatorFilter, setInvestigatorFilter] = useState<string>('all')
@@ -55,7 +55,7 @@ export default function DocumentsPage() {
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold text-[var(--color-primary)]">Documents</h1>
           <p className="mt-2 text-gray-600">
-            {documents.length} biosketches, budgets, and support documents
+            {documents.length} biosketches and support documents
           </p>
         </div>
       </div>
