@@ -9,6 +9,7 @@ export const diseaseMap: Record<string, string[]> = {
   'CNS Vasculitis': ['Vasculitis'],
   'EBV and MS': ['MS', 'AD', 'ASD', 'ALS', 'OCD', 'Schizophrenia', 'Superficial siderosis', 'Inflammatory myelopathy'],
   'Neuro-Rheumatology': ['NeuroSLE', 'Lupus', 'Rheumatology', 'Pachymeningitis'],
+  'Folate and Autism': ['Folate', 'Autism', 'ASD', 'FRA'],
 }
 
 /** All disease tab keys (research group names) */

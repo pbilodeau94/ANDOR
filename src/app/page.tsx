@@ -1,16 +1,20 @@
+import Image from 'next/image'
 import Hero from '@/components/Hero'
 import SectionWrapper from '@/components/SectionWrapper'
 import StatsBar from '@/components/StatsBar'
 import ResearchGroupCard from '@/components/ResearchGroupCard'
 import { researchGroups } from '@/data/research-groups'
 import { publications } from '@/data/publications'
+import { team } from '@/data/team'
 import Link from 'next/link'
+
+const featuredTeam = team.filter((m) => m.role === 'faculty' && m.imageUrl).slice(0, 6)
 
 // Deduplicate publications by title for unique count
 const uniquePubCount = new Set(publications.map((p) => p.title)).size
 
 const heroStats = [
-  { value: '7', label: 'Research Programs' },
+  { value: '8', label: 'Research Programs' },
   { value: '15+', label: 'Investigators' },
   { value: '60+', label: 'Active Projects' },
   { value: '700+', label: 'Registry Patients' },
@@ -48,7 +52,7 @@ export default function HomePage() {
       <SectionWrapper>
         <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">Research Programs</h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
-          Our collaborative spans six core research areas, each with dedicated registries, biorepositories, and active clinical studies.
+          Our collaborative spans eight core research areas, each with dedicated registries, biorepositories, and active clinical studies.
         </p>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {researchGroups.map((group) => (
@@ -113,8 +117,57 @@ export default function HomePage() {
         <StatsBar stats={impactStats} />
       </SectionWrapper>
 
-      {/* CTA */}
+      {/* Our Team */}
       <SectionWrapper alt>
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-[var(--color-primary)]">Our Team</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-gray-600">
+            A multidisciplinary group of neurologists, immunologists, and research staff dedicated to advancing care for patients with rare autoimmune neurological diseases.
+          </p>
+        </div>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {featuredTeam.map((member) => (
+            <div key={member.id} className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4">
+              <Image
+                src={member.imageUrl!}
+                alt={member.name}
+                width={56}
+                height={56}
+                className="h-14 w-14 rounded-full object-cover object-top"
+              />
+              <div className="min-w-0">
+                {member.catalystUrl ? (
+                  <a
+                    href={member.catalystUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-gray-900 hover:text-[var(--color-accent)]"
+                  >
+                    {member.name}
+                  </a>
+                ) : (
+                  <p className="text-sm font-semibold text-gray-900">{member.name}</p>
+                )}
+                <p className="mt-0.5 truncate text-xs text-gray-500">{member.title}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 text-center">
+          <Link
+            href="/team"
+            className="inline-flex items-center text-sm font-semibold text-[var(--color-accent)] hover:underline"
+          >
+            Meet the full team
+            <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+      </SectionWrapper>
+
+      {/* CTA */}
+      <SectionWrapper>
         <div className="text-center">
           <h2 className="text-3xl font-bold text-[var(--color-primary)]">Support Our Research</h2>
           <p className="mx-auto mt-4 max-w-2xl text-gray-600">

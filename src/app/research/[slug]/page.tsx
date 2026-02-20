@@ -32,6 +32,7 @@ const accentBorderMap: Record<string, string> = {
   'rose-500': 'border-rose-500',
   'teal-500': 'border-teal-500',
   'indigo-500': 'border-indigo-500',
+  'cyan-500': 'border-cyan-500',
 }
 
 const accentBgMap: Record<string, string> = {
@@ -42,6 +43,7 @@ const accentBgMap: Record<string, string> = {
   'rose-500': 'bg-rose-50',
   'teal-500': 'bg-teal-50',
   'indigo-500': 'bg-indigo-50',
+  'cyan-500': 'bg-cyan-50',
 }
 
 const accentTextMap: Record<string, string> = {
@@ -52,6 +54,7 @@ const accentTextMap: Record<string, string> = {
   'rose-500': 'text-rose-700',
   'teal-500': 'text-teal-700',
   'indigo-500': 'text-indigo-700',
+  'cyan-500': 'text-cyan-700',
 }
 
 const borderLeftMap: Record<string, string> = {
@@ -62,6 +65,7 @@ const borderLeftMap: Record<string, string> = {
   'rose-500': 'border-l-rose-500',
   'teal-500': 'border-l-teal-500',
   'indigo-500': 'border-l-indigo-500',
+  'cyan-500': 'border-l-cyan-500',
 }
 
 export default async function DiseaseResearchPage({

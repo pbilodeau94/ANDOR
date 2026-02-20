@@ -24,7 +24,7 @@ export const researchGroups: ResearchGroup[] = [
       'Cell-based assay lab for MOG antibody testing',
       '\u03B3\u03B4 T cell animal models (EAE)',
     ],
-    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Taka Mikami', 'Joao Oliveira', 'Marcelo Matiello', 'Tanuja Chitnis'],
+    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Takahisa Mikami', 'Joao Oliveira', 'Marcelo Matiello', 'Tanuja Chitnis'],
     accentColor: 'blue-500',
   },
   {
@@ -100,7 +100,7 @@ export const researchGroups: ResearchGroup[] = [
       'EBV immunology assays',
       'Exosome isolation and characterization',
     ],
-    keyInvestigators: ['Natalia Drosu', 'Michael Levy', 'Phil Bilodeau', 'Monique Anderson', 'Taka Mikami'],
+    keyInvestigators: ['Natalia Drosu', 'João Vitor Mahler', 'Phil Bilodeau', 'Monique Anderson', 'Takahisa Mikami', 'Natasha Bobrowski-Khoury', 'Mulan Jiang', 'Huimin Zhu', 'Jimmy Nguyen', 'Marcelo Matiello', 'Michael Levy'],
     accentColor: 'teal-500',
   },
   {
@@ -117,5 +117,20 @@ export const researchGroups: ResearchGroup[] = [
     ],
     keyInvestigators: ['Shamik Bhattacharyya', 'Mattia Wruble', 'Douglas Wilcox', 'Phil Bilodeau'],
     accentColor: 'indigo-500',
+  },
+  {
+    id: 'rg8',
+    name: 'Folate and Autism',
+    slug: 'folate-autism',
+    description:
+      'Our Folate and Autism program investigates folate receptor alpha (FR\u03B1) autoantibodies and their role in cerebral folate deficiency and autism spectrum disorder. This translational research bridges neuroimmunology and neurodevelopment, exploring how autoimmune disruption of folate transport contributes to ASD pathogenesis.',
+    patientCount: '',
+    infrastructure: [
+      'FR\u03B1 autoantibody testing protocols',
+      'Translational folate metabolism studies',
+      'Collaborative neurodevelopmental research network',
+    ],
+    keyInvestigators: ['Natasha Bobrowski-Khoury', 'Michael Levy', 'Phil Bilodeau'],
+    accentColor: 'cyan-500',
   },
 ]

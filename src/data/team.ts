@@ -192,6 +192,30 @@ export const team: TeamMember[] = [
     institution: 'Harvard Medical School',
     diseases: [],
   },
+  {
+    id: 't23',
+    name: 'João Vitor Mahler',
+    title: 'Research Fellow in Neurology',
+    role: 'fellow',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    diseases: ['MS'],
+  },
+  {
+    id: 't24',
+    name: 'Natasha Bobrowski-Khoury',
+    title: 'Research Fellow in Neurology',
+    role: 'fellow',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    diseases: ['MS', 'Autism'],
+  },
+  {
+    id: 't25',
+    name: 'Huimin Zhu',
+    title: 'Research Fellow in Neurology',
+    role: 'fellow',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    diseases: ['MS'],
+  },
 
   // Staff
   {

@@ -45,6 +45,12 @@ export const programHighlights: Record<string, string[]> = {
     'Studies of rheumatoid pachymeningitis and other CNS manifestations of systemic autoimmune diseases',
     'Development of standardized assessment protocols for neurological involvement in rheumatological conditions',
   ],
+  'Folate and Autism': [
+    'Investigation of folate receptor alpha (FR\u03B1) autoantibodies in autism spectrum disorder and cerebral folate deficiency',
+    'Translational research linking autoimmune disruption of folate transport to neurodevelopmental outcomes',
+    'Studies of FR\u03B1 autoantibody prevalence and clinical correlates in ASD populations',
+    'Exploration of targeted interventions including leucovorin (folinic acid) for FR\u03B1 autoantibody-positive patients',
+  ],
 }
 
 export const whyThisMatters: Record<string, string> = {
@@ -62,4 +68,6 @@ export const whyThisMatters: Record<string, string> = {
     'Epstein-Barr virus is now recognized as a key trigger of multiple sclerosis, but the molecular mechanisms remain unclear. Our laboratory bridges virology and neuroimmunology, investigating how EBV activates autoreactive immune cells, how viral particles traffic through exosomes, and whether antiviral strategies could prevent or treat MS. This work is funded by NIH, the Department of Defense, and NMSS.',
   'Neuro-Rheumatology':
     'Neurological complications of systemic autoimmune diseases like lupus are common yet poorly understood. Neuropsychiatric lupus (neuroSLE) affects up to 75% of SLE patients and can cause seizures, psychosis, and cognitive decline. Our multidisciplinary program at BWH brings together neurologists and rheumatologists to improve diagnosis, develop treatment protocols, and conduct research into the mechanisms of CNS involvement in rheumatological disease.',
+  'Folate and Autism':
+    'Folate receptor alpha (FR\u03B1) autoantibodies can block folate transport into the brain, causing cerebral folate deficiency\u2014a treatable condition linked to autism spectrum disorder. Our research investigates the prevalence and clinical significance of FR\u03B1 autoantibodies in ASD, explores the immunological mechanisms underlying this autoimmune process, and evaluates targeted treatments like leucovorin that can bypass the blocked receptor.',
 }
