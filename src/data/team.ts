@@ -21,6 +21,7 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/183775',
+    imageUrl: '/team/levy.jpg',
     diseases: ['NMOSD', 'MOGAD', 'Neurosarcoidosis'],
   },
   {
@@ -30,6 +31,7 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/99591',
+    imageUrl: '/team/bhattacharyya.png',
     diseases: ['NMOSD'],
   },
   {
@@ -39,6 +41,7 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/72102',
+    imageUrl: '/team/matiello.jpg',
     diseases: ['NMOSD', 'MOGAD', 'MS'],
   },
   {
@@ -48,6 +51,7 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/179820',
+    imageUrl: '/team/bilodeau.jpeg',
     diseases: ['MOGAD', 'NMOSD', 'Neurosarcoidosis'],
   },
   {
@@ -57,6 +61,7 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/159753',
+    imageUrl: '/team/vishnevetsky.jpg',
     diseases: ['MOGAD', 'NMOSD'],
   },
   {
@@ -66,6 +71,7 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/207041',
+    imageUrl: '/team/anderson.jpg',
     diseases: ['Neurosarcoidosis', 'MS'],
   },
   {
@@ -75,6 +81,7 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/193123',
+    imageUrl: '/team/wruble.jpg',
     diseases: ['NMOSD'],
   },
   {
@@ -84,7 +91,17 @@ export const team: TeamMember[] = [
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/171963',
+    imageUrl: '/team/wilcox.jpg',
     diseases: [],
+  },
+  {
+    id: 't9',
+    name: 'Rebecca Gillani',
+    title: 'Research Faculty',
+    role: 'faculty',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/99601',
+    imageUrl: '/team/gillani.jpg',
   },
 
   // Fellows
@@ -95,6 +112,7 @@ export const team: TeamMember[] = [
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/206989',
+    imageUrl: '/team/nguyen.png',
     diseases: ['Vasculitis'],
   },
   {
@@ -104,6 +122,7 @@ export const team: TeamMember[] = [
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/199469',
+    imageUrl: '/team/rajarajan.png',
     diseases: ['Cancer Immunotherapy Complications'],
   },
   {
@@ -113,6 +132,7 @@ export const team: TeamMember[] = [
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/214402',
+    imageUrl: '/team/mikami.png',
     diseases: ['MOGAD'],
   },
   {
@@ -122,6 +142,7 @@ export const team: TeamMember[] = [
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/108632',
+    imageUrl: '/team/drosu.jpg',
     diseases: ['MS'],
   },
   {
@@ -131,6 +152,7 @@ export const team: TeamMember[] = [
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/224533',
+    imageUrl: '/team/hoshina.png',
     diseases: [],
   },
   {
@@ -144,14 +166,6 @@ export const team: TeamMember[] = [
   },
 
   // Staff
-  {
-    id: 't9',
-    name: 'Rebecca Gillani',
-    title: 'Research Fellow',
-    role: 'staff',
-    institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/99601',
-  },
   {
     id: 't11',
     name: 'Becca Salky',
