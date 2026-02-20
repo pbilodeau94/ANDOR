@@ -20,7 +20,7 @@ export const team: TeamMember[] = [
     title: 'Division Chief, Neuroimmunology',
     role: 'leadership',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/195498',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/183775',
     diseases: ['NMOSD', 'MOGAD', 'Neurosarcoidosis'],
   },
   {
@@ -29,7 +29,7 @@ export const team: TeamMember[] = [
     title: 'Associate Professor of Neurology',
     role: 'leadership',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/63498',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/99591',
     diseases: ['NMOSD'],
   },
   {
@@ -38,7 +38,7 @@ export const team: TeamMember[] = [
     title: 'Instructor in Neurology',
     role: 'leadership',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/214509',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/179820',
     diseases: ['MOGAD', 'NMOSD', 'Neurosarcoidosis'],
   },
   {
@@ -47,7 +47,7 @@ export const team: TeamMember[] = [
     title: 'Instructor in Neurology',
     role: 'leadership',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/198765',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/159753',
     diseases: ['MOGAD', 'NMOSD'],
   },
 
@@ -58,7 +58,7 @@ export const team: TeamMember[] = [
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/207843',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/207041',
     diseases: ['Neurosarcoidosis', 'MS'],
   },
   {
@@ -67,7 +67,7 @@ export const team: TeamMember[] = [
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Mattia+Wruble',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/193123',
     diseases: ['NMOSD'],
   },
   {
@@ -76,8 +76,26 @@ export const team: TeamMember[] = [
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Takahisa+Mikami',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/214402',
     diseases: ['MOGAD'],
+  },
+  {
+    id: 't13',
+    name: 'Natalia Drosu',
+    title: 'Instructor in Neurology',
+    role: 'faculty',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/108632',
+    diseases: ['MS'],
+  },
+  {
+    id: 't14',
+    name: 'Douglas Wilcox',
+    title: 'Instructor in Neurology',
+    role: 'faculty',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/171963',
+    diseases: [],
   },
 
   // Fellows
@@ -87,16 +105,8 @@ export const team: TeamMember[] = [
     title: 'Neuroimmunology Fellow',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Jimmy+Nguyen',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/206989',
     diseases: ['Vasculitis'],
-  },
-  {
-    id: 't9',
-    name: 'Rebecca Gillani',
-    title: 'Research Fellow',
-    role: 'staff',
-    institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Rebecca+Gillani',
   },
   {
     id: 't10',
@@ -104,11 +114,37 @@ export const team: TeamMember[] = [
     title: 'Clinical Research Fellow',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/search/people?searchterm=Prashanth+Rajarajan',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/199469',
     diseases: ['Cancer Immunotherapy Complications'],
+  },
+  {
+    id: 't15',
+    name: 'Yoji Hoshina',
+    title: 'Neuroimmunology Fellow',
+    role: 'fellow',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/224533',
+    diseases: [],
+  },
+  {
+    id: 't16',
+    name: 'Susan Recio',
+    title: 'Neuroimmunology Fellow',
+    role: 'fellow',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/224370',
+    diseases: [],
   },
 
   // Staff
+  {
+    id: 't9',
+    name: 'Rebecca Gillani',
+    title: 'Research Fellow',
+    role: 'staff',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/99601',
+  },
   {
     id: 't11',
     name: 'Becca Salky',
