@@ -1,5 +1,74 @@
 import Hero from '@/components/Hero'
 import SectionWrapper from '@/components/SectionWrapper'
+import { publications } from '@/data/publications'
+
+const uniquePubCount = new Set(publications.map((p) => p.title)).size
+
+const milestones = [
+  {
+    year: '2024',
+    text: 'Launched BEST-NMOSD, one of the first head-to-head pragmatic clinical trials comparing disease-modifying treatments in NMOSD, funded by PCORI.',
+  },
+  {
+    year: '2024',
+    text: 'Contributed to the international consensus diagnostic criteria for MOGAD, defining the clinical framework for diagnosis worldwide.',
+  },
+  {
+    year: '2023',
+    text: 'Founded the annual ANDOR MOG Symposium, bringing together researchers, clinicians, and patients to advance MOGAD awareness and collaboration.',
+  },
+  {
+    year: '2023',
+    text: 'Grew our federated registries to 700+ patients across six disease areas, creating one of the largest cohorts in autoimmune neurology.',
+  },
+]
+
+const namedFunds = [
+  {
+    name: 'MOGAD Research Fund',
+    description:
+      'Supports our MOG antibody disease research program, including the MOG Symposium, cell-based assay development, and treatment outcome studies.',
+  },
+  {
+    name: 'NMOSD Clinical Trials Fund',
+    description:
+      'Advances head-to-head treatment trials and comparative effectiveness research that directly guide clinical decisions for NMOSD patients.',
+  },
+  {
+    name: 'Biorepository & Lab Fund',
+    description:
+      'Funds the collection, processing, and storage of biological samples (serum, CSF, PBMCs, tissue) that underpin biomarker discovery and translational research.',
+  },
+  {
+    name: 'Autoimmune Encephalitis Fund',
+    description:
+      'Supports diagnostic algorithm development, patient-reported outcome measures, and clinical trials for autoimmune encephalitis.',
+  },
+  {
+    name: 'Neuroimmunology Fellowship Fund',
+    description:
+      'Invests in the next generation of neuroimmunology investigators through fellowship support, career development awards, and research training.',
+  },
+]
+
+const giftImpact = [
+  {
+    amount: '$1,000',
+    impact: 'Funds biorepository sample processing for 10 patients, preserving critical research material for future studies.',
+  },
+  {
+    amount: '$5,000',
+    impact: 'Supports a research fellow for one month of dedicated registry data analysis, enabling new discoveries from existing cohort data.',
+  },
+  {
+    amount: '$25,000',
+    impact: 'Funds a year of cell-based assay reagents and testing, advancing antibody detection for MOGAD and related conditions.',
+  },
+  {
+    amount: '$100,000',
+    impact: 'Seeds a new multi-center collaboration, enabling pooled data from institutions worldwide to study ultra-rare disease subtypes.',
+  },
+]
 
 const givingOpportunities = [
   {
@@ -87,18 +156,78 @@ export default function SupportPage() {
               investigators working on interconnected questions across disease boundaries.
             </p>
             <p>
-              Our team includes over 30 investigators across Massachusetts General Hospital, Brigham
-              and Women&apos;s Hospital, and Harvard Medical School, with collaborative agreements at
-              institutions worldwide including Mayo Clinic, Yale, McGill, UCSF, and Charité Berlin.
+              Our team of 15 investigators across Massachusetts General Hospital, Brigham
+              and Women&apos;s Hospital, and Harvard Medical School has published over {uniquePubCount} peer-reviewed
+              papers and maintains collaborative agreements with institutions worldwide including
+              Mayo Clinic, Yale, McGill, UCSF, and Charité Berlin.
             </p>
           </div>
         </div>
       </SectionWrapper>
 
-      {/* Giving Opportunities */}
+      {/* Recent Milestones */}
       <SectionWrapper alt>
         <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
-          Giving Opportunities
+          Recent Milestones
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
+          Recent achievements made possible by research investment.
+        </p>
+        <div className="mx-auto mt-10 max-w-3xl space-y-4">
+          {milestones.map((m) => (
+            <div key={m.text} className="flex items-start gap-4 rounded-lg border border-gray-200 bg-white p-5">
+              <div className="shrink-0 rounded-full bg-[var(--color-accent)]/10 px-3 py-1 text-sm font-bold text-[var(--color-accent)]">
+                {m.year}
+              </div>
+              <p className="text-sm leading-relaxed text-gray-700">{m.text}</p>
+            </div>
+          ))}
+        </div>
+      </SectionWrapper>
+
+      {/* Named Giving Funds */}
+      <SectionWrapper>
+        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
+          Named Research Funds
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
+          Direct your support to a specific research program.
+        </p>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {namedFunds.map((fund) => (
+            <div
+              key={fund.name}
+              className="rounded-xl border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
+            >
+              <h3 className="font-semibold text-[var(--color-primary)]">{fund.name}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-gray-600">{fund.description}</p>
+            </div>
+          ))}
+        </div>
+      </SectionWrapper>
+
+      {/* Your Gift at Work */}
+      <SectionWrapper alt>
+        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
+          Your Gift at Work
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
+          See how philanthropic investment translates to research impact.
+        </p>
+        <div className="mx-auto mt-10 max-w-3xl space-y-6">
+          {giftImpact.map((item) => (
+            <div key={item.amount} className="flex items-start gap-4">
+              <div className="shrink-0 text-2xl font-bold text-[var(--color-accent)]">{item.amount}</div>
+              <p className="text-gray-600">{item.impact}</p>
+            </div>
+          ))}
+        </div>
+      </SectionWrapper>
+
+      {/* Giving Opportunities */}
+      <SectionWrapper>
+        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
+          Areas of Support
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
           Direct your support to the areas that matter most to you.
@@ -112,38 +241,6 @@ export default function SupportPage() {
               <div className="text-[var(--color-accent)]">{opp.icon}</div>
               <h3 className="mt-4 text-lg font-semibold text-gray-900">{opp.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">{opp.description}</p>
-            </div>
-          ))}
-        </div>
-      </SectionWrapper>
-
-      {/* Impact Highlights */}
-      <SectionWrapper>
-        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
-          What Your Support Makes Possible
-        </h2>
-        <div className="mx-auto mt-10 max-w-3xl space-y-6">
-          {[
-            {
-              stat: '700+',
-              text: 'patients enrolled across our disease registries, forming one of the largest cohorts in autoimmune neurology',
-            },
-            {
-              stat: '3',
-              text: 'active clinical trials bringing new treatments directly to patients, including BEST-NMOSD (PCORI-funded)',
-            },
-            {
-              stat: '7+',
-              text: 'collaborative institutional partnerships enabling multi-center studies that no single site could conduct alone',
-            },
-            {
-              stat: '60+',
-              text: 'active research projects spanning clinical, translational, and basic science across six disease areas',
-            },
-          ].map((item) => (
-            <div key={item.stat} className="flex items-start gap-4">
-              <div className="shrink-0 text-3xl font-bold text-[var(--color-accent)]">{item.stat}</div>
-              <p className="text-gray-600">{item.text}</p>
             </div>
           ))}
         </div>

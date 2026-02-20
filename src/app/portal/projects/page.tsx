@@ -7,6 +7,7 @@ import BoardView, { type BoardColumn } from '@/components/portal/BoardView'
 import ProjectCard from '@/components/portal/ProjectCard'
 import DiseaseChips from '@/components/portal/DiseaseChips'
 import LinkedTasks from '@/components/portal/LinkedTasks'
+import TeamMemberChips from '@/components/portal/TeamMemberChips'
 import { projectStageLabels, projectStageColors } from '@/data/projects'
 import { useProjectsStore } from '@/data/use-projects-store'
 import type { ProjectStage, Project } from '@/data/projects'
@@ -22,6 +23,119 @@ const boardColumns: BoardColumn<ProjectStage>[] = [
   { key: 'published', label: 'Published', color: 'bg-emerald-100 text-emerald-700' },
   { key: 'completed', label: 'Completed', color: 'bg-purple-100 text-purple-700' },
 ]
+
+const researchTypes = ['Clinical', 'Translational', 'Basic', 'Basic & Clinical', 'Clinical Trial']
+
+// --- Add Project Form ---
+
+function AddProjectForm({ onAdd }: { onAdd: (project: Omit<Project, 'id'>) => void }) {
+  const [open, setOpen] = useState(false)
+  const [title, setTitle] = useState('')
+  const [lead, setLead] = useState<string[]>([])
+  const [pi, setPi] = useState<string[]>([])
+  const [diseases, setDiseases] = useState<string[]>([])
+  const [researchType, setResearchType] = useState('Clinical')
+  const [stage, setStage] = useState<ProjectStage>('not_started')
+  const titleRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (open && titleRef.current) titleRef.current.focus()
+  }, [open])
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!title.trim()) return
+    onAdd({
+      title: title.trim(),
+      lead: lead[0] || '',
+      pi: pi[0] || '',
+      collaboration: '',
+      diseases,
+      fundingSource: '',
+      stage,
+      targetCompletion: null,
+      researchType,
+    })
+    setTitle('')
+    setLead([])
+    setPi([])
+    setDiseases([])
+    setResearchType('Clinical')
+    setStage('not_started')
+    setOpen(false)
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="flex items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--color-primary-dark)] transition-colors"
+      >
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Project
+      </button>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="rounded-xl border border-gray-200 bg-white p-4">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <label className="text-xs font-medium text-gray-500">Title *</label>
+          <input
+            ref={titleRef}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
+            placeholder="Project title..."
+            required
+          />
+        </div>
+        <TeamMemberChips members={lead} onUpdate={setLead} label="Lead" addLabel="+ Set lead" />
+        <TeamMemberChips members={pi} onUpdate={setPi} label="PI" addLabel="+ Set PI" />
+        <div>
+          <label className="text-xs font-medium text-gray-500">Research Type</label>
+          <select
+            value={researchType}
+            onChange={(e) => setResearchType(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
+          >
+            {researchTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs font-medium text-gray-500">Stage</label>
+          <select
+            value={stage}
+            onChange={(e) => setStage(e.target.value as ProjectStage)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
+          >
+            {Object.entries(projectStageLabels).map(([key, label]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="mt-4 flex gap-2">
+        <button
+          type="submit"
+          className="rounded-lg bg-[var(--color-primary)] px-4 py-1.5 text-sm font-medium text-white hover:bg-[var(--color-primary-dark)]"
+        >
+          Add Project
+        </button>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  )
+}
 
 // --- Editable Text Cell ---
 
@@ -93,6 +207,18 @@ function ExpandedProjectRow({
     <tr>
       <td colSpan={9} className="bg-gray-50 px-4 py-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <TeamMemberChips
+            members={project.lead ? [project.lead] : []}
+            onUpdate={(m) => onUpdate({ lead: m[0] || '' })}
+            label="Lead"
+            addLabel="+ Set lead"
+          />
+          <TeamMemberChips
+            members={project.pi ? [project.pi] : []}
+            onUpdate={(m) => onUpdate({ pi: m[0] || '' })}
+            label="PI"
+            addLabel="+ Set PI"
+          />
           {project.collaboration && (
             <div>
               <span className="text-xs font-semibold uppercase text-gray-400">Collaboration</span>
@@ -111,6 +237,18 @@ function ExpandedProjectRow({
             diseases={project.diseases}
             onUpdate={(newDiseases) => onUpdate({ diseases: newDiseases })}
           />
+          {project.stage === 'published' && (
+            <div className="sm:col-span-2 lg:col-span-3">
+              <span className="text-xs font-semibold uppercase text-gray-400">Publication URL</span>
+              <input
+                type="url"
+                value={project.publicationUrl || ''}
+                onChange={(e) => onUpdate({ publicationUrl: e.target.value || null })}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+                placeholder="https://pubmed.ncbi.nlm.nih.gov/..."
+              />
+            </div>
+          )}
           <div className="sm:col-span-2 lg:col-span-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase text-gray-400">Tasks</span>
@@ -161,7 +299,7 @@ function StageTabs({ activeTab, onChange }: { activeTab: ProjectStage | null; on
 }
 
 export default function ProjectsPage() {
-  const { projects: allProjects, updateProject, deleteProject } = useProjectsStore()
+  const { projects: allProjects, updateProject, deleteProject, addProject } = useProjectsStore()
   const [view, setView] = useState<ViewMode>('table')
   const [stageTab, setStageTab] = useState<ProjectStage | null>(null)
   const [leadFilter, setLeadFilter] = useState<string>('all')
@@ -259,18 +397,27 @@ export default function ProjectsPage() {
 
       <SectionWrapper>
         {stageTab === 'published' ? (
-          /* Published = simple paper list */
+          /* Published = simple paper list with hyperlinks */
           publishedProjects.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {publishedProjects.map((project) => (
-                <div key={project.id} className="rounded-xl border border-gray-200 bg-white p-4">
-                  <div className="text-sm font-medium text-gray-900">{project.title}</div>
-                  <div className="mt-1 flex flex-wrap gap-3 text-xs text-gray-500">
-                    {project.pi && <span>{project.pi}</span>}
-                    {project.lead && project.lead !== project.pi && <span>{project.lead}</span>}
-                    {project.diseases.length > 0 && (
-                      <span className="text-gray-400">{project.diseases.join(', ')}</span>
+                <div key={project.id} className="flex items-start gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                  <div className="min-w-0 flex-1">
+                    {project.publicationUrl ? (
+                      <a
+                        href={project.publicationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+                      >
+                        {project.title}
+                      </a>
+                    ) : (
+                      <span className="text-sm font-medium text-gray-900">{project.title}</span>
                     )}
+                    <div className="mt-0.5 text-xs text-gray-500">
+                      {project.pi || project.lead}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -280,8 +427,10 @@ export default function ProjectsPage() {
           )
         ) : (
           <>
-            {/* Filters */}
+            {/* Filters + Add */}
             <div className="mb-6 flex flex-wrap items-center gap-3">
+              <AddProjectForm onAdd={addProject} />
+
               <select
                 value={leadFilter}
                 onChange={(e) => setLeadFilter(e.target.value)}

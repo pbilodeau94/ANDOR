@@ -63,7 +63,6 @@ function TaskItems({ grantId, projectId }: { grantId?: string; projectId?: strin
             <span className="min-w-0 flex-1 text-xs font-medium text-gray-900 truncate">
               {task.title}
             </span>
-            <span className="text-[10px] text-gray-500">{task.assignee}</span>
             {task.dueDate && (
               <span className={`text-[10px] ${overdue ? 'font-semibold text-red-600' : 'text-gray-400'}`}>
                 {formatDate(task.dueDate)}

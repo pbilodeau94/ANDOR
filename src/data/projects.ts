@@ -11,6 +11,7 @@ export type Project = {
   stage: ProjectStage
   targetCompletion: string | null
   researchType: string
+  publicationUrl?: string | null
 }
 
 export const projects: Project[] = [

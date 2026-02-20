@@ -4,6 +4,7 @@ import StatsBar from '@/components/StatsBar'
 import ResearchGroupCard from '@/components/ResearchGroupCard'
 import { researchGroups } from '@/data/research-groups'
 import { projects } from '@/data/projects'
+import { publications } from '@/data/publications'
 import { filterByDisease } from '@/data/disease-utils'
 import Link from 'next/link'
 
@@ -13,16 +14,19 @@ function countActiveProjects(groupName: string): number {
   ).length
 }
 
+// Deduplicate publications by title for unique count
+const uniquePubCount = new Set(publications.map((p) => p.title)).size
+
 const heroStats = [
   { value: '6', label: 'Research Groups' },
-  { value: '12', label: 'Investigators' },
+  { value: '15', label: 'Investigators' },
   { value: '60+', label: 'Active Projects' },
   { value: '700+', label: 'Registry Patients' },
 ]
 
 const impactStats = [
+  { value: String(uniquePubCount) + '+', label: 'Publications' },
   { value: '69', label: 'Research Projects' },
-  { value: '16', label: 'Grant Applications' },
   { value: '3', label: 'Clinical Trials' },
   { value: '7', label: 'Partner Institutions' },
 ]

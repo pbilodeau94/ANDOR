@@ -6,7 +6,7 @@ export type ResearchGroup = {
   patientCount: string
   infrastructure: string[]
   keyInvestigators: string[]
-  icon: string
+  accentColor: string
 }
 
 export const researchGroups: ResearchGroup[] = [
@@ -24,7 +24,7 @@ export const researchGroups: ResearchGroup[] = [
       'Cell-based assay lab for MOG antibody testing',
     ],
     keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Taka Mikami', 'Joao Oliveira', 'Marcelo Matiello'],
-    icon: '🧬',
+    accentColor: 'blue-500',
   },
   {
     id: 'rg2',
@@ -40,7 +40,7 @@ export const researchGroups: ResearchGroup[] = [
       'Biorepository and biomarker studies',
     ],
     keyInvestigators: ['Shamik Bhattacharyya', 'Phil Bilodeau', 'Mattia Wruble', 'Michael Levy'],
-    icon: '🔬',
+    accentColor: 'emerald-500',
   },
   {
     id: 'rg3',
@@ -55,7 +55,7 @@ export const researchGroups: ResearchGroup[] = [
       'Patient-reported outcome measures development',
     ],
     keyInvestigators: ['Giovanna Manzano'],
-    icon: '🧠',
+    accentColor: 'violet-500',
   },
   {
     id: 'rg4',
@@ -70,7 +70,7 @@ export const researchGroups: ResearchGroup[] = [
       'Exosome and protein trafficking research',
     ],
     keyInvestigators: ['Michael Levy', 'Monique Anderson', 'Phil Bilodeau'],
-    icon: '🫁',
+    accentColor: 'amber-600',
   },
   {
     id: 'rg5',
@@ -85,14 +85,14 @@ export const researchGroups: ResearchGroup[] = [
       'Novel biomarker investigation',
     ],
     keyInvestigators: ['Jimmy Nguyen', 'Michael Levy', 'Shamik Bhattacharyya'],
-    icon: '🩸',
+    accentColor: 'rose-500',
   },
   {
     id: 'rg6',
-    name: 'Translational Neuroimmunology',
-    slug: 'translational',
+    name: 'EBV and MS',
+    slug: 'ebv-ms',
     description:
-      'Our translational research program bridges bench and bedside, spanning EBV immunology in MS, exosome biology, \u03B3\u03B4 T cell research, and novel antibody discovery. These studies aim to identify new therapeutic targets and diagnostic biomarkers for autoimmune neurological diseases.',
+      'Our EBV and MS program bridges bench and bedside, spanning EBV immunology in multiple sclerosis, exosome biology, \u03B3\u03B4 T cell research, and novel antibody discovery. These studies aim to identify new therapeutic targets and diagnostic biomarkers for autoimmune neurological diseases.',
     patientCount: '',
     infrastructure: [
       'Flow cytometry and single-cell transcriptomics',
@@ -101,6 +101,6 @@ export const researchGroups: ResearchGroup[] = [
       'Exosome isolation and characterization',
     ],
     keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Natalia Drosu', 'Monique Anderson', 'Taka Mikami'],
-    icon: '⚗️',
+    accentColor: 'teal-500',
   },
 ]

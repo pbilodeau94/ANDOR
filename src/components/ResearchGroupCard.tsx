@@ -1,18 +1,28 @@
 import Link from 'next/link'
 import type { ResearchGroup } from '@/data/research-groups'
 
+const colorMap: Record<string, string> = {
+  'blue-500': 'border-l-blue-500',
+  'emerald-500': 'border-l-emerald-500',
+  'violet-500': 'border-l-violet-500',
+  'amber-600': 'border-l-amber-600',
+  'rose-500': 'border-l-rose-500',
+  'teal-500': 'border-l-teal-500',
+}
+
 type Props = {
   group: ResearchGroup
   projectCount: number
 }
 
 export default function ResearchGroupCard({ group, projectCount }: Props) {
+  const borderClass = colorMap[group.accentColor] ?? 'border-l-gray-400'
+
   return (
     <Link
       href={`/research#${group.slug}`}
-      className="group rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md"
+      className={`group rounded-xl border border-gray-200 border-l-4 ${borderClass} bg-white p-6 transition-shadow hover:shadow-md`}
     >
-      <div className="mb-3 text-3xl">{group.icon}</div>
       <h3 className="text-lg font-bold text-gray-900 group-hover:text-[var(--color-primary)]">
         {group.name}
       </h3>

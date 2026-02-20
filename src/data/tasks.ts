@@ -5,7 +5,7 @@ export type Task = {
   id: string
   title: string
   description: string
-  assignee: string
+  assignee?: string
   grantId: string | null
   projectId: string | null
   dueDate: string | null

@@ -165,7 +165,33 @@ export const team: TeamMember[] = [
     diseases: [],
   },
 
+  {
+    id: 't18',
+    name: 'Joao Oliveira',
+    title: 'Research Fellow in Neurology',
+    role: 'fellow',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/219156',
+    diseases: ['MOGAD', 'NMOSD'],
+  },
+
   // Staff
+  {
+    id: 't19',
+    name: 'Mulan Jiang',
+    title: 'Medical Student (Harvard/MIT HST)',
+    role: 'staff',
+    institution: 'Harvard Medical School',
+    diseases: [],
+  },
+  {
+    id: 't20',
+    name: 'Fabian Murillo',
+    title: 'Clinical Research Coordinator',
+    role: 'staff',
+    institution: 'Mass General Brigham',
+    diseases: ['MOGAD'],
+  },
   {
     id: 't11',
     name: 'Becca Salky',

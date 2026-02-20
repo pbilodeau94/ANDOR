@@ -7,15 +7,15 @@ export const diseaseMap: Record<string, string[]> = {
   'Autoimmune Encephalitis': ['Autoimmune Encephalitis', 'Encephalitis'],
   Neurosarcoidosis: ['Neurosarcoidosis', 'Sarcoidosis'],
   'CNS Vasculitis': ['Vasculitis'],
-  'Translational Neuroimmunology': ['MS', 'AD', 'ASD', 'ALS', 'OCD', 'Schizophrenia', 'Superficial siderosis', 'Inflammatory myelopathy'],
+  'EBV and MS': ['MS', 'AD', 'ASD', 'ALS', 'OCD', 'Schizophrenia', 'Superficial siderosis', 'Inflammatory myelopathy'],
 }
 
 /** All disease tab keys (research group names) */
 export const diseaseGroups = researchGroups.map((g) => g.name)
 
-/** Icons for each disease group (from research-groups) */
-export const diseaseGroupIcons: Record<string, string> = Object.fromEntries(
-  researchGroups.map((g) => [g.name, g.icon])
+/** Accent color for each disease group (from research-groups) */
+export const diseaseGroupColors: Record<string, string> = Object.fromEntries(
+  researchGroups.map((g) => [g.name, g.accentColor])
 )
 
 /** Check whether an item with a `diseases` array matches a given research group tab */

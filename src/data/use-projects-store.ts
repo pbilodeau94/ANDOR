@@ -9,16 +9,17 @@ const STORAGE_KEY = 'andor-projects-overrides'
 type ProjectOverrides = {
   updates: Record<string, Partial<Project>>
   deleted: string[]
+  added: Project[]
 }
 
 function loadOverrides(): ProjectOverrides {
-  if (typeof window === 'undefined') return { updates: {}, deleted: [] }
+  if (typeof window === 'undefined') return { updates: {}, deleted: [], added: [] }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return { updates: {}, deleted: [] }
+    if (!raw) return { updates: {}, deleted: [], added: [] }
     return JSON.parse(raw)
   } catch {
-    return { updates: {}, deleted: [] }
+    return { updates: {}, deleted: [], added: [] }
   }
 }
 
@@ -26,19 +27,30 @@ function saveOverrides(overrides: ProjectOverrides) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides))
 }
 
+let addCounter = 0
+
 function mergeProjects(overrides: ProjectOverrides): Project[] {
   const deletedSet = new Set(overrides.deleted)
-  return initialProjects
+  const base = initialProjects
     .filter((p) => !deletedSet.has(p.id))
     .map((p) => {
       const updates = overrides.updates[p.id]
       if (!updates) return p
       return { ...p, ...updates }
     })
+  // Append user-added projects (also apply updates/deletes)
+  const added = (overrides.added ?? [])
+    .filter((p) => !deletedSet.has(p.id))
+    .map((p) => {
+      const updates = overrides.updates[p.id]
+      if (!updates) return p
+      return { ...p, ...updates }
+    })
+  return [...base, ...added]
 }
 
 export function useProjectsStore() {
-  const [overrides, setOverrides] = useState<ProjectOverrides>({ updates: {}, deleted: [] })
+  const [overrides, setOverrides] = useState<ProjectOverrides>({ updates: {}, deleted: [], added: [] })
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -67,6 +79,7 @@ export function useProjectsStore() {
       const next = {
         updates: { ...prev.updates },
         deleted: [...prev.deleted, id],
+        added: (prev.added ?? []).filter((p) => p.id !== id),
       }
       delete next.updates[id]
       saveOverrides(next)
@@ -74,10 +87,26 @@ export function useProjectsStore() {
     })
   }, [])
 
-  const resetAll = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY)
-    setOverrides({ updates: {}, deleted: [] })
+  const addProject = useCallback((project: Omit<Project, 'id'>) => {
+    setOverrides((prev) => {
+      addCounter++
+      const newProject: Project = {
+        ...project,
+        id: `p-${Date.now()}-${addCounter}`,
+      }
+      const next = {
+        ...prev,
+        added: [...(prev.added ?? []), newProject],
+      }
+      saveOverrides(next)
+      return next
+    })
   }, [])
 
-  return { projects: allProjects, updateProject, deleteProject, resetAll }
+  const resetAll = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEY)
+    setOverrides({ updates: {}, deleted: [], added: [] })
+  }, [])
+
+  return { projects: allProjects, updateProject, deleteProject, addProject, resetAll }
 }
