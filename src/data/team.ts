@@ -1,4 +1,4 @@
-export type TeamRole = 'leadership' | 'faculty' | 'fellow' | 'staff'
+export type TeamRole = 'faculty' | 'fellow' | 'staff'
 
 export type TeamMember = {
   id: string
@@ -13,12 +13,12 @@ export type TeamMember = {
 }
 
 export const team: TeamMember[] = [
-  // Leadership
+  // Faculty — Levy, Shamik, Matiello first
   {
     id: 't1',
     name: 'Michael Levy',
-    title: 'Division Chief, Neuroimmunology',
-    role: 'leadership',
+    title: 'Associate Professor of Neurology, Research Director',
+    role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/183775',
     diseases: ['NMOSD', 'MOGAD', 'Neurosarcoidosis'],
@@ -27,16 +27,25 @@ export const team: TeamMember[] = [
     id: 't2',
     name: 'Shamik Bhattacharyya',
     title: 'Associate Professor of Neurology',
-    role: 'leadership',
+    role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/99591',
     diseases: ['NMOSD'],
   },
   {
+    id: 't17',
+    name: 'Marcelo Matiello',
+    title: 'Associate Professor of Neurology, Vice-Chair of Clinical Affairs',
+    role: 'faculty',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/72102',
+    diseases: ['NMOSD', 'MOGAD', 'MS'],
+  },
+  {
     id: 't3',
     name: 'Phil Bilodeau',
     title: 'Instructor in Neurology',
-    role: 'leadership',
+    role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/179820',
     diseases: ['MOGAD', 'NMOSD', 'Neurosarcoidosis'],
@@ -45,13 +54,11 @@ export const team: TeamMember[] = [
     id: 't4',
     name: 'Anastasia Vishnevetsky',
     title: 'Instructor in Neurology',
-    role: 'leadership',
+    role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/159753',
     diseases: ['MOGAD', 'NMOSD'],
   },
-
-  // Faculty
   {
     id: 't5',
     name: 'Monique Anderson',
@@ -69,24 +76,6 @@ export const team: TeamMember[] = [
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/193123',
     diseases: ['NMOSD'],
-  },
-  {
-    id: 't7',
-    name: 'Takahisa Mikami',
-    title: 'Instructor in Neurology',
-    role: 'faculty',
-    institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/214402',
-    diseases: ['MOGAD'],
-  },
-  {
-    id: 't13',
-    name: 'Natalia Drosu',
-    title: 'Instructor in Neurology',
-    role: 'faculty',
-    institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/108632',
-    diseases: ['MS'],
   },
   {
     id: 't14',
@@ -116,6 +105,24 @@ export const team: TeamMember[] = [
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/199469',
     diseases: ['Cancer Immunotherapy Complications'],
+  },
+  {
+    id: 't7',
+    name: 'Takahisa Mikami',
+    title: 'MS and Neuroimmunology Fellow',
+    role: 'fellow',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/214402',
+    diseases: ['MOGAD'],
+  },
+  {
+    id: 't13',
+    name: 'Natalia Drosu',
+    title: 'National MS Society Postdoctoral Fellow',
+    role: 'fellow',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/108632',
+    diseases: ['MS'],
   },
   {
     id: 't15',
@@ -164,10 +171,9 @@ export const team: TeamMember[] = [
 ]
 
 export const roleLabels: Record<TeamRole, string> = {
-  leadership: 'Leadership',
   faculty: 'Faculty',
   fellow: 'Fellows & Trainees',
   staff: 'Staff',
 }
 
-export const roleOrder: TeamRole[] = ['leadership', 'faculty', 'fellow', 'staff']
+export const roleOrder: TeamRole[] = ['faculty', 'fellow', 'staff']

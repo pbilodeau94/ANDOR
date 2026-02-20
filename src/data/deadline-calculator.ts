@@ -233,6 +233,18 @@ export const urgencyLabels: Record<ReturnType<typeof getUrgency>, string> = {
   future: 'Upcoming',
 }
 
+/** Compute auto admin deadline (14 business days before sponsor deadline) */
+export function computeAdminDeadline(sponsorDeadline: string): string {
+  const deadline = new Date(sponsorDeadline + 'T00:00:00')
+  return toDateStr(subtractBusinessDays(deadline, 14))
+}
+
+/** Compute auto science deadline (5 business days before sponsor deadline) */
+export function computeScienceDeadline(sponsorDeadline: string): string {
+  const deadline = new Date(sponsorDeadline + 'T00:00:00')
+  return toDateStr(subtractBusinessDays(deadline, 5))
+}
+
 /** Get the next upcoming milestone for a grant (first not-yet-passed milestone) */
 export function getNextMilestone(sponsorDeadline: string): Milestone | null {
   const today = new Date()

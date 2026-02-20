@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ANDOR | Autoimmune Neurological Disorders Observational Studies & Registry",
+  title: "ANDOR | Autoimmune Neurological DisOrders Registry",
   description:
     "ANDOR is a division-wide research collaborative within MGB Neurology, Division of Neuroimmunology, dedicated to advancing autoimmune neurology through registries, clinical trials, and translational research.",
 };

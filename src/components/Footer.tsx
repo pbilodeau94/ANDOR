@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-bold text-white">ANDOR</h3>
             <p className="mt-2 text-sm leading-relaxed text-gray-400">
-              Autoimmune Neurological Disorders Observational Studies &amp; Registry.
+              Autoimmune Neurological DisOrders Registry.
               A division-wide research collaborative within MGB Neurology, Division of Neuroimmunology.
             </p>
           </div>
