@@ -7,6 +7,7 @@ export type Task = {
   description: string
   assignee: string
   grantId: string | null
+  projectId: string | null
   dueDate: string | null
   status: TaskStatus
   priority: TaskPriority

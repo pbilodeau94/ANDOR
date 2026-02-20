@@ -2,12 +2,10 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react'
 import DiseaseChips from '@/components/portal/DiseaseChips'
-import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels, knownDiseases } from '@/data/grants'
+import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels } from '@/data/grants'
 import { useGrantsStore } from '@/data/use-grants-store'
 import {
   calculateMilestones,
-  computeAdminDeadline,
-  computeScienceDeadline,
   getNextMilestone,
   getUrgency,
   urgencyColors,
@@ -17,10 +15,16 @@ import { team } from '@/data/team'
 import type { GrantStatus, Grant, IdcCategory, GrantType } from '@/data/grants'
 import type { Milestone } from '@/data/deadline-calculator'
 
-type SortKey = 'title' | 'pi' | 'agency' | 'type' | 'total' | 'deadline' | 'adminDeadline' | 'scienceDeadline' | 'notificationDate' | 'startDate' | 'status'
+type SortKey = 'title' | 'pi' | 'agency' | 'type' | 'total' | 'deadline' | 'notificationDate' | 'startDate' | 'status'
 type SortDir = 'asc' | 'desc'
 
 const activeStatuses = new Set<GrantStatus>(['not_started', 'in_progress'])
+
+const pencilIcon = (
+  <svg className="h-3 w-3 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+  </svg>
+)
 
 function formatCurrency(amount: number | null): string {
   if (!amount) return '\u2014'
@@ -34,20 +38,6 @@ function formatDate(dateStr: string | null): string {
 
 function formatShortDate(dateStr: string): string {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
-
-/** Get the effective admin deadline: manual override or auto-calculated */
-function getEffectiveAdminDeadline(grant: Grant): string | null {
-  if (grant.adminDeadline) return grant.adminDeadline
-  if (grant.deadline) return computeAdminDeadline(grant.deadline)
-  return null
-}
-
-/** Get the effective science deadline: manual override or auto-calculated */
-function getEffectiveScienceDeadline(grant: Grant): string | null {
-  if (grant.scienceDeadline) return grant.scienceDeadline
-  if (grant.deadline) return computeScienceDeadline(grant.deadline)
-  return null
 }
 
 // --- Grant Type Tabs ---
@@ -84,22 +74,18 @@ function GrantTypeTabs({ activeTab, onChange }: { activeTab: GrantType | null; o
   )
 }
 
-// --- Editable Deadline Cell (table column) ---
+// --- Editable Date Cell (pencil to edit) ---
 
-function EditableDeadlineCell({
+function EditableDateCell({
   value,
-  autoValue,
   fieldKey,
   onUpdate,
 }: {
   value: string | null
-  autoValue?: string | null
   fieldKey: string
   onUpdate: (updates: Partial<Grant>) => void
 }) {
   const [editing, setEditing] = useState(false)
-  const displayValue = value || autoValue || null
-  const isAuto = !value && !!autoValue
   const [inputVal, setInputVal] = useState(value ?? '')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -138,22 +124,20 @@ function EditableDeadlineCell({
   }
 
   return (
-    <td
-      className="group/deadline cursor-pointer whitespace-nowrap py-3 pr-3 text-sm"
-      onClick={(e) => { e.stopPropagation(); setInputVal(value ?? ''); setEditing(true) }}
-      title={isAuto ? 'Auto-calculated. Click to override.' : 'Click to edit'}
-    >
-      <span className="text-gray-600">
-        {formatDate(displayValue)}
-      </span>
-      <svg className="ml-1 inline h-3 w-3 text-gray-300 opacity-0 transition-opacity group-hover/deadline:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-      </svg>
+    <td className="whitespace-nowrap py-3 pr-3 text-sm">
+      <span className="text-gray-600">{formatDate(value)}</span>
+      <button
+        onClick={(e) => { e.stopPropagation(); setInputVal(value ?? ''); setEditing(true) }}
+        className="ml-1.5 inline-flex opacity-0 transition-opacity group-hover/row:opacity-100"
+        title="Edit"
+      >
+        {pencilIcon}
+      </button>
     </td>
   )
 }
 
-// --- Editable Title Cell ---
+// --- Editable Title Cell (pencil to edit) ---
 
 function EditableTitleCell({
   title,
@@ -203,13 +187,20 @@ function EditableTitleCell({
   }
 
   return (
-    <td
-      className="group/title cursor-pointer py-3 pr-3"
-      onClick={(e) => { e.stopPropagation(); setInputVal(title); setEditing(true) }}
-      title="Click to edit title"
-    >
-      <div className="max-w-xs text-sm font-medium text-gray-900 line-clamp-2">{title}</div>
-      {mechanism && <div className="mt-0.5 text-xs text-gray-400">{mechanism}</div>}
+    <td className="py-3 pr-3">
+      <div className="flex items-start gap-1">
+        <div className="min-w-0">
+          <div className="max-w-xs text-sm font-medium text-gray-900 line-clamp-2">{title}</div>
+          {mechanism && <div className="mt-0.5 text-xs text-gray-400">{mechanism}</div>}
+        </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); setInputVal(title); setEditing(true) }}
+          className="mt-0.5 shrink-0 opacity-0 transition-opacity group-hover/row:opacity-100"
+          title="Edit title"
+        >
+          {pencilIcon}
+        </button>
+      </div>
     </td>
   )
 }
@@ -221,11 +212,13 @@ function CheckboxFilterDropdown({
   selected,
   onChange,
   label,
+  labelMap,
 }: {
   allItems: string[]
   selected: string[]
   onChange: (next: string[]) => void
   label: string
+  labelMap?: Record<string, string>
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -243,7 +236,13 @@ function CheckboxFilterDropdown({
     else onChange([...selected, name])
   }
 
-  const displayLabel = selected.length === 0 ? label : selected.length === 1 ? selected[0] : `${selected.length} selected`
+  const getLabel = (key: string) => labelMap?.[key] ?? key
+
+  const displayLabel = selected.length === 0
+    ? label
+    : selected.length === 1
+      ? getLabel(selected[0])
+      : `${selected.length} selected`
 
   return (
     <div className="relative" ref={ref}>
@@ -266,7 +265,7 @@ function CheckboxFilterDropdown({
                 onChange={() => toggle(name)}
                 className="rounded border-gray-300 text-[var(--color-primary)]"
               />
-              {name}
+              {getLabel(name)}
             </label>
           ))}
           {allItems.length === 0 && (
@@ -278,81 +277,71 @@ function CheckboxFilterDropdown({
   )
 }
 
-// --- PI Chips (editable in expanded row) ---
+// --- Team Member Picker (select only from team list) ---
 
-function PiChips({
-  pis,
+function TeamMemberChips({
+  members,
   onUpdate,
   label = 'Principal Investigator(s)',
-  placeholder = 'Add person...',
   addLabel = '+ Add',
 }: {
-  pis: string[]
-  onUpdate: (newPis: string[]) => void
+  members: string[]
+  onUpdate: (newMembers: string[]) => void
   label?: string
-  placeholder?: string
   addLabel?: string
 }) {
   const [adding, setAdding] = useState(false)
-  const [inputValue, setInputValue] = useState('')
-  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [filter, setFilter] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const teamNames = useMemo(() => team.map((m) => m.name), [])
+  const available = useMemo(
+    () => teamNames.filter((n) => !members.includes(n) && (!filter || n.toLowerCase().includes(filter.toLowerCase()))),
+    [teamNames, members, filter]
+  )
 
   useEffect(() => {
     if (adding && inputRef.current) inputRef.current.focus()
   }, [adding])
 
-  function handleInput(val: string) {
-    setInputValue(val)
-    if (val.trim()) {
-      const lower = val.toLowerCase()
-      setSuggestions(teamNames.filter((n) => n.toLowerCase().includes(lower) && !pis.includes(n)))
-    } else {
-      setSuggestions([])
-    }
-  }
-
-  function addPi(name: string) {
-    if (!pis.includes(name)) onUpdate([...pis, name])
-    setInputValue('')
-    setSuggestions([])
+  function addMember(name: string) {
+    if (!members.includes(name)) onUpdate([...members, name])
+    setFilter('')
     setAdding(false)
   }
 
-  function removePi(name: string) {
-    onUpdate(pis.filter((n) => n !== name))
+  function removeMember(name: string) {
+    onUpdate(members.filter((n) => n !== name))
   }
 
   return (
     <div>
       <span className="text-xs font-semibold uppercase text-gray-400">{label}</span>
       <div className="mt-1 flex flex-wrap items-center gap-1.5">
-        {pis.map((name) => (
+        {members.map((name) => (
           <span key={name} className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--color-primary)]">
             {name}
-            <button onClick={() => removePi(name)} className="ml-0.5 text-[var(--color-primary)]/60 hover:text-[var(--color-primary)]">&times;</button>
+            <button onClick={() => removeMember(name)} className="ml-0.5 text-[var(--color-primary)]/60 hover:text-[var(--color-primary)]">&times;</button>
           </span>
         ))}
         {adding ? (
           <div className="relative">
             <input
               ref={inputRef}
-              value={inputValue}
-              onChange={(e) => handleInput(e.target.value)}
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && inputValue.trim()) addPi(inputValue.trim())
-                if (e.key === 'Escape') { setAdding(false); setInputValue(''); setSuggestions([]) }
+                if (e.key === 'Enter' && available.length > 0) addMember(available[0])
+                if (e.key === 'Escape') { setAdding(false); setFilter('') }
               }}
-              onBlur={() => { setTimeout(() => { setAdding(false); setInputValue(''); setSuggestions([]) }, 150) }}
+              onBlur={() => { setTimeout(() => { setAdding(false); setFilter('') }, 150) }}
               className="w-40 rounded border border-gray-300 px-2 py-0.5 text-xs"
-              placeholder={placeholder}
+              placeholder="Search team..."
             />
-            {suggestions.length > 0 && (
-              <div className="absolute left-0 z-10 mt-1 w-48 rounded border border-gray-200 bg-white py-1 shadow-lg">
-                {suggestions.map((s) => (
-                  <button key={s} onMouseDown={() => addPi(s)} className="block w-full px-3 py-1 text-left text-xs text-gray-700 hover:bg-gray-50">
+            {available.length > 0 && (
+              <div className="absolute left-0 z-10 mt-1 max-h-48 w-48 overflow-y-auto rounded border border-gray-200 bg-white py-1 shadow-lg">
+                {available.map((s) => (
+                  <button key={s} onMouseDown={() => addMember(s)} className="block w-full px-3 py-1 text-left text-xs text-gray-700 hover:bg-gray-50">
                     {s}
                   </button>
                 ))}
@@ -447,9 +436,9 @@ function ExpandedGrantRow({
 
   return (
     <tr>
-      <td colSpan={14} className="bg-gray-50 px-4 py-4">
+      <td colSpan={11} className="bg-gray-50 px-4 py-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <PiChips pis={grant.pi} onUpdate={(newPis) => onUpdate({ pi: newPis })} addLabel="+ Add PI" />
+          <TeamMemberChips members={grant.pi} onUpdate={(newPis) => onUpdate({ pi: newPis })} addLabel="+ Add PI" />
 
           {/* Funding Breakdown */}
           <div className="sm:col-span-2 lg:col-span-3">
@@ -508,11 +497,10 @@ function ExpandedGrantRow({
             </div>
           )}
 
-          <PiChips
-            pis={grant.keyPersonnel}
+          <TeamMemberChips
+            members={grant.keyPersonnel}
             onUpdate={(newKp) => onUpdate({ keyPersonnel: newKp })}
             label="Key Personnel"
-            placeholder="Add person..."
           />
 
           <DiseaseChips
@@ -595,7 +583,7 @@ function DeadlineAlerts({ grantList }: { grantList: Grant[] }) {
   alerts.sort((a, b) => order[a.urgency] - order[b.urgency])
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-[1400px] px-4 pt-6 sm:px-6 lg:px-8">
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
         <h3 className="flex items-center gap-2 text-sm font-semibold text-amber-800">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -703,8 +691,6 @@ export default function GrantsPage() {
         case 'type': cmp = a.grantType.localeCompare(b.grantType); break
         case 'total': cmp = computeTotal(a) - computeTotal(b); break
         case 'deadline': cmp = compareDates(a.deadline, b.deadline); break
-        case 'adminDeadline': cmp = compareDates(getEffectiveAdminDeadline(a), getEffectiveAdminDeadline(b)); break
-        case 'scienceDeadline': cmp = compareDates(getEffectiveScienceDeadline(a), getEffectiveScienceDeadline(b)); break
         case 'notificationDate': cmp = compareDates(a.notificationDate, b.notificationDate); break
         case 'startDate': cmp = compareDates(a.startDate, b.startDate); break
         case 'status': cmp = a.status.localeCompare(b.status); break
@@ -752,7 +738,7 @@ export default function GrantsPage() {
   return (
     <>
       <div className="border-b border-gray-200 bg-[var(--color-surface-alt)]">
-        <div className="mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold text-[var(--color-primary)]">Grants Tracker</h1>
           <p className="mt-2 text-gray-600">
             {allGrants.length} grants in the pipeline
@@ -760,21 +746,22 @@ export default function GrantsPage() {
         </div>
       </div>
 
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <GrantTypeTabs activeTab={typeTab} onChange={setTypeTab} />
       </div>
 
       <DeadlineAlerts grantList={filtered} />
 
       <section className="bg-white py-16">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* Filters */}
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <CheckboxFilterDropdown
-            allItems={allStatuses.map((s) => s)}
+            allItems={allStatuses}
             selected={statusFilter}
             onChange={setStatusFilter}
             label="All Statuses"
+            labelMap={grantStatusLabels}
           />
           <CheckboxFilterDropdown
             allItems={allPeople}
@@ -802,7 +789,7 @@ export default function GrantsPage() {
         </div>
 
         <div className="overflow-x-auto rounded-xl border border-gray-200">
-          <table className="w-full min-w-[1600px]">
+          <table className="w-full min-w-[1100px]">
             <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
                 <th className="w-8 py-3 pl-4 pr-2"></th>
@@ -812,8 +799,6 @@ export default function GrantsPage() {
                 <SortHeader label="Type" field="type" />
                 <SortHeader label="Total" field="total" />
                 <SortHeader label="Sponsor Deadline" field="deadline" />
-                <SortHeader label="Admin Deadline" field="adminDeadline" />
-                <SortHeader label="Science Deadline" field="scienceDeadline" />
                 <SortHeader label="Notification" field="notificationDate" />
                 <SortHeader label="Start Date" field="startDate" />
                 <SortHeader label="Status" field="status" />
@@ -821,146 +806,125 @@ export default function GrantsPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((grant) => {
-                const effectiveAdmin = getEffectiveAdminDeadline(grant)
-                const effectiveScience = getEffectiveScienceDeadline(grant)
-
-                return (
-                  <>
-                    <tr
-                      key={grant.id}
-                      className="cursor-pointer border-b border-gray-100 hover:bg-gray-50"
-                      onClick={() => setExpandedId(expandedId === grant.id ? null : grant.id)}
-                    >
-                      <td className="py-3 pl-4 pr-2">
-                        <svg
-                          className={`h-4 w-4 text-gray-400 transition-transform ${expandedId === grant.id ? 'rotate-90' : ''}`}
-                          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </td>
-                      <EditableTitleCell
-                        title={grant.title}
-                        mechanism={grant.mechanism}
-                        onUpdate={(title) => updateGrant(grant.id, { title })}
-                      />
-                      <td className="whitespace-nowrap py-3 pr-3">
-                        {grant.pi.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {grant.pi.map((name) => (
-                              <span key={name} className="inline-flex rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-xs font-medium text-[var(--color-primary)]">
-                                {name}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-sm text-gray-400">{'\u2014'}</span>
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap py-3 pr-3 text-sm">
-                        {grant.rfaUrl ? (
-                          <a
-                            href={grant.rfaUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[var(--color-accent)] hover:underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {grant.agency}
-                          </a>
-                        ) : (
-                          <span className="text-gray-600">{grant.agency}</span>
-                        )}
-                        {grant.rfaPdfUrl && (
-                          <a
-                            href={grant.rfaPdfUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ml-1.5 inline-flex text-xs text-gray-400 hover:text-[var(--color-accent)]"
-                            onClick={(e) => e.stopPropagation()}
-                            title="RFA PDF"
-                          >
-                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                            </svg>
-                          </a>
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap py-3 pr-3" onClick={(e) => e.stopPropagation()}>
-                        <select
-                          value={grant.grantType}
-                          onChange={(e) => updateGrant(grant.id, { grantType: e.target.value as GrantType })}
-                          className={`rounded-full border-0 px-2.5 py-0.5 text-xs font-medium ${grantTypeColors[grant.grantType]}`}
-                        >
-                          {Object.entries(grantTypeLabels).map(([key, label]) => (
-                            <option key={key} value={key}>{label}</option>
+              {filtered.map((grant) => (
+                <>
+                  <tr
+                    key={grant.id}
+                    className="group/row cursor-pointer border-b border-gray-100 hover:bg-gray-50"
+                    onClick={() => setExpandedId(expandedId === grant.id ? null : grant.id)}
+                  >
+                    <td className="py-3 pl-4 pr-2">
+                      <svg
+                        className={`h-4 w-4 text-gray-400 transition-transform ${expandedId === grant.id ? 'rotate-90' : ''}`}
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </td>
+                    <EditableTitleCell
+                      title={grant.title}
+                      mechanism={grant.mechanism}
+                      onUpdate={(title) => updateGrant(grant.id, { title })}
+                    />
+                    <td className="whitespace-nowrap py-3 pr-3">
+                      {grant.pi.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {grant.pi.map((name) => (
+                            <span key={name} className="inline-flex rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-xs font-medium text-[var(--color-primary)]">
+                              {name}
+                            </span>
                           ))}
-                        </select>
-                      </td>
-                      <td className="whitespace-nowrap py-3 pr-3 text-sm font-medium text-gray-700">
-                        {formatCurrency(computeTotal(grant) || null)}
-                      </td>
-                      <EditableDeadlineCell value={grant.deadline} fieldKey="deadline" onUpdate={(updates) => updateGrant(grant.id, updates)} />
-                      <EditableDeadlineCell value={grant.adminDeadline} autoValue={grant.deadline ? computeAdminDeadline(grant.deadline) : null} fieldKey="adminDeadline" onUpdate={(updates) => updateGrant(grant.id, updates)} />
-                      <EditableDeadlineCell value={grant.scienceDeadline} autoValue={grant.deadline ? computeScienceDeadline(grant.deadline) : null} fieldKey="scienceDeadline" onUpdate={(updates) => updateGrant(grant.id, updates)} />
-                      <EditableDeadlineCell value={grant.notificationDate} fieldKey="notificationDate" onUpdate={(updates) => updateGrant(grant.id, updates)} />
-                      <EditableDeadlineCell value={grant.startDate} fieldKey="startDate" onUpdate={(updates) => updateGrant(grant.id, updates)} />
-                      <td className="whitespace-nowrap py-3 pr-3" onClick={(e) => e.stopPropagation()}>
-                        <select
-                          value={grant.status}
-                          onChange={(e) => updateGrant(grant.id, { status: e.target.value as GrantStatus })}
-                          className={`rounded-full border-0 px-2.5 py-0.5 text-xs font-medium ${grantStatusColors[grant.status]}`}
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400">{'\u2014'}</span>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap py-3 pr-3 text-sm">
+                      {grant.rfaUrl ? (
+                        <a
+                          href={grant.rfaUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[var(--color-accent)] hover:underline"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {Object.entries(grantStatusLabels).map(([key, label]) => (
-                            <option key={key} value={key}>{label}</option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="whitespace-nowrap py-3 pr-4" onClick={(e) => e.stopPropagation()}>
-                        {confirmDeleteId === grant.id ? (
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => handleDelete(grant.id)}
-                              className="rounded bg-red-500 px-2 py-0.5 text-xs text-white hover:bg-red-600"
-                            >
-                              Yes
-                            </button>
-                            <button
-                              onClick={() => setConfirmDeleteId(null)}
-                              className="text-xs text-gray-500"
-                            >
-                              No
-                            </button>
-                          </div>
-                        ) : (
+                          {grant.agency}
+                        </a>
+                      ) : (
+                        <span className="text-gray-600">{grant.agency}</span>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap py-3 pr-3" onClick={(e) => e.stopPropagation()}>
+                      <select
+                        value={grant.grantType}
+                        onChange={(e) => updateGrant(grant.id, { grantType: e.target.value as GrantType })}
+                        className={`rounded-full border-0 px-2.5 py-0.5 text-xs font-medium ${grantTypeColors[grant.grantType]}`}
+                      >
+                        {Object.entries(grantTypeLabels).map(([key, label]) => (
+                          <option key={key} value={key}>{label}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="whitespace-nowrap py-3 pr-3 text-sm font-medium text-gray-700">
+                      {formatCurrency(computeTotal(grant) || null)}
+                    </td>
+                    <EditableDateCell value={grant.deadline} fieldKey="deadline" onUpdate={(updates) => updateGrant(grant.id, updates)} />
+                    <EditableDateCell value={grant.notificationDate} fieldKey="notificationDate" onUpdate={(updates) => updateGrant(grant.id, updates)} />
+                    <EditableDateCell value={grant.startDate} fieldKey="startDate" onUpdate={(updates) => updateGrant(grant.id, updates)} />
+                    <td className="whitespace-nowrap py-3 pr-3" onClick={(e) => e.stopPropagation()}>
+                      <select
+                        value={grant.status}
+                        onChange={(e) => updateGrant(grant.id, { status: e.target.value as GrantStatus })}
+                        className={`rounded-full border-0 px-2.5 py-0.5 text-xs font-medium ${grantStatusColors[grant.status]}`}
+                      >
+                        {Object.entries(grantStatusLabels).map(([key, label]) => (
+                          <option key={key} value={key}>{label}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="whitespace-nowrap py-3 pr-4" onClick={(e) => e.stopPropagation()}>
+                      {confirmDeleteId === grant.id ? (
+                        <div className="flex gap-1">
                           <button
-                            onClick={() => setConfirmDeleteId(grant.id)}
-                            className="text-gray-400 hover:text-red-500"
-                            title="Delete grant"
+                            onClick={() => handleDelete(grant.id)}
+                            className="rounded bg-red-500 px-2 py-0.5 text-xs text-white hover:bg-red-600"
                           >
-                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+                            Yes
                           </button>
-                        )}
-                      </td>
-                    </tr>
-                    {expandedId === grant.id && (
-                      <ExpandedGrantRow
-                        key={`${grant.id}-expanded`}
-                        grant={grant}
-                        onUpdate={(updates) => updateGrant(grant.id, updates)}
-                        milestoneCompletions={milestoneCompletions[grant.id] ?? {}}
-                        onToggleMilestone={(key) => toggleMilestone(grant.id, key)}
-                      />
-                    )}
-                  </>
-                )
-              })}
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            className="text-xs text-gray-500"
+                          >
+                            No
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDeleteId(grant.id)}
+                          className="text-gray-400 hover:text-red-500"
+                          title="Delete grant"
+                        >
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                  {expandedId === grant.id && (
+                    <ExpandedGrantRow
+                      key={`${grant.id}-expanded`}
+                      grant={grant}
+                      onUpdate={(updates) => updateGrant(grant.id, updates)}
+                      milestoneCompletions={milestoneCompletions[grant.id] ?? {}}
+                      onToggleMilestone={(key) => toggleMilestone(grant.id, key)}
+                    />
+                  )}
+                </>
+              ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={14} className="py-8 text-center text-sm text-gray-400 italic">
+                  <td colSpan={11} className="py-8 text-center text-sm text-gray-400 italic">
                     No grants match the selected filters.
                   </td>
                 </tr>

@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 import SectionWrapper from '@/components/SectionWrapper'
 import { useTasksStore } from '@/data/use-tasks-store'
 import { useGrantsStore } from '@/data/use-grants-store'
+import { useProjectsStore } from '@/data/use-projects-store'
 import { team } from '@/data/team'
 import {
   taskStatusLabels,
@@ -27,23 +28,27 @@ function formatDate(dateStr: string | null): string {
 function AddTaskForm({
   onAdd,
   grantOptions,
+  projectOptions,
 }: {
   onAdd: (task: {
     title: string
     description: string
     assignee: string
     grantId: string | null
+    projectId: string | null
     dueDate: string | null
     status: TaskStatus
     priority: TaskPriority
   }) => void
   grantOptions: { id: string; title: string }[]
+  projectOptions: { id: string; title: string }[]
 }) {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [assignee, setAssignee] = useState('')
   const [grantId, setGrantId] = useState('')
+  const [projectId, setProjectId] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [priority, setPriority] = useState<TaskPriority>('medium')
   const titleRef = useRef<HTMLInputElement>(null)
@@ -62,6 +67,7 @@ function AddTaskForm({
       description: description.trim(),
       assignee,
       grantId: grantId || null,
+      projectId: projectId || null,
       dueDate: dueDate || null,
       status: 'pending',
       priority,
@@ -70,6 +76,7 @@ function AddTaskForm({
     setDescription('')
     setAssignee('')
     setGrantId('')
+    setProjectId('')
     setDueDate('')
     setPriority('medium')
     setOpen(false)
@@ -128,6 +135,15 @@ function AddTaskForm({
           </select>
         </div>
         <div>
+          <label className="text-xs font-medium text-gray-500">Due Date</label>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
+          />
+        </div>
+        <div>
           <label className="text-xs font-medium text-gray-500">Linked Grant</label>
           <select
             value={grantId}
@@ -141,13 +157,17 @@ function AddTaskForm({
           </select>
         </div>
         <div>
-          <label className="text-xs font-medium text-gray-500">Due Date</label>
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
+          <label className="text-xs font-medium text-gray-500">Linked Project</label>
+          <select
+            value={projectId}
+            onChange={(e) => setProjectId(e.target.value)}
             className="mt-0.5 w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
-          />
+          >
+            <option value="">None</option>
+            {projectOptions.map((p) => (
+              <option key={p.id} value={p.id}>{p.title}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="text-xs font-medium text-gray-500">Priority</label>
@@ -186,9 +206,12 @@ function AddTaskForm({
 export default function TasksPage() {
   const { tasks, addTask, updateTask, deleteTask } = useTasksStore()
   const { grants } = useGrantsStore()
+  const { projects } = useProjectsStore()
   const [assigneeFilter, setAssigneeFilter] = useState<string>('')
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+
+  const teamNames = useMemo(() => team.map((m) => m.name), [])
 
   // Get unique assignees
   const assignees = useMemo(
@@ -201,27 +224,36 @@ export default function TasksPage() {
     [grants]
   )
 
-  // Build a map of grantId -> grant title for display
+  const projectOptions = useMemo(
+    () => projects.map((p) => ({ id: p.id, title: p.title })),
+    [projects]
+  )
+
+  // Build maps for display
   const grantTitleMap = useMemo(() => {
     const map = new Map<string, string>()
     grants.forEach((g) => map.set(g.id, g.title))
     return map
   }, [grants])
 
+  const projectTitleMap = useMemo(() => {
+    const map = new Map<string, string>()
+    projects.forEach((p) => map.set(p.id, p.title))
+    return map
+  }, [projects])
+
   const filtered = useMemo(() => {
     let result = [...tasks]
     if (assigneeFilter) result = result.filter((t) => t.assignee === assigneeFilter)
     if (statusFilter) result = result.filter((t) => t.status === statusFilter)
 
-    // Sort: incomplete first by due date, then completed
+    // Sort: incomplete first by priority then due date, then completed
     result.sort((a, b) => {
       if (a.status === 'completed' && b.status !== 'completed') return 1
       if (a.status !== 'completed' && b.status === 'completed') return -1
-      // High priority first among same status group
       const priorityOrder = { high: 0, medium: 1, low: 2 }
       const pCmp = priorityOrder[a.priority] - priorityOrder[b.priority]
       if (pCmp !== 0) return pCmp
-      // Then by due date
       if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate)
       if (a.dueDate) return -1
       if (b.dueDate) return 1
@@ -261,7 +293,7 @@ export default function TasksPage() {
 
       <SectionWrapper>
         <div className="mb-6 flex flex-wrap items-center gap-3">
-          <AddTaskForm onAdd={addTask} grantOptions={grantOptions} />
+          <AddTaskForm onAdd={addTask} grantOptions={grantOptions} projectOptions={projectOptions} />
 
           <div className="ml-auto flex items-center gap-3">
             <select
@@ -270,9 +302,10 @@ export default function TasksPage() {
               className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
             >
               <option value="">All People</option>
-              {assignees.map((name) => (
-                <option key={name} value={name}>{name}</option>
-              ))}
+              {assignees.length > 0
+                ? assignees.map((name) => <option key={name} value={name}>{name}</option>)
+                : teamNames.map((name) => <option key={name} value={name}>{name}</option>)
+              }
             </select>
             <select
               value={statusFilter}
@@ -375,8 +408,14 @@ export default function TasksPage() {
                         )}
 
                         {task.grantId && grantTitleMap.has(task.grantId) && (
-                          <span className="inline-flex items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600">
-                            {grantTitleMap.get(task.grantId)}
+                          <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-600">
+                            Grant: {grantTitleMap.get(task.grantId)}
+                          </span>
+                        )}
+
+                        {task.projectId && projectTitleMap.has(task.projectId) && (
+                          <span className="inline-flex items-center gap-1 rounded bg-violet-50 px-1.5 py-0.5 text-[10px] font-medium text-violet-600">
+                            Project: {projectTitleMap.get(task.projectId)}
                           </span>
                         )}
                       </div>

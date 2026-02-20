@@ -10,7 +10,12 @@ function loadTasks(): Task[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return []
-    return JSON.parse(raw)
+    const parsed = JSON.parse(raw)
+    // Migration: add projectId if missing from older tasks
+    return (parsed as Record<string, unknown>[]).map((t) => ({
+      ...t,
+      projectId: t.projectId ?? null,
+    })) as Task[]
   } catch {
     return []
   }
