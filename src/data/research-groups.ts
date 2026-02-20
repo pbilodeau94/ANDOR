@@ -22,8 +22,9 @@ export const researchGroups: ResearchGroup[] = [
       'Biorepository (serum, CSF, PBMCs)',
       'REDCap longitudinal database',
       'Cell-based assay lab for MOG antibody testing',
+      '\u03B3\u03B4 T cell animal models (EAE)',
     ],
-    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Taka Mikami', 'Joao Oliveira', 'Marcelo Matiello'],
+    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Taka Mikami', 'Joao Oliveira', 'Marcelo Matiello', 'Tanuja Chitnis'],
     accentColor: 'blue-500',
   },
   {
@@ -92,15 +93,14 @@ export const researchGroups: ResearchGroup[] = [
     name: 'EBV and MS',
     slug: 'ebv-ms',
     description:
-      'Our EBV and MS program bridges bench and bedside, spanning EBV immunology in multiple sclerosis, exosome biology, \u03B3\u03B4 T cell research, and novel antibody discovery. These studies aim to identify new therapeutic targets and diagnostic biomarkers for autoimmune neurological diseases.',
+      'Our EBV and MS program bridges bench and bedside, spanning EBV immunology in multiple sclerosis, exosome biology, and novel antibody discovery. These studies aim to identify new therapeutic targets and diagnostic biomarkers for autoimmune neurological diseases.',
     patientCount: '',
     infrastructure: [
       'Flow cytometry and single-cell transcriptomics',
       'EBV immunology assays',
-      '\u03B3\u03B4 T cell animal models (EAE)',
       'Exosome isolation and characterization',
     ],
-    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Natalia Drosu', 'Monique Anderson', 'Taka Mikami'],
+    keyInvestigators: ['Natalia Drosu', 'Michael Levy', 'Phil Bilodeau', 'Monique Anderson', 'Taka Mikami'],
     accentColor: 'teal-500',
   },
 ]

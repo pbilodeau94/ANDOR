@@ -850,8 +850,8 @@ export const projectStageLabels: Record<ProjectStage, string> = {
   in_progress: 'In Progress',
   submitted: 'Submitted',
   accepted: 'Accepted',
-  published: 'Published',
   completed: 'Completed',
+  published: 'Published',
 }
 
 export const projectStageColors: Record<ProjectStage, string> = {
@@ -859,6 +859,6 @@ export const projectStageColors: Record<ProjectStage, string> = {
   in_progress: 'bg-blue-100 text-blue-700',
   submitted: 'bg-amber-100 text-amber-700',
   accepted: 'bg-teal-100 text-teal-700',
-  published: 'bg-emerald-100 text-emerald-700',
   completed: 'bg-purple-100 text-purple-700',
+  published: 'bg-emerald-100 text-emerald-700',
 }

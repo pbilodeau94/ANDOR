@@ -8,6 +8,7 @@ import ProjectCard from '@/components/portal/ProjectCard'
 import DiseaseChips from '@/components/portal/DiseaseChips'
 import LinkedTasks from '@/components/portal/LinkedTasks'
 import TeamMemberChips from '@/components/portal/TeamMemberChips'
+import CheckboxFilterDropdown from '@/components/portal/CheckboxFilterDropdown'
 import { projectStageLabels, projectStageColors } from '@/data/projects'
 import { useProjectsStore } from '@/data/use-projects-store'
 import type { ProjectStage, Project } from '@/data/projects'
@@ -20,8 +21,8 @@ const boardColumns: BoardColumn<ProjectStage>[] = [
   { key: 'in_progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700' },
   { key: 'submitted', label: 'Submitted', color: 'bg-amber-100 text-amber-700' },
   { key: 'accepted', label: 'Accepted', color: 'bg-teal-100 text-teal-700' },
-  { key: 'published', label: 'Published', color: 'bg-emerald-100 text-emerald-700' },
   { key: 'completed', label: 'Completed', color: 'bg-purple-100 text-purple-700' },
+  { key: 'published', label: 'Published', color: 'bg-emerald-100 text-emerald-700' },
 ]
 
 const researchTypes = ['Clinical', 'Translational', 'Basic', 'Basic & Clinical', 'Clinical Trial']
@@ -302,7 +303,9 @@ export default function ProjectsPage() {
   const { projects: allProjects, updateProject, deleteProject, addProject } = useProjectsStore()
   const [view, setView] = useState<ViewMode>('table')
   const [stageTab, setStageTab] = useState<ProjectStage | null>(null)
-  const [leadFilter, setLeadFilter] = useState<string>('all')
+  const [diseaseFilter, setDiseaseFilter] = useState<string[]>([])
+  const [typeFilter, setTypeFilter] = useState<string[]>([])
+  const [piFilter, setPiFilter] = useState<string[]>([])
   const [sortKey, setSortKey] = useState<SortKey>('title')
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -313,15 +316,33 @@ export default function ProjectsPage() {
     [allProjects, stageTab]
   )
 
-  const leads = useMemo(
-    () => [...new Set(stageFiltered.map((p) => p.lead).filter(Boolean))].sort(),
+  const allDiseases = useMemo(
+    () => [...new Set(stageFiltered.flatMap((p) => p.diseases))].sort(),
     [stageFiltered]
   )
 
+  const allTypes = useMemo(
+    () => [...new Set(stageFiltered.map((p) => p.researchType).filter(Boolean))].sort(),
+    [stageFiltered]
+  )
+
+  const allPis = useMemo(
+    () => [...new Set(stageFiltered.map((p) => p.pi).filter(Boolean))].sort(),
+    [stageFiltered]
+  )
+
+  const hasFilters = diseaseFilter.length > 0 || typeFilter.length > 0 || piFilter.length > 0
+
   const filtered = useMemo(() => {
     let result = [...stageFiltered]
-    if (leadFilter !== 'all') {
-      result = result.filter((p) => p.lead === leadFilter)
+    if (diseaseFilter.length > 0) {
+      result = result.filter((p) => diseaseFilter.some((d) => p.diseases.includes(d)))
+    }
+    if (typeFilter.length > 0) {
+      result = result.filter((p) => typeFilter.includes(p.researchType))
+    }
+    if (piFilter.length > 0) {
+      result = result.filter((p) => piFilter.includes(p.pi) || piFilter.includes(p.lead))
     }
 
     result.sort((a, b) => {
@@ -338,7 +359,7 @@ export default function ProjectsPage() {
     })
 
     return result
-  }, [stageFiltered, leadFilter, sortKey, sortDir])
+  }, [stageFiltered, diseaseFilter, typeFilter, piFilter, sortKey, sortDir])
 
   // Published projects shown as paper list
   const publishedProjects = useMemo(
@@ -397,30 +418,51 @@ export default function ProjectsPage() {
 
       <SectionWrapper>
         {stageTab === 'published' ? (
-          /* Published = simple paper list with hyperlinks */
+          /* Published = paper list with journal links */
           publishedProjects.length > 0 ? (
             <div className="space-y-2">
-              {publishedProjects.map((project) => (
-                <div key={project.id} className="flex items-start gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
-                  <div className="min-w-0 flex-1">
-                    {project.publicationUrl ? (
+              {publishedProjects.map((project) => {
+                const isPubMed = project.publicationUrl?.includes('pubmed.ncbi.nlm.nih.gov')
+                const isDoi = project.publicationUrl?.includes('doi.org')
+                return (
+                  <div key={project.id} className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                    <div className="min-w-0 flex-1">
+                      {project.publicationUrl ? (
+                        <a
+                          href={project.publicationUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+                        >
+                          {project.title}
+                        </a>
+                      ) : (
+                        <span className="text-sm font-medium text-gray-900">{project.title}</span>
+                      )}
+                      <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-500">
+                        <span>{project.pi || project.lead}</span>
+                        {project.diseases.length > 0 && (
+                          <>
+                            <span className="text-gray-300">&middot;</span>
+                            <span>{project.diseases.join(', ')}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    {project.publicationUrl && (
                       <a
                         href={project.publicationUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+                        className="shrink-0 rounded bg-gray-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 transition-colors hover:bg-[var(--color-accent)] hover:text-white"
+                        title={isPubMed ? 'View on PubMed' : isDoi ? 'View publication' : 'View paper'}
                       >
-                        {project.title}
+                        {isPubMed ? 'PubMed' : isDoi ? 'DOI' : 'Link'}
                       </a>
-                    ) : (
-                      <span className="text-sm font-medium text-gray-900">{project.title}</span>
                     )}
-                    <div className="mt-0.5 text-xs text-gray-500">
-                      {project.pi || project.lead}
-                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           ) : (
             <p className="py-8 text-center text-sm text-gray-400 italic">No published projects.</p>
@@ -431,23 +473,31 @@ export default function ProjectsPage() {
             <div className="mb-6 flex flex-wrap items-center gap-3">
               <AddProjectForm onAdd={addProject} />
 
-              <select
-                value={leadFilter}
-                onChange={(e) => setLeadFilter(e.target.value)}
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
-              >
-                <option value="all">All Leads</option>
-                {leads.map((lead) => (
-                  <option key={lead} value={lead}>{lead}</option>
-                ))}
-              </select>
+              <CheckboxFilterDropdown
+                allItems={allDiseases}
+                selected={diseaseFilter}
+                onChange={setDiseaseFilter}
+                label="All Diseases"
+              />
+              <CheckboxFilterDropdown
+                allItems={allTypes}
+                selected={typeFilter}
+                onChange={setTypeFilter}
+                label="All Types"
+              />
+              <CheckboxFilterDropdown
+                allItems={allPis}
+                selected={piFilter}
+                onChange={setPiFilter}
+                label="All PIs"
+              />
 
-              {leadFilter !== 'all' && (
+              {hasFilters && (
                 <button
-                  onClick={() => setLeadFilter('all')}
+                  onClick={() => { setDiseaseFilter([]); setTypeFilter([]); setPiFilter([]) }}
                   className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-500 hover:bg-gray-50"
                 >
-                  Clear filter
+                  Clear filters
                 </button>
               )}
             </div>

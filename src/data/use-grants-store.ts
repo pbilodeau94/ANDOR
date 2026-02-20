@@ -10,16 +10,17 @@ const MILESTONE_STORAGE_KEY = 'andor-milestone-completions'
 type GrantOverrides = {
   updates: Record<string, Partial<Grant>>
   deleted: string[]
+  added: Grant[]
 }
 
 function loadOverrides(): GrantOverrides {
-  if (typeof window === 'undefined') return { updates: {}, deleted: [] }
+  if (typeof window === 'undefined') return { updates: {}, deleted: [], added: [] }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return { updates: {}, deleted: [] }
+    if (!raw) return { updates: {}, deleted: [], added: [] }
     return JSON.parse(raw)
   } catch {
-    return { updates: {}, deleted: [] }
+    return { updates: {}, deleted: [], added: [] }
   }
 }
 
@@ -44,7 +45,7 @@ function saveMilestoneCompletions(completions: Record<string, Record<string, boo
 
 function mergeGrants(overrides: GrantOverrides): Grant[] {
   const deletedSet = new Set(overrides.deleted)
-  return initialGrants
+  const base = initialGrants
     .filter((g) => !deletedSet.has(g.id))
     .map((g) => {
       const updates = overrides.updates[g.id]
@@ -64,10 +65,21 @@ function mergeGrants(overrides: GrantOverrides): Grant[] {
       }
       return merged
     })
+
+  // Include user-added grants (with any updates applied, excluding deleted)
+  const added = (overrides.added ?? [])
+    .filter((g) => !deletedSet.has(g.id))
+    .map((g) => {
+      const updates = overrides.updates[g.id]
+      if (!updates) return g
+      return { ...g, ...updates }
+    })
+
+  return [...base, ...added]
 }
 
 export function useGrantsStore() {
-  const [overrides, setOverrides] = useState<GrantOverrides>({ updates: {}, deleted: [] })
+  const [overrides, setOverrides] = useState<GrantOverrides>({ updates: {}, deleted: [], added: [] })
   const [milestoneCompletions, setMilestoneCompletions] = useState<Record<string, Record<string, boolean>>>({})
   const [loaded, setLoaded] = useState(false)
 
@@ -93,11 +105,26 @@ export function useGrantsStore() {
     })
   }, [])
 
+  const addGrant = useCallback((grant: Omit<Grant, 'id'>) => {
+    const id = `g-user-${Date.now()}`
+    const newGrant: Grant = { ...grant, id } as Grant
+    setOverrides((prev) => {
+      const next = {
+        ...prev,
+        added: [...(prev.added ?? []), newGrant],
+      }
+      saveOverrides(next)
+      return next
+    })
+    return id
+  }, [])
+
   const deleteGrant = useCallback((id: string) => {
     setOverrides((prev) => {
       const next = {
         updates: { ...prev.updates },
         deleted: [...prev.deleted, id],
+        added: (prev.added ?? []).filter((g) => g.id !== id),
       }
       delete next.updates[id]
       saveOverrides(next)
@@ -123,9 +150,9 @@ export function useGrantsStore() {
   const resetAll = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY)
     localStorage.removeItem(MILESTONE_STORAGE_KEY)
-    setOverrides({ updates: {}, deleted: [] })
+    setOverrides({ updates: {}, deleted: [], added: [] })
     setMilestoneCompletions({})
   }, [])
 
-  return { grants: allGrants, updateGrant, deleteGrant, toggleMilestone, milestoneCompletions, resetAll }
+  return { grants: allGrants, addGrant, updateGrant, deleteGrant, toggleMilestone, milestoneCompletions, resetAll }
 }

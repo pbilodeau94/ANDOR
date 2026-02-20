@@ -4,7 +4,8 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 import DiseaseChips from '@/components/portal/DiseaseChips'
 import LinkedTasks from '@/components/portal/LinkedTasks'
 import TeamMemberChips from '@/components/portal/TeamMemberChips'
-import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels } from '@/data/grants'
+import CheckboxFilterDropdown from '@/components/portal/CheckboxFilterDropdown'
+import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels, knownDiseases } from '@/data/grants'
 import { useGrantsStore } from '@/data/use-grants-store'
 import {
   calculateMilestones,
@@ -207,79 +208,163 @@ function EditableTitleCell({
   )
 }
 
-// --- Multi-select Checkbox Filter Dropdown ---
+// --- Team Member Picker (select only from team list) ---
 
-function CheckboxFilterDropdown({
-  allItems,
-  selected,
-  onChange,
-  label,
-  labelMap,
+// --- Add Grant Form ---
+
+function AddGrantForm({
+  onAdd,
+  onCancel,
 }: {
-  allItems: string[]
-  selected: string[]
-  onChange: (next: string[]) => void
-  label: string
-  labelMap?: Record<string, string>
+  onAdd: (grant: Omit<Grant, 'id'>) => void
+  onCancel: () => void
 }) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const [title, setTitle] = useState('')
+  const [pi, setPi] = useState<string[]>([])
+  const [agency, setAgency] = useState('')
+  const [mechanism, setMechanism] = useState('')
+  const [grantType, setGrantType] = useState<GrantType>('federal')
+  const [directCosts, setDirectCosts] = useState('')
+  const [deadline, setDeadline] = useState('')
+  const [diseases, setDiseases] = useState<string[]>([])
+  const [status, setStatus] = useState<GrantStatus>('not_started')
 
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
-
-  function toggle(name: string) {
-    if (selected.includes(name)) onChange(selected.filter((n) => n !== name))
-    else onChange([...selected, name])
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!title.trim()) return
+    onAdd({
+      title: title.trim(),
+      pi,
+      lead: pi[0] ?? '',
+      agency: agency.trim(),
+      mechanism: mechanism.trim(),
+      grantType,
+      directCosts: directCosts ? Number(directCosts) : null,
+      idcCategory: 'none',
+      idcRate: 0,
+      duration: null,
+      deadline: deadline || null,
+      adminDeadline: null,
+      scienceDeadline: null,
+      notificationDate: null,
+      startDate: null,
+      status,
+      diseases,
+      keyPersonnel: [],
+      rfaUrl: null,
+      rfaPdfUrl: null,
+      documents: [],
+    })
   }
 
-  const getLabel = (key: string) => labelMap?.[key] ?? key
-
-  const displayLabel = selected.length === 0
-    ? label
-    : selected.length === 1
-      ? getLabel(selected[0])
-      : `${selected.length} selected`
-
   return (
-    <div className="relative" ref={ref}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
-      >
-        {displayLabel}
-        <svg className={`h-4 w-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      {open && (
-        <div className="absolute left-0 z-20 mt-1 max-h-64 w-56 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
-          {allItems.map((name) => (
-            <label key={name} className="flex cursor-pointer items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50">
-              <input
-                type="checkbox"
-                checked={selected.includes(name)}
-                onChange={() => toggle(name)}
-                className="rounded border-gray-300 text-[var(--color-primary)]"
-              />
-              {getLabel(name)}
-            </label>
-          ))}
-          {allItems.length === 0 && (
-            <p className="px-3 py-2 text-xs italic text-gray-400">None available</p>
-          )}
+    <form onSubmit={handleSubmit} className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+      <h3 className="text-sm font-semibold text-gray-700">Add New Grant</h3>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="sm:col-span-2">
+          <label className="text-[10px] font-medium text-gray-500">Title *</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
+            required
+          />
         </div>
-      )}
-    </div>
+        <div>
+          <label className="text-[10px] font-medium text-gray-500">Agency</label>
+          <input
+            type="text"
+            value={agency}
+            onChange={(e) => setAgency(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
+            placeholder="e.g. NIH, NMSS"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-medium text-gray-500">Mechanism</label>
+          <input
+            type="text"
+            value={mechanism}
+            onChange={(e) => setMechanism(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
+            placeholder="e.g. R01, K08"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-medium text-gray-500">Type</label>
+          <select
+            value={grantType}
+            onChange={(e) => setGrantType(e.target.value as GrantType)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
+          >
+            {Object.entries(grantTypeLabels).map(([key, label]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-[10px] font-medium text-gray-500">Direct Costs</label>
+          <input
+            type="number"
+            value={directCosts}
+            onChange={(e) => setDirectCosts(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
+            placeholder="$"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-medium text-gray-500">Deadline</label>
+          <input
+            type="date"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-medium text-gray-500">Status</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value as GrantStatus)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
+          >
+            {Object.entries(grantStatusLabels).map(([key, label]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="sm:col-span-2">
+          <label className="text-[10px] font-medium text-gray-500">PI(s)</label>
+          <div className="mt-0.5">
+            <TeamMemberChips members={pi} onUpdate={setPi} addLabel="+ Add PI" />
+          </div>
+        </div>
+        <div className="sm:col-span-2">
+          <label className="text-[10px] font-medium text-gray-500">Diseases</label>
+          <div className="mt-0.5">
+            <DiseaseChips diseases={diseases} onUpdate={setDiseases} />
+          </div>
+        </div>
+      </div>
+      <div className="mt-4 flex gap-2">
+        <button
+          type="submit"
+          className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--color-primary-light)]"
+        >
+          Add Grant
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
   )
 }
-
-// --- Team Member Picker (select only from team list) ---
 
 // --- Expanded Grant Row ---
 
@@ -527,7 +612,8 @@ function compareDates(a: string | null, b: string | null): number {
 // --- Main Page ---
 
 export default function GrantsPage() {
-  const { grants: allGrants, updateGrant, deleteGrant, toggleMilestone, milestoneCompletions } = useGrantsStore()
+  const { grants: allGrants, addGrant, updateGrant, deleteGrant, toggleMilestone, milestoneCompletions } = useGrantsStore()
+  const [showAddForm, setShowAddForm] = useState(false)
   const [typeTab, setTypeTab] = useState<GrantType | null>(null)
   const [statusFilter, setStatusFilter] = useState<string[]>([])
   const [personFilter, setPersonFilter] = useState<string[]>([])
@@ -661,6 +747,31 @@ export default function GrantsPage() {
 
       <section className="bg-white py-16">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+        {/* Add Grant */}
+        {showAddForm ? (
+          <div className="mb-6">
+            <AddGrantForm
+              onAdd={(grant) => {
+                addGrant(grant)
+                setShowAddForm(false)
+              }}
+              onCancel={() => setShowAddForm(false)}
+            />
+          </div>
+        ) : (
+          <div className="mb-6 flex justify-end">
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="flex items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--color-primary-light)]"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Add Grant
+            </button>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <CheckboxFilterDropdown

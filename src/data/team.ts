@@ -103,6 +103,24 @@ export const team: TeamMember[] = [
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/99601',
     imageUrl: '/team/gillani.jpg',
   },
+  {
+    id: 't21',
+    name: 'Tanuja Chitnis',
+    title: 'Professor of Neurology',
+    role: 'faculty',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/profile/1244171',
+    diseases: ['MOGAD', 'MS'],
+  },
+  {
+    id: 't22',
+    name: 'Giovanna Manzano',
+    title: 'Assistant Professor of Neurology',
+    role: 'faculty',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/159134',
+    diseases: ['Autoimmune Encephalitis'],
+  },
 
   // Fellows
   {
@@ -175,15 +193,16 @@ export const team: TeamMember[] = [
     diseases: ['MOGAD', 'NMOSD'],
   },
 
-  // Staff
   {
     id: 't19',
     name: 'Mulan Jiang',
     title: 'Medical Student (Harvard/MIT HST)',
-    role: 'staff',
+    role: 'fellow',
     institution: 'Harvard Medical School',
     diseases: [],
   },
+
+  // Staff
   {
     id: 't20',
     name: 'Fabian Murillo',

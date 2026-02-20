@@ -327,6 +327,7 @@ export default function TasksPage() {
   const { grants } = useGrantsStore()
   const { projects } = useProjectsStore()
   const [statusFilter, setStatusFilter] = useState<string>('')
+  const [sourceFilter, setSourceFilter] = useState<string>('')
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const grantOptions = useMemo(
@@ -354,6 +355,9 @@ export default function TasksPage() {
   const filtered = useMemo(() => {
     let result = [...tasks]
     if (statusFilter) result = result.filter((t) => t.status === statusFilter)
+    if (sourceFilter === 'grant') result = result.filter((t) => t.grantId)
+    else if (sourceFilter === 'project') result = result.filter((t) => t.projectId)
+    else if (sourceFilter === 'standalone') result = result.filter((t) => !t.grantId && !t.projectId)
 
     result.sort((a, b) => {
       if (a.status === 'completed' && b.status !== 'completed') return 1
@@ -368,7 +372,7 @@ export default function TasksPage() {
     })
 
     return result
-  }, [tasks, statusFilter])
+  }, [tasks, statusFilter, sourceFilter])
 
   const totalPending = tasks.filter((t) => t.status === 'pending').length
   const totalInProgress = tasks.filter((t) => t.status === 'in_progress').length
@@ -397,6 +401,16 @@ export default function TasksPage() {
 
           <div className="ml-auto flex items-center gap-3">
             <select
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
+            >
+              <option value="">All Sources</option>
+              <option value="grant">Grant-linked</option>
+              <option value="project">Project-linked</option>
+              <option value="standalone">Standalone</option>
+            </select>
+            <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
@@ -406,9 +420,9 @@ export default function TasksPage() {
                 <option key={key} value={key}>{label}</option>
               ))}
             </select>
-            {statusFilter && (
+            {(statusFilter || sourceFilter) && (
               <button
-                onClick={() => setStatusFilter('')}
+                onClick={() => { setStatusFilter(''); setSourceFilter('') }}
                 className="text-sm text-gray-500 hover:text-gray-700"
               >
                 Clear
