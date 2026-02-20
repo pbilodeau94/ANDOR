@@ -24,7 +24,7 @@ export const researchGroups: ResearchGroup[] = [
       'Cell-based assay lab for MOG antibody testing',
       '\u03B3\u03B4 T cell animal models (EAE)',
     ],
-    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Takahisa Mikami', 'Joao Oliveira', 'Marcelo Matiello'],
+    keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Anastasia Vishnevetsky', 'Takahisa Mikami', 'Joao Oliveira', 'Marcelo Matiello'],
     accentColor: 'blue-500',
   },
   {
@@ -108,7 +108,7 @@ export const researchGroups: ResearchGroup[] = [
     name: 'Neuro-Rheumatology',
     slug: 'neuro-rheum',
     description:
-      'Our Neuro-Rheumatology program at Brigham and Women\u2019s Hospital focuses on neurological manifestations of systemic autoimmune diseases, including neuropsychiatric lupus (neuroSLE), rheumatoid pachymeningitis, and other rheumatological conditions affecting the nervous system.',
+      'Our Neuro-Rheumatology program at Brigham and Women\u2019s Hospital focuses on neurological manifestations of systemic autoimmune diseases, including neuropsychiatric lupus (neuroSLE), Sjogren\u2019s, Behcet\u2019s, and rheumatoid arthritis.',
     patientCount: '',
     infrastructure: [
       'Multidisciplinary neuro-rheumatology clinic (BWH)',

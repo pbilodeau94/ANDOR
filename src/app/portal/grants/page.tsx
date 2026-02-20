@@ -581,12 +581,9 @@ export default function GrantsPage() {
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
-  const syncedRef = useRef(false)
-
-  // Sync milestone tasks from grants on load
+  // Sync milestone tasks whenever grants change (including after adding)
   useEffect(() => {
-    if (syncedRef.current || !allGrants.length) return
-    syncedRef.current = true
+    if (!allGrants.length) return
     syncMilestoneTasks(allGrants)
   }, [allGrants, syncMilestoneTasks])
 

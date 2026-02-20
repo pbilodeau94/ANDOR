@@ -455,12 +455,9 @@ export default function TasksPage() {
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [sourceFilter, setSourceFilter] = useState<string>('')
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
-  const syncedRef = useRef(false)
-
-  // Sync milestone tasks from grants on load
+  // Sync milestone tasks whenever grants change (including after adding)
   useEffect(() => {
-    if (syncedRef.current || !grants.length) return
-    syncedRef.current = true
+    if (!grants.length) return
     syncMilestoneTasks(grants)
   }, [grants, syncMilestoneTasks])
 

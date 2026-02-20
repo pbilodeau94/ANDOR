@@ -8,6 +8,7 @@ import Logo from './Logo'
 const publicLinks = [
   { href: '/', label: 'Home' },
   { href: '/research', label: 'Research' },
+  { href: '/clinical-trials', label: 'Clinical Trials' },
   { href: '/team', label: 'Team' },
   { href: '/support', label: 'Support' },
 ]

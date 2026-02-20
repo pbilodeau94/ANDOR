@@ -42,7 +42,7 @@ export const programHighlights: Record<string, string[]> = {
   'Neuro-Rheumatology': [
     'Multidisciplinary neuro-rheumatology clinic at Brigham and Women\u2019s Hospital bridging neurology and rheumatology',
     'Characterization of neuropsychiatric lupus (neuroSLE) phenotypes and treatment approaches',
-    'Studies of rheumatoid pachymeningitis and other CNS manifestations of systemic autoimmune diseases',
+    'Investigation of neurological manifestations of Sjogren\u2019s syndrome, Behcet\u2019s disease, and rheumatoid arthritis',
     'Development of standardized assessment protocols for neurological involvement in rheumatological conditions',
   ],
   'Folate and Autism': [
@@ -55,9 +55,9 @@ export const programHighlights: Record<string, string[]> = {
 
 export const whyThisMatters: Record<string, string> = {
   MOGAD:
-    'MOGAD is a newly defined disease with no FDA-approved treatments. Our research addresses critical gaps: understanding why some patients relapse while others don\u2019t, comparing treatment effectiveness head-to-head, characterizing headache syndromes unique to MOGAD, and discovering how age shapes disease severity and treatment response. We are leading and participating in multiple clinical trials\u2014METEROID, rozanolixizumab, and an acute optic neuritis trial led by Dr. Vishnevetsky\u2014to bring targeted therapies to patients. This work is funded by NIH, the Department of Defense, NMSS, and AAN.',
+    'MOGAD is a newly defined disease with no FDA-approved treatments. Our research addresses critical gaps: understanding why some patients relapse while others don\u2019t, comparing treatment effectiveness head-to-head, characterizing headache syndromes unique to MOGAD, and discovering how age shapes disease severity and treatment response. We are leading and participating in multiple clinical trials\u2014METEROID, rozanolixizumab, and an acute optic neuritis trial led by Dr. Vishnevetsky\u2014to bring targeted therapies to patients.',
   NMOSD:
-    'NMOSD can cause devastating attacks of blindness and paralysis. While three FDA-approved treatments now exist, we still don\u2019t know which works best for which patients. ANDOR is leading BEST-NMOSD, an international pragmatic clinical trial that directly compares treatments using a novel composite endpoint incorporating empirically determined thresholds for safety and tolerability failure\u2014providing the real-world evidence clinicians need. This work is funded by PCORI.',
+    'NMOSD can cause devastating attacks of blindness and paralysis. While three FDA-approved treatments now exist, we still don\u2019t know which works best for which patients. ANDOR is leading BEST-NMOSD, an international pragmatic clinical trial that directly compares treatments using a novel composite endpoint incorporating empirically determined thresholds for safety and tolerability failure\u2014providing the real-world evidence clinicians need.',
   'Autoimmune Encephalitis':
     'Autoimmune encephalitis can mimic psychiatric disease, leading to delayed or missed diagnoses. Many patients test negative for all known antibodies yet still respond to immunotherapy. Our research improves diagnostic pathways, defines seronegative encephalitis phenotypes, and evaluates new treatments through the ExTINGUISH and CIELO clinical trials\u2014ultimately getting patients the right diagnosis and treatment faster.',
   Neurosarcoidosis:
@@ -65,9 +65,9 @@ export const whyThisMatters: Record<string, string> = {
   'CNS Vasculitis':
     'CNS vasculitis is rare, often devastating, and frequently requires brain biopsy for diagnosis. ANDOR maintains one of the world\u2019s largest biopsy-confirmed cohort databases, enabling us to define disease subtypes, identify prognostic markers, and develop less invasive diagnostic approaches\u2014critical steps toward improving outcomes for these underserved patients.',
   'EBV and MS':
-    'Epstein-Barr virus is now recognized as a key trigger of multiple sclerosis, but the molecular mechanisms remain unclear. Our laboratory bridges virology and neuroimmunology, investigating how EBV activates autoreactive immune cells, how viral particles traffic through exosomes, and whether antiviral strategies could prevent or treat MS. This work is funded by NIH, the Department of Defense, and NMSS.',
+    'Epstein-Barr virus is now recognized as a key trigger of multiple sclerosis, but the molecular mechanisms remain unclear. Our laboratory bridges virology and neuroimmunology, investigating how EBV activates autoreactive immune cells, how viral particles traffic through exosomes, and whether antiviral strategies could prevent or treat MS.',
   'Neuro-Rheumatology':
-    'Neurological complications of systemic autoimmune diseases like lupus are common yet poorly understood. Neuropsychiatric lupus (neuroSLE) affects up to 75% of SLE patients and can cause seizures, psychosis, and cognitive decline. Our multidisciplinary program at BWH brings together neurologists and rheumatologists to improve diagnosis, develop treatment protocols, and conduct research into the mechanisms of CNS involvement in rheumatological disease.',
+    'Neurological complications of systemic autoimmune diseases like lupus, Sjogren\u2019s, Behcet\u2019s, and rheumatoid arthritis are common yet poorly understood. Neuropsychiatric lupus (neuroSLE) affects up to 75% of SLE patients and can cause seizures, psychosis, and cognitive decline. Our multidisciplinary program at BWH brings together neurologists and rheumatologists to improve diagnosis, develop treatment protocols, and conduct research into the mechanisms of CNS involvement in rheumatological disease.',
   'Folate and Autism':
     'Folate receptor alpha (FR\u03B1) autoantibodies can block folate transport into the brain, causing cerebral folate deficiency\u2014a treatable condition linked to autism spectrum disorder. Our research investigates the prevalence and clinical significance of FR\u03B1 autoantibodies in ASD, explores the immunological mechanisms underlying this autoimmune process, and evaluates targeted treatments like leucovorin that can bypass the blocked receptor.',
 }

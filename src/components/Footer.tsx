@@ -22,6 +22,7 @@ export default function Footer() {
               {[
                 { href: '/research', label: 'Research Programs' },
                 { href: '/team', label: 'Our Team' },
+                { href: '/clinical-trials', label: 'Clinical Trials' },
                 { href: '/support', label: 'Support Our Research' },
                 { href: '/portal', label: 'Investigator Portal' },
               ].map((link) => (
@@ -37,34 +38,37 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Affiliation */}
+          {/* Affiliations */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Affiliations</h3>
             <ul className="mt-3 space-y-2 text-sm text-gray-400">
-              <li>Massachusetts General Hospital</li>
-              <li>Brigham and Women&apos;s Hospital</li>
-              <li>Harvard Medical School</li>
               <li>Mass General Brigham</li>
+              <li>Harvard Medical School</li>
             </ul>
           </div>
         </div>
 
         {/* Institutional Logos */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-8 rounded-lg bg-white/95 px-6 py-4 sm:gap-12">
-          <Image
-            src="/mgb-logo.png"
-            alt="Mass General Brigham"
-            width={180}
-            height={29}
-            className="h-7 w-auto"
-          />
-          <Image
-            src="/hms-logo.png"
-            alt="Harvard Medical School"
-            width={180}
-            height={59}
-            className="h-10 w-auto"
-          />
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-8">
+            <Image
+              src="/mgb-logo.png"
+              alt="Mass General Brigham"
+              width={160}
+              height={26}
+              className="h-6 w-auto brightness-0 invert opacity-60"
+            />
+            <Image
+              src="/hms-logo.png"
+              alt="Harvard Medical School"
+              width={160}
+              height={53}
+              className="h-9 w-auto brightness-0 invert opacity-60"
+            />
+          </div>
+          <p className="text-[10px] font-medium uppercase tracking-widest text-gray-500">
+            MGB Neurology &middot; Division of Neuroimmunology
+          </p>
         </div>
 
         <div className="mt-6 border-t border-gray-700 pt-6 text-center text-xs text-gray-500">

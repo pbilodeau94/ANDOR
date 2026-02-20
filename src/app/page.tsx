@@ -8,7 +8,7 @@ import { publications } from '@/data/publications'
 import { team } from '@/data/team'
 import Link from 'next/link'
 
-const featuredTeam = team.filter((m) => m.role === 'faculty' && m.imageUrl).slice(0, 6)
+const featuredTeam = team.filter((m) => m.role === 'faculty' && m.imageUrl)
 
 // Deduplicate publications by title for unique count
 const uniquePubCount = new Set(publications.map((p) => p.title)).size
@@ -23,8 +23,8 @@ const heroStats = [
 const impactStats = [
   { value: String(uniquePubCount) + '+', label: 'Publications' },
   { value: '69', label: 'Research Projects' },
-  { value: '6+', label: 'Clinical Trials' },
-  { value: '7', label: 'Partner Institutions' },
+  { value: '6', label: 'Clinical Trials' },
+  { value: '7+', label: 'Partner Institutions' },
 ]
 
 export default function HomePage() {
@@ -33,8 +33,7 @@ export default function HomePage() {
       <Hero
         variant="centered"
         showLogo
-        subtitle="MGB Neurology &middot; Division of Neuroimmunology"
-        title="ANDOR Research Group"
+        title="Advancing Autoimmune Neurology Research"
         description="Autoimmune Neurological DisOrders Registry &mdash; advancing the understanding and treatment of rare autoimmune neurological diseases through collaborative, data-driven research."
         cta={{ label: 'Support Our Research', href: '/support' }}
       >
@@ -45,6 +44,27 @@ export default function HomePage() {
               <div className="text-sm text-gray-300">{stat.label}</div>
             </div>
           ))}
+        </div>
+        <div className="animate-fade-in-up-delay-3 mt-10 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-6">
+            <Image
+              src="/mgb-logo.png"
+              alt="Mass General Brigham"
+              width={140}
+              height={23}
+              className="h-5 w-auto brightness-0 invert opacity-70"
+            />
+            <Image
+              src="/hms-logo.png"
+              alt="Harvard Medical School"
+              width={140}
+              height={46}
+              className="h-8 w-auto brightness-0 invert opacity-70"
+            />
+          </div>
+          <p className="text-xs font-medium uppercase tracking-widest text-gray-400">
+            MGB Neurology &middot; Division of Neuroimmunology
+          </p>
         </div>
       </Hero>
 
@@ -81,6 +101,9 @@ export default function HomePage() {
               This infrastructure accelerates discovery and improves outcomes for patients with autoimmune
               neurological conditions.
             </p>
+            <p className="mt-4 text-sm leading-relaxed text-gray-500">
+              Our research is funded by NIH, PCORI, the Department of Defense, NMSS, AAN, and philanthropic support.
+            </p>
           </div>
           <div>
             <h2 className="text-3xl font-bold text-[var(--color-primary)]">Research Infrastructure</h2>
@@ -89,9 +112,7 @@ export default function HomePage() {
                 'Prospective disease-specific registries (700+ patients across conditions)',
                 'Centralized biorepository (serum, CSF, PBMCs, tissue)',
                 'REDCap longitudinal databases with standardized outcomes',
-                'Collaborative agreements with 7+ partner institutions',
-                'Cell-based assay laboratory for antibody testing',
-                'Advanced imaging protocols (7T MRI, central vein sign)',
+                'Collaborative agreements with partner institutions worldwide',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <svg

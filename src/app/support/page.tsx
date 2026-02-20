@@ -270,9 +270,7 @@ export default function SupportPage() {
 
           <div className="mt-8">
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-400">
-              <span>Massachusetts General Hospital</span>
-              <span className="hidden sm:inline">&middot;</span>
-              <span>Brigham and Women&apos;s Hospital</span>
+              <span>Mass General Brigham</span>
               <span className="hidden sm:inline">&middot;</span>
               <span>Harvard Medical School</span>
             </div>
