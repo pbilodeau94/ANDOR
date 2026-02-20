@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo, useRef, useEffect } from 'react'
-import SectionWrapper from '@/components/SectionWrapper'
 import DiseaseChips from '@/components/portal/DiseaseChips'
 import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors, computeIdc, computeTotal, idcCategoryLabels, knownDiseases } from '@/data/grants'
 import { useGrantsStore } from '@/data/use-grants-store'
@@ -144,12 +143,73 @@ function EditableDeadlineCell({
       onClick={(e) => { e.stopPropagation(); setInputVal(value ?? ''); setEditing(true) }}
       title={isAuto ? 'Auto-calculated. Click to override.' : 'Click to edit'}
     >
-      <span className={isAuto ? 'text-gray-400 italic' : 'text-gray-600'}>
+      <span className="text-gray-600">
         {formatDate(displayValue)}
       </span>
       <svg className="ml-1 inline h-3 w-3 text-gray-300 opacity-0 transition-opacity group-hover/deadline:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
       </svg>
+    </td>
+  )
+}
+
+// --- Editable Title Cell ---
+
+function EditableTitleCell({
+  title,
+  mechanism,
+  onUpdate,
+}: {
+  title: string
+  mechanism: string
+  onUpdate: (title: string) => void
+}) {
+  const [editing, setEditing] = useState(false)
+  const [inputVal, setInputVal] = useState(title)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (editing && inputRef.current) inputRef.current.focus()
+  }, [editing])
+
+  function save() {
+    const trimmed = inputVal.trim()
+    if (trimmed && trimmed !== title) onUpdate(trimmed)
+    setEditing(false)
+  }
+
+  function cancel() {
+    setInputVal(title)
+    setEditing(false)
+  }
+
+  if (editing) {
+    return (
+      <td className="py-3 pr-3" onClick={(e) => e.stopPropagation()}>
+        <input
+          ref={inputRef}
+          value={inputVal}
+          onChange={(e) => setInputVal(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') save()
+            if (e.key === 'Escape') cancel()
+          }}
+          className="w-full rounded border border-gray-300 px-2 py-1 text-sm font-medium"
+        />
+        {mechanism && <div className="mt-0.5 text-xs text-gray-400">{mechanism}</div>}
+      </td>
+    )
+  }
+
+  return (
+    <td
+      className="group/title cursor-pointer py-3 pr-3"
+      onClick={(e) => { e.stopPropagation(); setInputVal(title); setEditing(true) }}
+      title="Click to edit title"
+    >
+      <div className="max-w-xs text-sm font-medium text-gray-900 line-clamp-2">{title}</div>
+      {mechanism && <div className="mt-0.5 text-xs text-gray-400">{mechanism}</div>}
     </td>
   )
 }
@@ -692,7 +752,7 @@ export default function GrantsPage() {
   return (
     <>
       <div className="border-b border-gray-200 bg-[var(--color-surface-alt)]">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold text-[var(--color-primary)]">Grants Tracker</h1>
           <p className="mt-2 text-gray-600">
             {allGrants.length} grants in the pipeline
@@ -700,13 +760,14 @@ export default function GrantsPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <GrantTypeTabs activeTab={typeTab} onChange={setTypeTab} />
       </div>
 
       <DeadlineAlerts grantList={filtered} />
 
-      <SectionWrapper>
+      <section className="bg-white py-16">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
         {/* Filters */}
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <CheckboxFilterDropdown
@@ -779,10 +840,11 @@ export default function GrantsPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       </td>
-                      <td className="py-3 pr-3">
-                        <div className="max-w-xs text-sm font-medium text-gray-900 line-clamp-2">{grant.title}</div>
-                        {grant.mechanism && <div className="mt-0.5 text-xs text-gray-400">{grant.mechanism}</div>}
-                      </td>
+                      <EditableTitleCell
+                        title={grant.title}
+                        mechanism={grant.mechanism}
+                        onUpdate={(title) => updateGrant(grant.id, { title })}
+                      />
                       <td className="whitespace-nowrap py-3 pr-3">
                         {grant.pi.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
@@ -908,9 +970,10 @@ export default function GrantsPage() {
         </div>
 
         <p className="mt-4 text-xs text-gray-400">
-          Showing {filtered.length} of {allGrants.length} grants &middot; Edits saved to browser &middot; <span className="italic">Italic dates are auto-calculated</span>
+          Showing {filtered.length} of {allGrants.length} grants &middot; Edits saved to browser
         </p>
-      </SectionWrapper>
+        </div>
+      </section>
     </>
   )
 }
