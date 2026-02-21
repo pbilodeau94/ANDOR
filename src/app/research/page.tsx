@@ -83,9 +83,8 @@ export default function ResearchPage() {
                 pragmatic clinical trials.
               </p>
               <p>
-                Collaborative agreements with institutions worldwide — including Mayo Clinic,
-                Yale, McGill, UCSF, and Charité Berlin — enable pooled analyses of conditions
-                too rare for any single center to study alone.
+                Collaborative agreements with institutions worldwide enable pooled analyses
+                of conditions too rare for any single center to study alone.
               </p>
             </div>
           </div>

@@ -102,8 +102,7 @@ export default function SupportPage() {
             <p>
               Our team of 15 investigators across Massachusetts General Hospital, Brigham
               and Women&apos;s Hospital, and Harvard Medical School has published over {uniquePubCount} peer-reviewed
-              papers and maintains collaborative agreements with institutions worldwide including
-              Mayo Clinic, Yale, McGill, UCSF, and Charité Berlin.
+              papers and maintains collaborative agreements with institutions worldwide.
             </p>
           </div>
         </div>
