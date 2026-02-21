@@ -107,7 +107,6 @@ export default function TeamPage() {
   return (
     <>
       <PageHero
-        variant="light"
         overline="Our Team"
         title="Investigators & Staff"
         description="A multidisciplinary group of neurologists, immunologists, and research staff from across Mass General Brigham, united by a commitment to advancing autoimmune neurology."
@@ -115,7 +114,10 @@ export default function TeamPage() {
 
       {/* Faculty */}
       <EditorialSection rule={false}>
-        <p className="overline">{roleLabels.faculty}</p>
+        <div className="flex items-center gap-3">
+          <span className="h-3 w-3 rounded-full bg-[var(--color-primary)]" />
+          <p className="overline">{roleLabels.faculty}</p>
+        </div>
         <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
           {faculty.length} faculty members
         </h2>
@@ -128,7 +130,10 @@ export default function TeamPage() {
 
       {/* Fellows */}
       <EditorialSection>
-        <p className="overline">{roleLabels.fellow}</p>
+        <div className="flex items-center gap-3">
+          <span className="h-3 w-3 rounded-full bg-emerald-500" />
+          <p className="overline">{roleLabels.fellow}</p>
+        </div>
         <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
           {fellows.length} fellows &amp; trainees
         </h2>
@@ -141,7 +146,10 @@ export default function TeamPage() {
 
       {/* Staff */}
       <EditorialSection>
-        <p className="overline">{roleLabels.staff}</p>
+        <div className="flex items-center gap-3">
+          <span className="h-3 w-3 rounded-full bg-amber-500" />
+          <p className="overline">{roleLabels.staff}</p>
+        </div>
         <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
           {staff.length} staff
         </h2>

@@ -13,6 +13,7 @@ export type Agreement = {
   diseases: string[]
   dataShared: string
   samplesShared: string
+  dropboxPath?: string
 }
 
 export const agreements: Agreement[] = [
@@ -27,6 +28,7 @@ export const agreements: Agreement[] = [
     diseases: ['Encephalitis', 'MOGAD', 'MS', 'NMOSD', 'Sarcoidosis'],
     dataShared: 'Demographics, clinical attacks, serological and laboratory features, radiographic features, and treatments',
     samplesShared: '',
+    dropboxPath: '/Agreements/DUAs:MTAs/Mayo_broadDUA IN.pdf',
   },
   {
     id: 'a2',
@@ -39,6 +41,7 @@ export const agreements: Agreement[] = [
     diseases: ['MOGAD'],
     dataShared: 'Date of attacks, attack phenotypes, age at attacks, date of sample collection, MRI features, laboratory features and disability data',
     samplesShared: 'Human serum and plasma',
+    dropboxPath: '/Agreements/DUAs:MTAs/Yale_exosome_MTA OUT.pdf',
   },
   {
     id: 'a3',
@@ -75,6 +78,7 @@ export const agreements: Agreement[] = [
     diseases: ['Encephalitis', 'MOGAD', 'MS', 'NMOSD', 'Sarcoidosis'],
     dataShared: '',
     samplesShared: 'Human tissue and samples',
+    dropboxPath: '/Agreements/DUAs:MTAs/McGill_MTA OUT.pdf',
   },
   {
     id: 'a6',
@@ -87,6 +91,7 @@ export const agreements: Agreement[] = [
     diseases: ['MOGAD'],
     dataShared: '',
     samplesShared: '',
+    dropboxPath: '/Agreements/DUAs:MTAs/Hopkins_SCIG_lowrisk OUT.pdf',
   },
   {
     id: 'a7',
@@ -99,6 +104,7 @@ export const agreements: Agreement[] = [
     diseases: ['MOGAD'],
     dataShared: '',
     samplesShared: '',
+    dropboxPath: '/Agreements/DUAs:MTAs/Mayo_IL6_lowrisk OUT.pdf',
   },
 ]
 

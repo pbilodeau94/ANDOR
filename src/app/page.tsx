@@ -17,12 +17,41 @@ const heroStats = [
   { value: '15+', label: 'Investigators' },
 ]
 
+const diseaseColors: Record<string, string> = {
+  'MOGAD': 'border-l-blue-500 hover:bg-blue-50/50',
+  'NMOSD': 'border-l-emerald-500 hover:bg-emerald-50/50',
+  'Autoimmune Encephalitis': 'border-l-purple-500 hover:bg-purple-50/50',
+  'Neurosarcoidosis': 'border-l-amber-500 hover:bg-amber-50/50',
+  'Neuro-Rheumatology': 'border-l-rose-500 hover:bg-rose-50/50',
+  'CNS Vasculitis': 'border-l-red-500 hover:bg-red-50/50',
+  'Myelopathies': 'border-l-teal-500 hover:bg-teal-50/50',
+  'Optic Neuritis': 'border-l-orange-500 hover:bg-orange-50/50',
+}
+
+const diseaseDotColors: Record<string, string> = {
+  'MOGAD': 'bg-blue-500',
+  'NMOSD': 'bg-emerald-500',
+  'Autoimmune Encephalitis': 'bg-purple-500',
+  'Neurosarcoidosis': 'bg-amber-500',
+  'Neuro-Rheumatology': 'bg-rose-500',
+  'CNS Vasculitis': 'bg-red-500',
+  'Myelopathies': 'bg-teal-500',
+  'Optic Neuritis': 'bg-orange-500',
+}
+
 export default function HomePage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="relative bg-[var(--color-primary)] text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
+      <section className="relative overflow-hidden bg-[var(--color-primary)] text-white">
+        {/* Abstract pattern background */}
+        <div className="absolute inset-0 opacity-[0.07]">
+          <div className="absolute -left-20 top-10 h-96 w-96 rounded-full bg-blue-400 blur-3xl" />
+          <div className="absolute right-10 top-40 h-72 w-72 rounded-full bg-emerald-400 blur-3xl" />
+          <div className="absolute bottom-10 left-1/3 h-80 w-80 rounded-full bg-purple-400 blur-3xl" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
           <div className="grid gap-12 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <Logo className="h-10 text-white mb-6" />
@@ -59,7 +88,13 @@ export default function HomePage() {
                 />
               </div>
 
-              <div className="mt-8">
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/research"
+                  className="inline-flex items-center rounded bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-light)]"
+                >
+                  Explore Research
+                </Link>
                 <Link
                   href="/support"
                   className="inline-flex items-center rounded border border-white/30 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10"
@@ -109,13 +144,14 @@ export default function HomePage() {
             <p className="overline mb-4">Infrastructure</p>
             <ul className="space-y-4">
               {[
-                'Prospective disease-specific registries (700+ patients)',
-                'Centralized biorepository (serum, CSF, PBMCs, tissue)',
-                'REDCap longitudinal databases with standardized outcomes',
-                'Collaborative agreements with partner institutions worldwide',
+                { text: 'Prospective disease-specific registries (700+ patients)', color: 'bg-emerald-500' },
+                { text: 'Centralized biorepository (serum, CSF, PBMCs, tissue)', color: 'bg-blue-500' },
+                { text: 'REDCap longitudinal databases with standardized outcomes', color: 'bg-purple-500' },
+                { text: 'Collaborative agreements with partner institutions worldwide', color: 'bg-amber-500' },
               ].map((item) => (
-                <li key={item} className="border-b border-[var(--color-rule)] pb-4 text-sm text-[var(--color-ink-secondary)]">
-                  {item}
+                <li key={item.text} className="flex items-start gap-3 border-b border-[var(--color-rule)] pb-4 text-sm text-[var(--color-ink-secondary)]">
+                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${item.color}`} />
+                  {item.text}
                 </li>
               ))}
             </ul>
@@ -135,12 +171,15 @@ export default function HomePage() {
             <Link
               key={group.id}
               href={`/research/${group.slug}`}
-              className="group relative rounded-lg border border-[var(--color-rule)] p-5 transition-all hover:border-[var(--color-primary)] hover:shadow-sm"
+              className={`group relative overflow-hidden rounded-lg border border-[var(--color-rule)] border-l-4 p-5 transition-all hover:shadow-sm ${diseaseColors[group.name] || 'border-l-gray-400'}`}
             >
               <div className="flex items-start justify-between gap-3">
-                <h3 className="font-display text-lg text-[#1a1614] group-hover:text-[var(--color-primary)]">
-                  {group.name}
-                </h3>
+                <div className="flex items-center gap-2">
+                  <span className={`h-2 w-2 rounded-full ${diseaseDotColors[group.name] || 'bg-gray-400'}`} />
+                  <h3 className="font-display text-lg text-[#1a1614] group-hover:text-[var(--color-primary)]">
+                    {group.name}
+                  </h3>
+                </div>
                 {group.patientCount && (
                   <span className="shrink-0 rounded-full bg-[var(--color-surface-alt)] px-2.5 py-0.5 text-xs font-medium tabular-nums text-[var(--color-ink-secondary)]">
                     {group.patientCount} patients
@@ -188,7 +227,7 @@ export default function HomePage() {
                   alt={member.name}
                   width={56}
                   height={56}
-                  className="h-14 w-14 shrink-0 rounded-full object-cover object-top"
+                  className="h-14 w-14 shrink-0 rounded-full object-cover object-top ring-2 ring-[var(--color-surface-alt)]"
                 />
                 <div className="min-w-0">
                   {member.catalystUrl ? (
@@ -214,19 +253,23 @@ export default function HomePage() {
       </EditorialSection>
 
       {/* ── CTA ── */}
-      <section className="bg-[var(--color-primary)] py-20 sm:py-24 text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+      <section className="relative overflow-hidden bg-[var(--color-accent)] py-20 sm:py-24 text-white">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute -right-20 top-0 h-64 w-64 rounded-full bg-white blur-3xl" />
+          <div className="absolute bottom-0 left-20 h-48 w-48 rounded-full bg-white blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-display text-[clamp(28px,4vw,44px)]">
             Support the science
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-[17px] leading-relaxed text-gray-300">
+          <p className="mx-auto mt-4 max-w-2xl text-[17px] leading-relaxed text-white/80">
             Your philanthropic investment accelerates discovery for patients with rare autoimmune
             neurological diseases.
           </p>
           <div className="mt-8">
             <Link
               href="/support"
-              className="inline-flex items-center rounded border border-white/30 px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10"
+              className="inline-flex items-center rounded bg-white px-8 py-3 text-sm font-semibold text-[var(--color-accent)] transition-colors hover:bg-white/90"
             >
               Learn How to Give
             </Link>

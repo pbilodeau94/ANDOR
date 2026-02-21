@@ -7,6 +7,7 @@ export type ResearchDocument = {
   investigator: string
   grantId?: string
   url: string
+  dropboxPath?: string
   lastUpdated: string
 }
 
@@ -17,6 +18,7 @@ export const documents: ResearchDocument[] = [
     type: 'biosketch',
     investigator: 'Michael Levy',
     url: '',
+    dropboxPath: '/Documents/Biosketches/MLevy_Biosketch.pdf',
     lastUpdated: '2025-01-15',
   },
   {
@@ -41,6 +43,7 @@ export const documents: ResearchDocument[] = [
     type: 'biosketch',
     investigator: 'Takahisa Mikami',
     url: '',
+    dropboxPath: '/Documents/Biosketches/Biosketch_Mikami.pdf',
     lastUpdated: '2025-01-20',
   },
   {
@@ -49,6 +52,7 @@ export const documents: ResearchDocument[] = [
     type: 'biosketch',
     investigator: 'Monique Anderson',
     url: '',
+    dropboxPath: '/Documents/Biosketches/MA Biosketch Sept 2025.pdf',
     lastUpdated: '2025-01-18',
   },
   {
