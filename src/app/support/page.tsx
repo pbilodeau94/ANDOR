@@ -1,5 +1,5 @@
-import Hero from '@/components/Hero'
-import SectionWrapper from '@/components/SectionWrapper'
+import PageHero from '@/components/PageHero'
+import EditorialSection from '@/components/EditorialSection'
 import { publications } from '@/data/publications'
 
 const uniquePubCount = new Set(publications.map((p) => p.title)).size
@@ -70,79 +70,23 @@ const giftImpact = [
   },
 ]
 
-const givingOpportunities = [
-  {
-    title: 'Registry Expansion',
-    description:
-      'Help us enroll more patients across our disease registries, enabling larger studies with greater statistical power to detect treatment effects in rare diseases.',
-    icon: (
-      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
-        />
-      </svg>
-    ),
-  },
-  {
-    title: 'Biorepository & Lab Infrastructure',
-    description:
-      'Fund the collection, processing, and storage of biological samples (serum, CSF, PBMCs, tissue) that underpin translational research and biomarker discovery.',
-    icon: (
-      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"
-        />
-      </svg>
-    ),
-  },
-  {
-    title: 'Clinical Trials',
-    description:
-      'Support pragmatic clinical trials like BEST-NMOSD and ExTINGUISH that compare treatments and improve care for patients with autoimmune neurological diseases.',
-    icon: (
-      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"
-        />
-      </svg>
-    ),
-  },
-  {
-    title: 'Training & Education',
-    description:
-      'Invest in the next generation of neuroimmunology investigators through fellowship support, career development awards, and research training programs.',
-    icon: (
-      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
-        />
-      </svg>
-    ),
-  },
-]
-
 export default function SupportPage() {
   return (
     <>
-      <Hero
-        subtitle="Philanthropy"
+      <PageHero
+        overline="Philanthropy"
         title="Support Our Research"
         description="Your investment in ANDOR directly accelerates discovery for patients living with rare autoimmune neurological diseases. Help us close the research gap."
       />
 
       {/* Why Support */}
-      <SectionWrapper>
+      <EditorialSection rule={false}>
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-3xl font-bold text-[var(--color-primary)]">Why Support ANDOR?</h2>
-          <div className="mt-6 space-y-4 leading-relaxed text-gray-600">
+          <p className="overline">Why Support ANDOR?</p>
+          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            Closing the research gap
+          </h2>
+          <div className="mt-8 space-y-5 text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
             <p>
               Autoimmune neurological diseases like MOGAD, NMOSD, autoimmune encephalitis, and
               neurosarcoidosis are rare, devastating conditions that are chronically underfunded
@@ -152,7 +96,7 @@ export default function SupportPage() {
             <p>
               ANDOR exists to change this. By building shared registries, biorepositories, and
               collaborative infrastructure, we multiply the impact of every research dollar. A single
-              philanthropic gift doesn&apos;t fund one study — it enables an entire ecosystem of
+              philanthropic gift doesn&apos;t fund one study &mdash; it enables an entire ecosystem of
               investigators working on interconnected questions across disease boundaries.
             </p>
             <p>
@@ -163,120 +107,100 @@ export default function SupportPage() {
             </p>
           </div>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      {/* Recent Milestones */}
-      <SectionWrapper alt>
-        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
-          Recent Milestones
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
-          Recent achievements made possible by research investment.
-        </p>
-        <div className="mx-auto mt-10 max-w-3xl space-y-4">
-          {milestones.map((m) => (
-            <div key={m.text} className="flex items-start gap-4 rounded-lg border border-gray-200 bg-white p-5">
-              <div className="shrink-0 rounded-full bg-[var(--color-accent)]/10 px-3 py-1 text-sm font-bold text-[var(--color-accent)]">
-                {m.year}
+      {/* Milestones Timeline */}
+      <EditorialSection>
+        <div className="mx-auto max-w-3xl">
+          <p className="overline">Recent Milestones</p>
+          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            Achievements made possible by research investment
+          </h2>
+
+          <div className="mt-12 space-y-0">
+            {milestones.map((m, i) => (
+              <div
+                key={i}
+                className="flex gap-8 border-l border-[var(--color-rule)] py-6 pl-8 relative"
+              >
+                <div className="absolute -left-px top-6 h-px w-4 bg-[var(--color-rule)]" />
+                <div className="shrink-0 w-16">
+                  <span className="font-serif text-2xl text-[var(--color-primary)]">{m.year}</span>
+                </div>
+                <p className="text-[15px] leading-relaxed text-[var(--color-ink-secondary)]">{m.text}</p>
               </div>
-              <p className="text-sm leading-relaxed text-gray-700">{m.text}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      {/* Named Giving Funds */}
-      <SectionWrapper>
-        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
-          Named Research Funds
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
-          Direct your support to a specific research program.
-        </p>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {namedFunds.map((fund) => (
-            <div
-              key={fund.name}
-              className="rounded-xl border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
-            >
-              <h3 className="font-semibold text-[var(--color-primary)]">{fund.name}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600">{fund.description}</p>
-            </div>
-          ))}
+      {/* Gift Impact */}
+      <EditorialSection>
+        <div className="mx-auto max-w-3xl">
+          <p className="overline">Your Gift at Work</p>
+          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            How investment translates to impact
+          </h2>
+          <div className="mt-12 space-y-8">
+            {giftImpact.map((item) => (
+              <div key={item.amount} className="grid gap-4 sm:grid-cols-[120px_1fr] items-baseline">
+                <div className="stat-figure text-[var(--color-accent)] !text-[36px]">{item.amount}</div>
+                <p className="text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">{item.impact}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      {/* Your Gift at Work */}
-      <SectionWrapper alt>
-        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
-          Your Gift at Work
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
-          See how philanthropic investment translates to research impact.
-        </p>
-        <div className="mx-auto mt-10 max-w-3xl space-y-6">
-          {giftImpact.map((item) => (
-            <div key={item.amount} className="flex items-start gap-4">
-              <div className="shrink-0 text-2xl font-bold text-[var(--color-accent)]">{item.amount}</div>
-              <p className="text-gray-600">{item.impact}</p>
-            </div>
-          ))}
+      {/* Named Funds */}
+      <EditorialSection>
+        <div className="mx-auto max-w-3xl">
+          <p className="overline">Named Research Funds</p>
+          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            Direct your support
+          </h2>
+          <dl className="mt-10 space-y-6">
+            {namedFunds.map((fund) => (
+              <div key={fund.name} className="border-b border-[var(--color-rule)] pb-6">
+                <dt className="font-semibold text-[#1a1614]">{fund.name}</dt>
+                <dd className="mt-2 text-[15px] leading-relaxed text-[var(--color-ink-secondary)]">
+                  {fund.description}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
-      </SectionWrapper>
-
-      {/* Giving Opportunities */}
-      <SectionWrapper>
-        <h2 className="text-center text-3xl font-bold text-[var(--color-primary)]">
-          Areas of Support
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
-          Direct your support to the areas that matter most to you.
-        </p>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {givingOpportunities.map((opp) => (
-            <div
-              key={opp.title}
-              className="rounded-xl border border-gray-200 bg-white p-6"
-            >
-              <div className="text-[var(--color-accent)]">{opp.icon}</div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">{opp.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600">{opp.description}</p>
-            </div>
-          ))}
-        </div>
-      </SectionWrapper>
+      </EditorialSection>
 
       {/* Contact */}
-      <SectionWrapper alt>
+      <EditorialSection>
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold text-[var(--color-primary)]">Get in Touch</h2>
-          <p className="mt-4 text-gray-600">
+          <h2 className="font-serif text-[clamp(28px,4vw,44px)]">Get in Touch</h2>
+          <p className="mt-4 text-[17px] text-[var(--color-ink-secondary)]">
             To discuss philanthropic support for ANDOR, please contact the Mass General Brigham
             Development Office. We welcome conversations about directed giving, naming opportunities,
             and research partnerships.
           </p>
-          <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
-            <p className="font-semibold text-gray-900">Mass General Brigham Development</p>
-            <p className="mt-1 text-sm text-gray-600">
+          <div className="mt-10 border-t border-[var(--color-rule)] pt-8">
+            <p className="font-semibold text-[#1a1614]">Mass General Brigham Development</p>
+            <p className="mt-1 text-sm text-[var(--color-ink-secondary)]">
               Department of Neurology, Division of Neuroimmunology
             </p>
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-0.5 text-sm text-[var(--color-ink-secondary)]">
               Massachusetts General Hospital
             </p>
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-4 text-sm text-[var(--color-ink-tertiary)]">
               Please reference &quot;ANDOR Research Group &mdash; Neuroimmunology&quot; in your inquiry.
             </p>
           </div>
 
-          <div className="mt-8">
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-400">
-              <span>Mass General Brigham</span>
-              <span className="hidden sm:inline">&middot;</span>
-              <span>Harvard Medical School</span>
-            </div>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-sm text-[var(--color-ink-tertiary)]">
+            <span>Mass General Brigham</span>
+            <span>&middot;</span>
+            <span>Harvard Medical School</span>
           </div>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
     </>
   )
 }

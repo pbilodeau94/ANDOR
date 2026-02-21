@@ -1,84 +1,96 @@
 import Link from 'next/link'
-import Hero from '@/components/Hero'
-import SectionWrapper from '@/components/SectionWrapper'
-import ResearchGroupCard from '@/components/ResearchGroupCard'
+import PageHero from '@/components/PageHero'
+import EditorialSection from '@/components/EditorialSection'
 import { researchGroups } from '@/data/research-groups'
 import { publications } from '@/data/publications'
 
-// Deduplicate publications by title for unique count
 const uniquePubCount = new Set(publications.map((p) => p.title)).size
 
 export default function ResearchPage() {
   return (
     <>
-      <Hero
-        subtitle="Research Programs"
+      <PageHero
+        overline="Research Programs"
         title="Advancing Autoimmune Neurology"
-        description="ANDOR's research spans six interconnected programs, each leveraging shared infrastructure, federated registries, and a collaborative team to tackle rare autoimmune neurological diseases."
+        description={`Our team has published over ${uniquePubCount} peer-reviewed papers across eight core research areas. Each program leverages shared infrastructure, federated registries, and a collaborative team.`}
       />
 
-      <SectionWrapper>
-        <p className="mx-auto max-w-3xl text-center leading-relaxed text-gray-600">
-          Our team has published over {uniquePubCount} peer-reviewed papers across
-          six core research areas. Select a program below to learn more.
-        </p>
-
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Program list */}
+      <EditorialSection rule={false}>
+        <div className="mx-auto max-w-4xl">
           {researchGroups.map((group) => {
             const pubCount = publications.filter(
               (p) => p.researchGroup === group.name
             ).length
             return (
-              <div key={group.id} className="flex flex-col">
-                <ResearchGroupCard group={group} />
-                <div className="mt-2 flex items-center gap-3 px-1">
-                  <span className="text-xs text-gray-400">
-                    {pubCount} publication{pubCount !== 1 ? 's' : ''}
-                  </span>
-                  <span className="text-xs text-gray-300">&middot;</span>
-                  <span className="text-xs text-gray-400">
-                    {group.keyInvestigators.length} investigator{group.keyInvestigators.length !== 1 ? 's' : ''}
-                  </span>
+              <Link
+                key={group.id}
+                href={`/research/${group.slug}`}
+                className="group flex items-baseline justify-between border-b border-[var(--color-rule)] py-5 transition-colors hover:border-[var(--color-primary)]"
+              >
+                <div className="min-w-0">
+                  <h2 className="text-lg font-semibold text-[#1a1614] group-hover:text-[var(--color-primary)]">
+                    {group.name}
+                  </h2>
+                  <p className="mt-1 text-sm text-[var(--color-ink-tertiary)] line-clamp-1 max-w-xl">
+                    {group.description.split('.')[0]}.
+                  </p>
                 </div>
-              </div>
+                <div className="ml-4 flex shrink-0 items-center gap-4 text-sm text-[var(--color-ink-tertiary)]">
+                  {group.patientCount && (
+                    <span className="tabular-nums">{group.patientCount} patients</span>
+                  )}
+                  <span>&middot;</span>
+                  <span>{pubCount} publications</span>
+                  <span>&middot;</span>
+                  <span>{group.keyInvestigators.length} investigators</span>
+                </div>
+              </Link>
             )
           })}
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      {/* Research Infrastructure */}
-      <SectionWrapper alt>
-        <h2 className="text-center text-2xl font-bold text-[var(--color-primary)]">
-          Shared Research Infrastructure
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
-          All ANDOR programs benefit from shared infrastructure that amplifies
-          collaborative discovery across diseases.
-        </p>
-        <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-2">
-          {[
-            'Federated disease-specific registries across MGB',
-            'Centralized biorepository (serum, CSF, PBMCs, tissue)',
-            'REDCap longitudinal databases with standardized outcomes',
-            'Collaborative agreements with 7+ partner institutions',
-            'Cell-based assay laboratory for antibody testing',
-            'Advanced imaging protocols (7T MRI, central vein sign)',
-          ].map((item) => (
-            <div key={item} className="flex items-start gap-3 rounded-lg border border-gray-100 bg-white p-4">
-              <svg
-                className="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-accent)]"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-sm text-gray-700">{item}</span>
+      {/* Shared Infrastructure */}
+      <EditorialSection>
+        <div className="mx-auto max-w-4xl">
+          <p className="overline">Shared Infrastructure</p>
+          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            Amplifying collaborative discovery
+          </h2>
+          <p className="mt-4 max-w-[65ch] text-[17px] text-[var(--color-ink-secondary)]">
+            All ANDOR programs benefit from shared infrastructure that enables
+            cross-disease collaboration and accelerates research at scale.
+          </p>
+
+          <div className="mt-10 grid gap-8 sm:grid-cols-2">
+            <div className="space-y-5 text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
+              <p>
+                Our federated disease-specific registries span conditions from MOGAD and
+                NMOSD to autoimmune encephalitis, neurosarcoidosis, and CNS vasculitis, with
+                over 700 patients enrolled across the collaborative.
+              </p>
+              <p>
+                A centralized biorepository collects and stores serum, CSF, PBMCs, and
+                tissue samples linked to detailed clinical phenotyping, enabling biomarker
+                discovery and translational research.
+              </p>
             </div>
-          ))}
+            <div className="space-y-5 text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
+              <p>
+                Standardized REDCap longitudinal databases capture outcomes using validated
+                instruments, creating datasets suitable for multi-center analyses and
+                pragmatic clinical trials.
+              </p>
+              <p>
+                Collaborative agreements with institutions worldwide — including Mayo Clinic,
+                Yale, McGill, UCSF, and Charité Berlin — enable pooled analyses of conditions
+                too rare for any single center to study alone.
+              </p>
+            </div>
+          </div>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
     </>
   )
 }

@@ -3,13 +3,13 @@ import Image from 'next/image'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-200 bg-[var(--color-primary-dark)] text-gray-300">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-3">
+    <footer className="border-t-2 border-[var(--color-accent)] bg-[var(--color-primary-dark)] text-gray-300">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-12 md:grid-cols-3">
           {/* About */}
           <div>
-            <h3 className="text-lg font-bold text-white">ANDOR</h3>
-            <p className="mt-2 text-sm leading-relaxed text-gray-400">
+            <h3 className="font-serif text-xl text-white">ANDOR</h3>
+            <p className="mt-4 text-sm leading-relaxed text-gray-400">
               Autoimmune Neurological DisOrders Registry.
               A division-wide research collaborative within MGB Neurology, Division of Neuroimmunology.
             </p>
@@ -17,8 +17,8 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Quick Links</h3>
-            <ul className="mt-3 space-y-2">
+            <p className="overline text-gray-500">Quick Links</p>
+            <ul className="mt-4 space-y-2.5">
               {[
                 { href: '/research', label: 'Research Programs' },
                 { href: '/team', label: 'Our Team' },
@@ -40,8 +40,8 @@ export default function Footer() {
 
           {/* Affiliations */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Affiliations</h3>
-            <ul className="mt-3 space-y-2 text-sm text-gray-400">
+            <p className="overline text-gray-500">Affiliations</p>
+            <ul className="mt-4 space-y-2.5 text-sm text-gray-400">
               <li>Mass General Brigham</li>
               <li>Harvard Medical School</li>
             </ul>
@@ -49,29 +49,29 @@ export default function Footer() {
         </div>
 
         {/* Institutional Logos */}
-        <div className="mt-10 flex flex-col items-center gap-3">
+        <div className="mt-14 flex flex-col items-center gap-4">
           <div className="flex items-center gap-8">
             <Image
               src="/mgb-logo.png"
               alt="Mass General Brigham"
               width={160}
               height={26}
-              className="h-6 w-auto brightness-0 invert opacity-60"
+              className="h-6 w-auto brightness-0 invert opacity-50"
             />
             <Image
               src="/hms-logo.png"
               alt="Harvard Medical School"
               width={160}
               height={53}
-              className="h-9 w-auto brightness-0 invert opacity-60"
+              className="h-9 w-auto brightness-0 invert opacity-50"
             />
           </div>
-          <p className="text-[10px] font-medium uppercase tracking-widest text-gray-500">
+          <p className="overline text-gray-600">
             MGB Neurology &middot; Division of Neuroimmunology
           </p>
         </div>
 
-        <div className="mt-6 border-t border-gray-700 pt-6 text-center text-xs text-gray-500">
+        <div className="mt-8 border-t border-gray-700/50 pt-8 text-center text-xs text-gray-600">
           &copy; {new Date().getFullYear()} ANDOR Research Group. All rights reserved.
         </div>
       </div>
