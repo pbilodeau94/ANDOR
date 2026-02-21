@@ -1,10 +1,14 @@
 import Image from 'next/image'
 import PageHero from '@/components/PageHero'
 import EditorialSection from '@/components/EditorialSection'
-import { team, roleOrder, roleLabels, type TeamMember } from '@/data/team'
+import { team, roleLabels, fellowships, type TeamMember } from '@/data/team'
 
 function getInitials(name: string) {
   return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+}
+
+function displayName(member: TeamMember) {
+  return member.degrees ? `${member.name}, ${member.degrees}` : member.name
 }
 
 function FacultyMember({ member }: { member: TeamMember }) {
@@ -25,7 +29,7 @@ function FacultyMember({ member }: { member: TeamMember }) {
       )}
       <div className="min-w-0">
         <h3 className="text-lg font-semibold text-[#1a1614] group-hover:text-[var(--color-accent)]">
-          {member.name}
+          {displayName(member)}
         </h3>
         <p className="mt-1 text-sm text-[var(--color-ink-secondary)]">{member.title}</p>
         <p className="mt-0.5 text-xs text-[var(--color-ink-tertiary)]">{member.institution}</p>
@@ -72,7 +76,7 @@ function SmallMember({ member }: { member: TeamMember }) {
       )}
       <div className="min-w-0">
         <h3 className="text-sm font-semibold text-[#1a1614] group-hover:text-[var(--color-accent)]">
-          {member.name}
+          {displayName(member)}
         </h3>
         <p className="text-xs text-[var(--color-ink-tertiary)]">{member.title}</p>
       </div>
@@ -118,6 +122,29 @@ export default function TeamPage() {
         <div className="mt-10 grid gap-10 sm:grid-cols-2">
           {faculty.map((member) => (
             <FacultyMember key={member.id} member={member} />
+          ))}
+        </div>
+      </EditorialSection>
+
+      {/* Fellowship Programs */}
+      <EditorialSection>
+        <p className="overline">Training Programs</p>
+        <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
+          Fellowship Programs
+        </h2>
+        <div className="mt-8 space-y-6">
+          {fellowships.map((f) => (
+            <div key={f.name} className="border-b border-[var(--color-rule)] pb-6">
+              <h3 className="font-semibold text-[#1a1614]">{f.name}</h3>
+              {f.director && (
+                <p className="mt-1 text-sm text-[var(--color-ink-tertiary)]">
+                  Director: {f.director}
+                </p>
+              )}
+              <p className="mt-2 text-[15px] leading-relaxed text-[var(--color-ink-secondary)]">
+                {f.description}
+              </p>
+            </div>
           ))}
         </div>
       </EditorialSection>

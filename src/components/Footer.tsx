@@ -56,7 +56,7 @@ export default function Footer() {
               alt="Mass General Brigham"
               width={160}
               height={26}
-              className="h-6 w-auto brightness-0 invert opacity-50"
+              className="h-6 w-auto opacity-80"
             />
             <Image
               src="/hms-logo.png"

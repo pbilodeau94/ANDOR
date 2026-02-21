@@ -7,7 +7,7 @@ export const programHighlights: Record<string, string[]> = {
     'Prospective studies defining serum and CSF biomarkers of disease activity including neurofilament light chain and GFAP',
     'Multi-center studies of treatment outcomes comparing rituximab, IVIG, and mycophenolate',
     'Gamma-delta (\u03B3\u03B4) T cell research using EAE animal models to understand roles of butyrophilin ligands in CNS autoimmunity',
-    'Founded the annual ANDOR MOG Symposium, bringing together researchers, clinicians, and patients',
+    'Annual MOG Symposium bringing together researchers, clinicians, and patients to advance MOGAD awareness',
   ],
   NMOSD: [
     'BEST-NMOSD: leading an international pragmatic clinical trial comparing disease-modifying treatments head-to-head, funded by PCORI',
@@ -55,7 +55,7 @@ export const programHighlights: Record<string, string[]> = {
 
 export const whyThisMatters: Record<string, string> = {
   MOGAD:
-    'MOGAD is a newly defined disease with no FDA-approved treatments. Our research addresses critical gaps: understanding why some patients relapse while others don\u2019t, comparing treatment effectiveness head-to-head, characterizing headache syndromes unique to MOGAD, and discovering how age shapes disease severity and treatment response. We are leading and participating in multiple clinical trials\u2014METEROID, rozanolixizumab, and an acute optic neuritis trial led by Dr. Vishnevetsky\u2014to bring targeted therapies to patients.',
+    'MOGAD is a newly defined disease with no FDA-approved treatments. Our research addresses critical gaps: understanding why some patients relapse while others don\u2019t, comparing treatment effectiveness head-to-head, characterizing headache syndromes unique to MOGAD, and discovering how age shapes disease severity and treatment response. Through clinical trials like METEROID and the rozanolixizumab study, we are working to understand treatment responses across different patient populations and bring targeted therapies to patients with age-dependent disease.',
   NMOSD:
     'NMOSD can cause devastating attacks of blindness and paralysis. While three FDA-approved treatments now exist, we still don\u2019t know which works best for which patients. ANDOR is leading BEST-NMOSD, an international pragmatic clinical trial that directly compares treatments using a novel composite endpoint incorporating empirically determined thresholds for safety and tolerability failure\u2014providing the real-world evidence clinicians need.',
   'Autoimmune Encephalitis':

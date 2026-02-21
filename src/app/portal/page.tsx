@@ -6,6 +6,7 @@ import type { GrantStatus } from '@/data/grants'
 import { projects } from '@/data/projects'
 import { agreements } from '@/data/agreements'
 import { documents } from '@/data/documents'
+import { trackedTrials } from '@/data/trials-tracker'
 
 function getUpcomingDeadlines() {
   const now = new Date()
@@ -150,6 +151,12 @@ export default function PortalDashboard() {
               title: 'Tasks',
               description: 'Track tasks linked to grants and projects',
               count: 'View tasks',
+            },
+            {
+              href: '/portal/trials',
+              title: 'Clinical Trials',
+              description: 'Track trial status, enrollment, and CRCs',
+              count: `${trackedTrials.length} trials`,
             },
             {
               href: '/portal/agreements',

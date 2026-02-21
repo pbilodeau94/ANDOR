@@ -3,6 +3,7 @@ export type TeamRole = 'faculty' | 'fellow' | 'staff'
 export type TeamMember = {
   id: string
   name: string
+  degrees?: string
   title: string
   role: TeamRole
   institution: string
@@ -13,19 +14,11 @@ export type TeamMember = {
 }
 
 export const team: TeamMember[] = [
-  // Faculty — Chitnis (division chief), Levy, Shamik, Matiello first
-  {
-    id: 't26',
-    name: 'Tanuja Chitnis',
-    title: 'Professor of Neurology, Chief, Division of Neuroimmunology',
-    role: 'faculty',
-    institution: 'Mass General Brigham / Harvard Medical School',
-    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/profile/1244171',
-    diseases: ['MS', 'MOGAD', 'NMOSD'],
-  },
+  // Faculty — Levy, Bhattacharyya first, then Chitnis, Matiello, etc.
   {
     id: 't1',
     name: 'Michael Levy',
+    degrees: 'MD, PhD',
     title: 'Associate Professor of Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -36,6 +29,7 @@ export const team: TeamMember[] = [
   {
     id: 't2',
     name: 'Shamik Bhattacharyya',
+    degrees: 'MD',
     title: 'Associate Professor of Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -44,8 +38,20 @@ export const team: TeamMember[] = [
     diseases: ['NMOSD'],
   },
   {
+    id: 't26',
+    name: 'Tanuja Chitnis',
+    degrees: 'MD',
+    title: 'Professor of Neurology, Chief, Division of Neuroimmunology',
+    role: 'faculty',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/profile/1244171',
+    imageUrl: '/team/chitnis.webp',
+    diseases: ['MS', 'MOGAD', 'NMOSD'],
+  },
+  {
     id: 't17',
     name: 'Marcelo Matiello',
+    degrees: 'MD',
     title: 'Associate Professor of Neurology, Vice-Chair of Clinical Affairs',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -56,6 +62,7 @@ export const team: TeamMember[] = [
   {
     id: 't3',
     name: 'Phil Bilodeau',
+    degrees: 'MD',
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -66,6 +73,7 @@ export const team: TeamMember[] = [
   {
     id: 't4',
     name: 'Anastasia Vishnevetsky',
+    degrees: 'MD',
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -76,6 +84,7 @@ export const team: TeamMember[] = [
   {
     id: 't5',
     name: 'Monique Anderson',
+    degrees: 'MD, PhD',
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -86,6 +95,7 @@ export const team: TeamMember[] = [
   {
     id: 't6',
     name: 'Mattia Wruble',
+    degrees: 'MD',
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -96,6 +106,7 @@ export const team: TeamMember[] = [
   {
     id: 't14',
     name: 'Douglas Wilcox',
+    degrees: 'MD, PhD',
     title: 'Instructor in Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -106,6 +117,7 @@ export const team: TeamMember[] = [
   {
     id: 't9',
     name: 'Rebecca Gillani',
+    degrees: 'MD, PhD',
     title: 'Research Faculty',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -116,6 +128,7 @@ export const team: TeamMember[] = [
   {
     id: 't8',
     name: 'Jimmy Nguyen',
+    degrees: 'MD',
     title: 'Neuroimmunology Fellow',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -126,6 +139,7 @@ export const team: TeamMember[] = [
   {
     id: 't10',
     name: 'Prashanth Rajarajan',
+    degrees: 'MD',
     title: 'Clinical Research Fellow',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -136,6 +150,7 @@ export const team: TeamMember[] = [
   {
     id: 't7',
     name: 'Takahisa Mikami',
+    degrees: 'MD',
     title: 'MS and Neuroimmunology Fellow',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -146,6 +161,7 @@ export const team: TeamMember[] = [
   {
     id: 't13',
     name: 'Natalia Drosu',
+    degrees: 'MD, PhD',
     title: 'National MS Society Postdoctoral Fellow',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -156,6 +172,7 @@ export const team: TeamMember[] = [
   {
     id: 't15',
     name: 'Yoji Hoshina',
+    degrees: 'MD',
     title: 'Neuroimmunology Fellow',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -166,23 +183,23 @@ export const team: TeamMember[] = [
   {
     id: 't16',
     name: 'Susan Recio',
+    degrees: 'MD',
     title: 'Neuroimmunology Fellow',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/224370',
     diseases: [],
   },
-
   {
     id: 't18',
     name: 'Joao Oliveira',
+    degrees: 'MD',
     title: 'Research Fellow in Neurology',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/display/Person/219156',
     diseases: ['MOGAD', 'NMOSD'],
   },
-
   {
     id: 't19',
     name: 'Mulan Jiang',
@@ -194,6 +211,7 @@ export const team: TeamMember[] = [
   {
     id: 't23',
     name: 'João Vitor Mahler',
+    degrees: 'MD',
     title: 'Research Fellow in Neurology',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -202,6 +220,7 @@ export const team: TeamMember[] = [
   {
     id: 't24',
     name: 'Natasha Bobrowski-Khoury',
+    degrees: 'PhD',
     title: 'Research Fellow in Neurology',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -210,6 +229,7 @@ export const team: TeamMember[] = [
   {
     id: 't25',
     name: 'Huimin Zhu',
+    degrees: 'PhD',
     title: 'Research Fellow in Neurology',
     role: 'fellow',
     institution: 'Mass General Brigham / Harvard Medical School',
@@ -250,3 +270,20 @@ export const roleLabels: Record<TeamRole, string> = {
 }
 
 export const roleOrder: TeamRole[] = ['faculty', 'fellow', 'staff']
+
+export const fellowships = [
+  {
+    name: 'Autoimmune Neurology Fellowship',
+    description: 'Clinical and research training in autoimmune neurological diseases including MOGAD, NMOSD, autoimmune encephalitis, and neurosarcoidosis.',
+  },
+  {
+    name: 'MGB Neuroimmunology Fellowship',
+    director: 'Michael Levy, MD, PhD',
+    description: 'ACGME-accredited fellowship in neuroimmunology at Mass General Brigham, with training across MGH and BWH.',
+  },
+  {
+    name: 'MGB MS Fellowship',
+    director: 'Shamik Bhattacharyya, MD',
+    description: 'ACGME-accredited fellowship in multiple sclerosis and related disorders at Mass General Brigham.',
+  },
+]

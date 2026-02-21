@@ -53,7 +53,7 @@ export const clinicalTrials: ClinicalTrial[] = [
     completionDate: '2027-07',
     studyUrl: 'https://clinicaltrials.gov/study/NCT05063162',
     diseaseArea: 'MOGAD',
-    andorRole: 'Enrolling site',
+    andorRole: 'Site PI (ANDOR-led)',
   },
   {
     nctId: 'NCT05271409',
@@ -72,7 +72,7 @@ export const clinicalTrials: ClinicalTrial[] = [
     completionDate: '2028-12',
     studyUrl: 'https://clinicaltrials.gov/study/NCT05271409',
     diseaseArea: 'MOGAD',
-    andorRole: 'Enrolling site',
+    andorRole: 'Site PI (ANDOR-led)',
   },
   {
     nctId: 'NCT05503264',
@@ -128,7 +128,7 @@ export const clinicalTrials: ClinicalTrial[] = [
     startDate: '2025-08',
     completionDate: '2027-07',
     studyUrl: 'https://clinicaltrials.gov/study/NCT06453694',
-    diseaseArea: 'MOGAD',
+    diseaseArea: 'Optic Neuritis',
     andorRole: 'Sponsor-investigator (Dr. Vishnevetsky)',
   },
 ]

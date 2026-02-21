@@ -15,7 +15,7 @@ const milestones = [
   },
   {
     year: '2023',
-    text: 'Founded the annual ANDOR MOG Symposium, bringing together researchers, clinicians, and patients to advance MOGAD awareness and collaboration.',
+    text: 'Founded the annual MOG Symposium, bringing together researchers, clinicians, and patients to advance MOGAD awareness and collaboration.',
   },
   {
     year: '2023',

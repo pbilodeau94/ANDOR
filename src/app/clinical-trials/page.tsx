@@ -1,13 +1,12 @@
+import Link from 'next/link'
 import PageHero from '@/components/PageHero'
 import EditorialSection from '@/components/EditorialSection'
 import StatDisplay from '@/components/StatDisplay'
-import { clinicalTrials, statusLabels, statusColors } from '@/data/clinical-trials'
+import { trackedTrials, trialStatusLabels, trialStatusColors } from '@/data/trials-tracker'
 
-function formatDate(dateStr: string): string {
-  const [year, month] = dateStr.split('-')
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return `${monthNames[Number(month) - 1]} ${year}`
-}
+const publicTrials = trackedTrials.filter(
+  (t) => t.status === 'active' || t.status === 'start_up' || t.status === 'open_label'
+)
 
 export const metadata = {
   title: 'Clinical Trials | ANDOR',
@@ -15,103 +14,85 @@ export const metadata = {
 }
 
 export default function ClinicalTrialsPage() {
-  const recruiting = clinicalTrials.filter((t) => t.status === 'recruiting')
-
   return (
     <>
       <PageHero
         overline="Clinical Trials"
-        title="Advancing Treatment Through Clinical Research"
-        description="ANDOR investigators lead and participate in clinical trials across autoimmune neurological diseases, bringing novel therapies from bench to bedside."
+        title="Clinical Research"
+        description="ANDOR investigators lead and participate in clinical trials across autoimmune neurological diseases."
       >
         <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
-          <StatDisplay value={String(clinicalTrials.length)} label="Active trials" light />
-          <StatDisplay value={String(recruiting.length)} label="Currently recruiting" light />
+          <StatDisplay value={String(publicTrials.length)} label="Active trials" light />
         </div>
       </PageHero>
 
-      {/* Trials */}
       <EditorialSection rule={false}>
         <div className="mx-auto max-w-4xl">
-          <p className="overline">Active Trials</p>
-          <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
-            {clinicalTrials.length} clinical trials
-          </h2>
-          <p className="mt-4 max-w-[65ch] text-[17px] text-[var(--color-ink-secondary)]">
-            Our investigators are actively enrolling patients in trials targeting MOGAD,
-            NMOSD, autoimmune encephalitis, and optic neuritis.
-          </p>
-
-          <div className="mt-12 space-y-10">
-            {clinicalTrials.map((trial) => {
-              const isAndorLed = trial.andorRole.toLowerCase().includes('sponsor')
-              return (
-                <article
-                  key={trial.nctId ?? trial.shortName}
-                  className={`${
-                    isAndorLed
-                      ? 'border-l-2 border-[var(--color-accent)] pl-8'
-                      : 'border-l border-[var(--color-rule)] pl-8'
-                  }`}
-                >
-                  <div className="flex flex-wrap items-baseline gap-3">
-                    <h3 className="font-display text-xl text-[#1a1614]">
-                      {trial.shortName}
-                    </h3>
-                    <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[trial.status]}`}>
-                      {statusLabels[trial.status]}
+          <div className="space-y-8">
+            {publicTrials.map((trial) => (
+              <article
+                key={trial.id}
+                className={`${
+                  trial.andorLed
+                    ? 'border-l-2 border-[var(--color-accent)] pl-6'
+                    : 'border-l border-[var(--color-rule)] pl-6'
+                }`}
+              >
+                <div className="flex flex-wrap items-baseline gap-3">
+                  <h3 className="font-display text-lg text-[#1a1614]">
+                    {trial.shortName}
+                  </h3>
+                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${trialStatusColors[trial.status]}`}>
+                    {trialStatusLabels[trial.status]}
+                  </span>
+                  {trial.andorLed && (
+                    <span className="text-xs font-medium text-[var(--color-accent)]">
+                      ANDOR-led
                     </span>
-                    <span className="text-xs text-[var(--color-ink-tertiary)]">
-                      {trial.phase}
-                    </span>
-                    {isAndorLed && (
-                      <span className="text-xs font-medium text-[var(--color-accent)]">
-                        ANDOR-led
-                      </span>
-                    )}
-                  </div>
-
-                  {trial.nctId && (
-                    <p className="mt-1 text-xs text-[var(--color-ink-tertiary)]">{trial.nctId}</p>
                   )}
+                </div>
 
-                  <p className="mt-3 max-w-[65ch] text-[15px] leading-relaxed text-[var(--color-ink-secondary)]">
-                    {trial.briefSummary}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[var(--color-ink-tertiary)]">
-                    <span>{trial.conditions.join(', ')}</span>
-                    <span className="text-[var(--color-rule)]">&middot;</span>
-                    <span>{trial.intervention}</span>
-                    <span className="text-[var(--color-rule)]">&middot;</span>
-                    <span>{trial.enrollment} participants</span>
-                    <span className="text-[var(--color-rule)]">&middot;</span>
-                    <span>{formatDate(trial.startDate)} &ndash; {formatDate(trial.completionDate)}</span>
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-[var(--color-ink-tertiary)]">
-                    <span><span className="font-medium text-[#1a1614]">Sponsor:</span> {trial.sponsor}</span>
-                    <span><span className="font-medium text-[#1a1614]">ANDOR Role:</span> {trial.andorRole}</span>
+                {trial.nctId && (
+                  <p className="mt-1 text-xs text-[var(--color-ink-tertiary)]">
                     <a
-                      href={trial.studyUrl}
+                      href={trial.studyUrl || `https://clinicaltrials.gov/study/${trial.nctId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ml-auto inline-flex items-center gap-1 text-[var(--color-accent)] hover:underline"
+                      className="hover:text-[var(--color-accent)]"
                     >
-                      View study
-                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
+                      {trial.nctId}
                     </a>
-                  </div>
-                </article>
-              )
-            })}
+                  </p>
+                )}
+
+                <p className="mt-2 max-w-[65ch] text-[15px] leading-relaxed text-[var(--color-ink-secondary)]">
+                  {trial.description}
+                </p>
+
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--color-ink-tertiary)]">
+                  <span>{trial.disease}</span>
+                  <span className="text-[var(--color-rule)]">&middot;</span>
+                  <span>{trial.sponsor}</span>
+                  {trial.studyUrl && (
+                    <>
+                      <span className="text-[var(--color-rule)]">&middot;</span>
+                      <a
+                        href={trial.studyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[var(--color-accent)] hover:underline"
+                      >
+                        View study
+                      </a>
+                    </>
+                  )}
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </EditorialSection>
 
-      {/* CTA */}
       <EditorialSection>
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-display text-[clamp(28px,4vw,36px)]">
@@ -119,11 +100,7 @@ export default function ClinicalTrialsPage() {
           </h2>
           <p className="mt-4 text-[17px] text-[var(--color-ink-secondary)]">
             If you or a patient you are referring may be eligible for one of our clinical trials,
-            please contact our clinical research team at Massachusetts General Hospital.
-          </p>
-          <p className="mt-4 text-sm text-[var(--color-ink-tertiary)]">
-            Our research coordinators can provide detailed eligibility criteria
-            and guide you through the enrollment process.
+            please <Link href="/contact" className="text-[var(--color-accent)] hover:underline">contact our team</Link>.
           </p>
         </div>
       </EditorialSection>
