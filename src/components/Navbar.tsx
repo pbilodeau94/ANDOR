@@ -15,6 +15,11 @@ const publicLinks = [
   { href: '/contact', label: 'Contact' },
 ]
 
+const mobileOnlyLinks = [
+  { href: '/patient-resources', label: 'Patient Resources' },
+  { href: '/media', label: 'Media & Press' },
+]
+
 const portalLinks = [
   { href: '/portal', label: 'Portal' },
 ]
@@ -81,6 +86,20 @@ export default function Navbar() {
         <div className="border-t border-[var(--color-rule)] bg-white md:hidden">
           <div className="space-y-1 px-4 py-3">
             {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className={`block px-3 py-2 text-sm font-medium ${
+                  pathname === link.href
+                    ? 'text-[var(--color-primary)]'
+                    : 'text-[var(--color-ink-secondary)] hover:text-[var(--color-primary)]'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {!isPortal && mobileOnlyLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

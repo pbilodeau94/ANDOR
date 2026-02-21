@@ -21,8 +21,11 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5">
               {[
                 { href: '/research', label: 'Research Programs' },
-                { href: '/team', label: 'Our Team' },
                 { href: '/clinical-trials', label: 'Clinical Trials' },
+                { href: '/education', label: 'Education' },
+                { href: '/team', label: 'Our Team' },
+                { href: '/patient-resources', label: 'Patient Resources' },
+                { href: '/media', label: 'Media & Press' },
                 { href: '/support', label: 'Support Our Research' },
                 { href: '/portal', label: 'Investigator Portal' },
               ].map((link) => (
