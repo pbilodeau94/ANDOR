@@ -305,7 +305,7 @@ export const fellowships: Fellowship[] = [
         ],
       },
     ],
-    applyUrl: 'https://sfmatch.org/',
+    applyUrl: 'https://www.mgbneurologyfellowships.org/fellowships/multiplesclerosis.html',
   },
   {
     name: 'Autoimmune Neurology and Neuroinflammatory Diseases Fellowship',

@@ -172,6 +172,45 @@ export default function SupportPage() {
         </div>
       </EditorialSection>
 
+      {/* Donate */}
+      <EditorialSection>
+        <div className="mx-auto max-w-3xl">
+          <p className="overline">Make a Gift</p>
+          <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
+            Donate now
+          </h2>
+          <p className="mt-4 text-[17px] text-[var(--color-ink-secondary)]">
+            Gifts to ANDOR can be directed through either Massachusetts General Hospital or
+            Brigham and Women&apos;s Hospital. Please reference &quot;ANDOR Research Group &mdash; Neuroimmunology&quot;
+            in your donation.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <a
+              href="https://giving.massgeneral.org/donate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center rounded bg-[var(--color-primary)] px-6 py-3 text-sm font-medium text-white transition-colors hover:opacity-90"
+            >
+              Donate via Mass General
+              <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+            <a
+              href="https://giving.brighamandwomens.org/give1/?appeal=25XXAGWM&utm_medium=web&utm_source=bwhgiving&utm_campaign=25XXAGWM&utm_content=donatebuttonheader&pk_vid=7229a602d936529017716928711d80b6"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center rounded border border-[var(--color-primary)] px-6 py-3 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--color-primary)] hover:text-white"
+            >
+              Donate via Brigham and Women&apos;s
+              <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </EditorialSection>
+
       {/* Contact */}
       <EditorialSection>
         <div className="mx-auto max-w-2xl text-center">

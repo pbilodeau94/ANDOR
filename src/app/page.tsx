@@ -130,21 +130,32 @@ export default function HomePage() {
           Eight interconnected programs
         </h2>
 
-        <div className="mt-8">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {researchGroups.map((group) => (
             <Link
               key={group.id}
               href={`/research/${group.slug}`}
-              className="group flex items-baseline justify-between border-b border-[var(--color-rule)] py-3 transition-colors hover:border-[var(--color-primary)]"
+              className="group relative rounded-lg border border-[var(--color-rule)] p-5 transition-all hover:border-[var(--color-primary)] hover:shadow-sm"
             >
-              <h3 className="font-semibold text-[#1a1614] group-hover:text-[var(--color-primary)]">
-                {group.name}
-              </h3>
-              {group.patientCount && (
-                <span className="ml-4 shrink-0 text-sm tabular-nums text-[var(--color-ink-tertiary)]">
-                  {group.patientCount} patients
-                </span>
-              )}
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="font-display text-lg text-[#1a1614] group-hover:text-[var(--color-primary)]">
+                  {group.name}
+                </h3>
+                {group.patientCount && (
+                  <span className="shrink-0 rounded-full bg-[var(--color-surface-alt)] px-2.5 py-0.5 text-xs font-medium tabular-nums text-[var(--color-ink-secondary)]">
+                    {group.patientCount} patients
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--color-ink-tertiary)] line-clamp-2">
+                {group.description.split('. ').slice(0, 1).join('. ')}.
+              </p>
+              <span className="mt-3 inline-flex items-center text-xs font-medium text-[var(--color-accent)] opacity-0 transition-opacity group-hover:opacity-100">
+                Learn more
+                <svg className="ml-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
             </Link>
           ))}
         </div>
