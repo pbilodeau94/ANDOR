@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import SectionWrapper from '@/components/SectionWrapper'
+import PortalSection from '@/components/portal/PortalSection'
+import PortalPageHeader from '@/components/portal/PortalPageHeader'
+import DropboxBrowser from '@/components/portal/DropboxBrowser'
 import { documents, documentTypeLabels, documentTypeColors } from '@/data/documents'
 import type { DocumentType } from '@/data/documents'
 
@@ -51,16 +53,12 @@ export default function DocumentsPage() {
 
   return (
     <>
-      <div className="border-b border-gray-200 bg-[var(--color-surface-alt)]">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-[var(--color-primary)]">Documents</h1>
-          <p className="mt-2 text-gray-600">
-            {documents.length} biosketches and support documents
-          </p>
-        </div>
-      </div>
+      <PortalPageHeader
+        title="Documents"
+        subtitle={`${documents.length} biosketches and support documents`}
+      />
 
-      <SectionWrapper>
+      <PortalSection>
         {/* Filter */}
         <div className="mb-6 flex flex-wrap gap-3">
           <select
@@ -162,7 +160,13 @@ export default function DocumentsPage() {
         <p className="mt-4 text-xs text-gray-400">
           Showing {filtered.length} of {documents.length} documents
         </p>
-      </SectionWrapper>
+      </PortalSection>
+
+      {/* Dropbox Files */}
+      <PortalSection>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">Biosketches (Dropbox)</h2>
+        <DropboxBrowser basePath="/Documents/Biosketches" />
+      </PortalSection>
     </>
   )
 }

@@ -18,6 +18,8 @@ function loadTasks(): Task[] {
     return (parsed as Record<string, unknown>[]).map((t) => ({
       ...t,
       projectId: t.projectId ?? null,
+      trialId: t.trialId ?? null,
+      agreementId: t.agreementId ?? null,
     })) as Task[]
   } catch {
     return []
@@ -119,6 +121,8 @@ export function useTasksStore() {
               assignee: grant.pi[0] || undefined,
               grantId: grant.id,
               projectId: null,
+              trialId: null,
+              agreementId: null,
               dueDate: m.dateStr,
               status: 'pending',
               priority,

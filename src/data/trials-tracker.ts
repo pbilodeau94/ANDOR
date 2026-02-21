@@ -1,5 +1,7 @@
 export type TrialStatus = 'active' | 'start_up' | 'open_label' | 'closing_out' | 'closed'
 
+export type IrbStatus = 'approved' | 'pending' | 'amendment' | 'expired' | 'closed'
+
 export type TrackedTrial = {
   id: string
   shortName: string
@@ -23,6 +25,7 @@ export type TrackedTrial = {
   studyUrl?: string
   andorLed?: boolean
   publicFacing?: boolean
+  irbStatus?: IrbStatus
 }
 
 export const trackedTrials: TrackedTrial[] = [
@@ -270,5 +273,21 @@ export const trialStatusColors: Record<TrialStatus, string> = {
   start_up: 'bg-blue-100 text-blue-700',
   open_label: 'bg-amber-100 text-amber-700',
   closing_out: 'bg-orange-100 text-orange-700',
+  closed: 'bg-gray-100 text-gray-600',
+}
+
+export const irbStatusLabels: Record<IrbStatus, string> = {
+  approved: 'Approved',
+  pending: 'Pending',
+  amendment: 'Amendment',
+  expired: 'Expired',
+  closed: 'Closed',
+}
+
+export const irbStatusColors: Record<IrbStatus, string> = {
+  approved: 'bg-emerald-100 text-emerald-700',
+  pending: 'bg-amber-100 text-amber-700',
+  amendment: 'bg-blue-100 text-blue-700',
+  expired: 'bg-red-100 text-red-700',
   closed: 'bg-gray-100 text-gray-600',
 }

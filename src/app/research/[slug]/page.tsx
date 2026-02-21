@@ -90,13 +90,6 @@ export default async function DiseaseResearchPage({
             <p className="mt-4 max-w-[65ch] text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
               {mattersText}
             </p>
-
-            {/* Extract a pull-quote from the first sentence */}
-            <div className="mt-10">
-              <PullQuote
-                quote={mattersText.split('.')[0] + '.'}
-              />
-            </div>
           </div>
         </EditorialSection>
       )}

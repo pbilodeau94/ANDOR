@@ -1,10 +1,13 @@
 'use client'
 
 import { useState, useMemo, useRef, useEffect } from 'react'
-import SectionWrapper from '@/components/SectionWrapper'
+import PortalSection from '@/components/portal/PortalSection'
+import PortalPageHeader from '@/components/portal/PortalPageHeader'
 import { useTasksStore } from '@/data/use-tasks-store'
 import { useGrantsStore } from '@/data/use-grants-store'
 import { useProjectsStore } from '@/data/use-projects-store'
+import { trackedTrials } from '@/data/trials-tracker'
+import { agreements } from '@/data/agreements'
 import { team } from '@/data/team'
 import {
   taskStatusLabels,
@@ -30,12 +33,24 @@ function isOverdue(dueDate: string | null): boolean {
   return new Date(dueDate + 'T00:00:00') < today
 }
 
+function isDueThisWeek(dueDate: string | null): boolean {
+  if (!dueDate) return false
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const endOfWeek = new Date(today)
+  endOfWeek.setDate(today.getDate() + (7 - today.getDay()))
+  const d = new Date(dueDate + 'T00:00:00')
+  return d >= today && d <= endOfWeek
+}
+
 // --- Add Task Form ---
 
 function AddTaskForm({
   onAdd,
   grantOptions,
   projectOptions,
+  trialOptions,
+  agreementOptions,
 }: {
   onAdd: (task: {
     title: string
@@ -43,12 +58,16 @@ function AddTaskForm({
     assignee?: string
     grantId: string | null
     projectId: string | null
+    trialId: string | null
+    agreementId: string | null
     dueDate: string | null
     status: TaskStatus
     priority: TaskPriority
   }) => void
   grantOptions: { id: string; title: string }[]
   projectOptions: { id: string; title: string }[]
+  trialOptions: { id: string; title: string }[]
+  agreementOptions: { id: string; title: string }[]
 }) {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
@@ -56,6 +75,8 @@ function AddTaskForm({
   const [assignee, setAssignee] = useState('')
   const [grantId, setGrantId] = useState('')
   const [projectId, setProjectId] = useState('')
+  const [trialId, setTrialId] = useState('')
+  const [agreementId, setAgreementId] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [priority, setPriority] = useState<TaskPriority>('medium')
   const titleRef = useRef<HTMLInputElement>(null)
@@ -73,6 +94,8 @@ function AddTaskForm({
       assignee: assignee || undefined,
       grantId: grantId || null,
       projectId: projectId || null,
+      trialId: trialId || null,
+      agreementId: agreementId || null,
       dueDate: dueDate || null,
       status: 'pending',
       priority,
@@ -82,6 +105,8 @@ function AddTaskForm({
     setAssignee('')
     setGrantId('')
     setProjectId('')
+    setTrialId('')
+    setAgreementId('')
     setDueDate('')
     setPriority('medium')
     setOpen(false)
@@ -103,8 +128,8 @@ function AddTaskForm({
 
   return (
     <form onSubmit={handleSubmit} className="rounded-xl border border-gray-200 bg-white p-4">
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div className="sm:col-span-2">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="sm:col-span-2 lg:col-span-3">
           <label className="text-xs font-medium text-gray-500">Title *</label>
           <input
             ref={titleRef}
@@ -115,7 +140,7 @@ function AddTaskForm({
             required
           />
         </div>
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-2 lg:col-span-3">
           <label className="text-xs font-medium text-gray-500">Description</label>
           <textarea
             value={description}
@@ -185,6 +210,32 @@ function AddTaskForm({
             ))}
           </select>
         </div>
+        <div>
+          <label className="text-xs font-medium text-gray-500">Linked Trial</label>
+          <select
+            value={trialId}
+            onChange={(e) => setTrialId(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
+          >
+            <option value="">None</option>
+            {trialOptions.map((t) => (
+              <option key={t.id} value={t.id}>{t.title}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs font-medium text-gray-500">Linked Agreement</label>
+          <select
+            value={agreementId}
+            onChange={(e) => setAgreementId(e.target.value)}
+            className="mt-0.5 w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
+          >
+            <option value="">None</option>
+            {agreementOptions.map((a) => (
+              <option key={a.id} value={a.id}>{a.title}</option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="mt-4 flex gap-2">
         <button
@@ -213,8 +264,12 @@ function TaskCard({
   deleteTask,
   grantTitleMap,
   projectTitleMap,
+  trialTitleMap,
+  agreementTitleMap,
   grantOptions,
   projectOptions,
+  trialOptions,
+  agreementOptions,
   confirmDeleteId,
   setConfirmDeleteId,
 }: {
@@ -223,8 +278,12 @@ function TaskCard({
   deleteTask: (id: string) => void
   grantTitleMap: Map<string, string>
   projectTitleMap: Map<string, string>
+  trialTitleMap: Map<string, string>
+  agreementTitleMap: Map<string, string>
   grantOptions: { id: string; title: string }[]
   projectOptions: { id: string; title: string }[]
+  trialOptions: { id: string; title: string }[]
+  agreementOptions: { id: string; title: string }[]
   confirmDeleteId: string | null
   setConfirmDeleteId: (id: string | null) => void
 }) {
@@ -303,6 +362,16 @@ function TaskCard({
                 Project: {projectTitleMap.get(task.projectId)}
               </span>
             )}
+            {task.trialId && trialTitleMap.has(task.trialId) && (
+              <span className="inline-flex rounded bg-teal-50 px-1.5 py-0.5 text-[10px] font-medium text-teal-600">
+                Trial: {trialTitleMap.get(task.trialId)}
+              </span>
+            )}
+            {task.agreementId && agreementTitleMap.has(task.agreementId) && (
+              <span className="inline-flex rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-600">
+                Agreement: {agreementTitleMap.get(task.agreementId)}
+              </span>
+            )}
             {task.milestoneKey && (
               <span className="inline-flex rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">
                 Deadline milestone
@@ -333,8 +402,8 @@ function TaskCard({
       {/* Expanded edit panel */}
       {expanded && (
         <div className="border-t border-gray-100 bg-gray-50 px-4 py-3" onClick={(e) => e.stopPropagation()}>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="sm:col-span-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="sm:col-span-2 lg:col-span-3">
               <label className="text-[10px] font-medium text-gray-500">Title</label>
               <input
                 value={editTitle}
@@ -343,7 +412,7 @@ function TaskCard({
                 className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
               />
             </div>
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-2 lg:col-span-3">
               <label className="text-[10px] font-medium text-gray-500">Description</label>
               <textarea
                 value={editDesc}
@@ -413,6 +482,32 @@ function TaskCard({
                 ))}
               </select>
             </div>
+            <div>
+              <label className="text-[10px] font-medium text-gray-500">Linked Trial</label>
+              <select
+                value={task.trialId ?? ''}
+                onChange={(e) => updateTask(task.id, { trialId: e.target.value || null })}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              >
+                <option value="">None</option>
+                {trialOptions.map((t) => (
+                  <option key={t.id} value={t.id}>{t.title}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] font-medium text-gray-500">Linked Agreement</label>
+              <select
+                value={task.agreementId ?? ''}
+                onChange={(e) => updateTask(task.id, { agreementId: e.target.value || null })}
+                className="mt-0.5 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              >
+                <option value="">None</option>
+                {agreementOptions.map((a) => (
+                  <option key={a.id} value={a.id}>{a.title}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="mt-3 flex justify-end">
             {confirmDeleteId === task.id ? (
@@ -446,16 +541,31 @@ function TaskCard({
   )
 }
 
+// --- Quick Filter Chips ---
+
+type QuickFilter = 'overdue' | 'due_this_week' | 'high_priority'
+
+const quickFilterLabels: Record<QuickFilter, string> = {
+  overdue: 'Overdue',
+  due_this_week: 'Due This Week',
+  high_priority: 'High Priority',
+}
+
 // --- Main Page ---
+
+type GroupBy = 'none' | 'assignee' | 'source'
 
 export default function TasksPage() {
   const { tasks, addTask, updateTask, deleteTask, syncMilestoneTasks } = useTasksStore()
   const { grants } = useGrantsStore()
   const { projects } = useProjectsStore()
+  const [groupBy, setGroupBy] = useState<GroupBy>('none')
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [sourceFilter, setSourceFilter] = useState<string>('')
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('')
+  const [quickFilter, setQuickFilter] = useState<QuickFilter | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
-  // Sync milestone tasks whenever grants change (including after adding)
+
   useEffect(() => {
     if (!grants.length) return
     syncMilestoneTasks(grants)
@@ -471,6 +581,16 @@ export default function TasksPage() {
     [projects]
   )
 
+  const trialOptions = useMemo(
+    () => trackedTrials.map((t) => ({ id: t.id, title: t.shortName })),
+    []
+  )
+
+  const agreementOptions = useMemo(
+    () => agreements.map((a) => ({ id: a.id, title: `${a.partner} - ${a.type}` })),
+    []
+  )
+
   const grantTitleMap = useMemo(() => {
     const map = new Map<string, string>()
     grants.forEach((g) => map.set(g.id, g.title))
@@ -483,13 +603,38 @@ export default function TasksPage() {
     return map
   }, [projects])
 
+  const trialTitleMap = useMemo(() => {
+    const map = new Map<string, string>()
+    trackedTrials.forEach((t) => map.set(t.id, t.shortName))
+    return map
+  }, [])
+
+  const agreementTitleMap = useMemo(() => {
+    const map = new Map<string, string>()
+    agreements.forEach((a) => map.set(a.id, `${a.partner} - ${a.type}`))
+    return map
+  }, [])
+
+  const allAssignees = useMemo(
+    () => [...new Set(tasks.map((t) => t.assignee).filter((a): a is string => !!a))].sort(),
+    [tasks]
+  )
+
   const filtered = useMemo(() => {
     let result = [...tasks]
     if (statusFilter) result = result.filter((t) => t.status === statusFilter)
+    if (assigneeFilter) result = result.filter((t) => t.assignee === assigneeFilter)
     if (sourceFilter === 'grant') result = result.filter((t) => t.grantId)
     else if (sourceFilter === 'project') result = result.filter((t) => t.projectId)
+    else if (sourceFilter === 'trial') result = result.filter((t) => t.trialId)
+    else if (sourceFilter === 'agreement') result = result.filter((t) => t.agreementId)
     else if (sourceFilter === 'milestone') result = result.filter((t) => t.milestoneKey)
-    else if (sourceFilter === 'standalone') result = result.filter((t) => !t.grantId && !t.projectId)
+    else if (sourceFilter === 'standalone') result = result.filter((t) => !t.grantId && !t.projectId && !t.trialId && !t.agreementId)
+
+    // Quick filters
+    if (quickFilter === 'overdue') result = result.filter((t) => t.status !== 'completed' && isOverdue(t.dueDate))
+    else if (quickFilter === 'due_this_week') result = result.filter((t) => t.status !== 'completed' && isDueThisWeek(t.dueDate))
+    else if (quickFilter === 'high_priority') result = result.filter((t) => t.status !== 'completed' && t.priority === 'high')
 
     result.sort((a, b) => {
       if (a.status === 'completed' && b.status !== 'completed') return 1
@@ -504,34 +649,149 @@ export default function TasksPage() {
     })
 
     return result
-  }, [tasks, statusFilter, sourceFilter])
+  }, [tasks, statusFilter, assigneeFilter, sourceFilter, quickFilter])
 
   const totalPending = tasks.filter((t) => t.status === 'pending').length
   const totalInProgress = tasks.filter((t) => t.status === 'in_progress').length
   const totalCompleted = tasks.filter((t) => t.status === 'completed').length
   const totalOverdue = tasks.filter((t) => t.status !== 'completed' && isOverdue(t.dueDate)).length
 
+  const hasFilters = statusFilter || sourceFilter || assigneeFilter || quickFilter
+
+  function clearFilters() {
+    setStatusFilter('')
+    setSourceFilter('')
+    setAssigneeFilter('')
+    setQuickFilter(null)
+  }
+
+  // Grouped view helpers
+  const groupedByAssignee = useMemo(() => {
+    const groups = new Map<string, Task[]>()
+    filtered.forEach((t) => {
+      const key = t.assignee || 'Unassigned'
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key)!.push(t)
+    })
+    return groups
+  }, [filtered])
+
+  const groupedBySource = useMemo(() => {
+    const groups = new Map<string, Task[]>()
+    filtered.forEach((t) => {
+      let key = 'Standalone'
+      if (t.milestoneKey) key = 'Deadline Milestones'
+      else if (t.grantId) key = 'Grant-linked'
+      else if (t.projectId) key = 'Project-linked'
+      else if (t.trialId) key = 'Trial-linked'
+      else if (t.agreementId) key = 'Agreement-linked'
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key)!.push(t)
+    })
+    return groups
+  }, [filtered])
+
+  function renderTaskCard(task: Task) {
+    return (
+      <TaskCard
+        key={task.id}
+        task={task}
+        updateTask={updateTask}
+        deleteTask={deleteTask}
+        grantTitleMap={grantTitleMap}
+        projectTitleMap={projectTitleMap}
+        trialTitleMap={trialTitleMap}
+        agreementTitleMap={agreementTitleMap}
+        grantOptions={grantOptions}
+        projectOptions={projectOptions}
+        trialOptions={trialOptions}
+        agreementOptions={agreementOptions}
+        confirmDeleteId={confirmDeleteId}
+        setConfirmDeleteId={setConfirmDeleteId}
+      />
+    )
+  }
+
+  function renderGrouped(groups: Map<string, Task[]>) {
+    return (
+      <div className="space-y-6">
+        {[...groups.entries()].map(([groupName, groupTasks]) => {
+          const activeCount = groupTasks.filter((t) => t.status !== 'completed').length
+          const overdueCount = groupTasks.filter((t) => t.status !== 'completed' && isOverdue(t.dueDate)).length
+          return (
+            <div key={groupName}>
+              <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700">
+                {groupName}
+                <span className="text-xs font-normal text-gray-400">
+                  ({activeCount} active{overdueCount > 0 && `, ${overdueCount} overdue`})
+                </span>
+              </h3>
+              <div className="space-y-2">
+                {groupTasks.map(renderTaskCard)}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
   return (
     <>
-      <div className="border-b border-gray-200 bg-[var(--color-surface-alt)]">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div>
-            <h1 className="text-3xl font-bold text-[var(--color-primary)]">Tasks</h1>
-            <p className="mt-2 text-gray-600">
-              {tasks.length} tasks &middot; {totalPending} pending &middot; {totalInProgress} in progress &middot; {totalCompleted} completed
-              {totalOverdue > 0 && (
-                <span className="ml-1 font-semibold text-red-600">&middot; {totalOverdue} overdue</span>
-              )}
-            </p>
-          </div>
+      <PortalPageHeader
+        title="Tasks"
+        subtitle={`${tasks.length} tasks \u00b7 ${totalPending} pending \u00b7 ${totalInProgress} in progress \u00b7 ${totalCompleted} completed${totalOverdue > 0 ? ` \u00b7 ${totalOverdue} overdue` : ''}`}
+      >
+        <select
+          value={groupBy}
+          onChange={(e) => setGroupBy(e.target.value as GroupBy)}
+          className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
+        >
+          <option value="none">No grouping</option>
+          <option value="assignee">Group by assignee</option>
+          <option value="source">Group by source</option>
+        </select>
+      </PortalPageHeader>
+
+      <PortalSection>
+        {/* Quick filter chips */}
+        <div className="mb-4 flex flex-wrap gap-2">
+          {(Object.entries(quickFilterLabels) as [QuickFilter, string][]).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setQuickFilter(quickFilter === key ? null : key)}
+              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                quickFilter === key
+                  ? 'bg-[var(--color-primary)] text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {label}
+              {key === 'overdue' && totalOverdue > 0 && ` (${totalOverdue})`}
+            </button>
+          ))}
         </div>
-      </div>
 
-      <SectionWrapper>
         <div className="mb-6 flex flex-wrap items-center gap-3">
-          <AddTaskForm onAdd={addTask} grantOptions={grantOptions} projectOptions={projectOptions} />
+          <AddTaskForm
+            onAdd={addTask}
+            grantOptions={grantOptions}
+            projectOptions={projectOptions}
+            trialOptions={trialOptions}
+            agreementOptions={agreementOptions}
+          />
 
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex flex-wrap items-center gap-3">
+            <select
+              value={assigneeFilter}
+              onChange={(e) => setAssigneeFilter(e.target.value)}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
+            >
+              <option value="">All People</option>
+              {allAssignees.map((name) => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+            </select>
             <select
               value={sourceFilter}
               onChange={(e) => setSourceFilter(e.target.value)}
@@ -540,6 +800,8 @@ export default function TasksPage() {
               <option value="">All Sources</option>
               <option value="grant">Grant-linked</option>
               <option value="project">Project-linked</option>
+              <option value="trial">Trial-linked</option>
+              <option value="agreement">Agreement-linked</option>
               <option value="milestone">Deadline milestones</option>
               <option value="standalone">Standalone</option>
             </select>
@@ -553,9 +815,9 @@ export default function TasksPage() {
                 <option key={key} value={key}>{label}</option>
               ))}
             </select>
-            {(statusFilter || sourceFilter) && (
+            {hasFilters && (
               <button
-                onClick={() => { setStatusFilter(''); setSourceFilter('') }}
+                onClick={clearFilters}
                 className="text-sm text-gray-500 hover:text-gray-700"
               >
                 Clear
@@ -571,33 +833,24 @@ export default function TasksPage() {
             </svg>
             <p className="mt-3 text-sm text-gray-500">
               {tasks.length === 0
-                ? 'No tasks yet. Add tasks here or from the Grants/Projects pages.'
+                ? 'No tasks yet. Add tasks here or from the Grants/Projects/Trials pages.'
                 : 'No tasks match the selected filter.'}
             </p>
           </div>
+        ) : groupBy === 'assignee' ? (
+          renderGrouped(groupedByAssignee)
+        ) : groupBy === 'source' ? (
+          renderGrouped(groupedBySource)
         ) : (
           <div className="space-y-2">
-            {filtered.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                updateTask={updateTask}
-                deleteTask={deleteTask}
-                grantTitleMap={grantTitleMap}
-                projectTitleMap={projectTitleMap}
-                grantOptions={grantOptions}
-                projectOptions={projectOptions}
-                confirmDeleteId={confirmDeleteId}
-                setConfirmDeleteId={setConfirmDeleteId}
-              />
-            ))}
+            {filtered.map(renderTaskCard)}
           </div>
         )}
 
         <p className="mt-4 text-xs text-gray-400">
           Showing {filtered.length} of {tasks.length} tasks &middot; Click a task to edit &middot; Tasks saved to browser
         </p>
-      </SectionWrapper>
+      </PortalSection>
     </>
   )
 }

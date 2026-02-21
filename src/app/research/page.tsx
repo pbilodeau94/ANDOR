@@ -58,35 +58,23 @@ export default function ResearchPage() {
           <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
             Amplifying collaborative discovery
           </h2>
-          <p className="mt-4 max-w-[65ch] text-[17px] text-[var(--color-ink-secondary)]">
-            All ANDOR programs benefit from shared infrastructure that enables
-            cross-disease collaboration and accelerates research at scale.
-          </p>
 
-          <div className="mt-10 grid gap-8 sm:grid-cols-2">
-            <div className="space-y-5 text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
-              <p>
-                Our federated disease-specific registries span conditions from MOGAD and
-                NMOSD to autoimmune encephalitis, neurosarcoidosis, and CNS vasculitis, with
-                over 700 patients enrolled across the collaborative.
-              </p>
-              <p>
-                A centralized biorepository collects and stores serum, CSF, PBMCs, and
-                tissue samples linked to detailed clinical phenotyping, enabling biomarker
-                discovery and translational research.
-              </p>
-            </div>
-            <div className="space-y-5 text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
-              <p>
-                Standardized REDCap longitudinal databases capture outcomes using validated
-                instruments, creating datasets suitable for multi-center analyses and
-                pragmatic clinical trials.
-              </p>
-              <p>
-                Collaborative agreements with institutions worldwide enable pooled analyses
-                of conditions too rare for any single center to study alone.
-              </p>
-            </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {[
+              { label: 'Federated Registries', stat: '700+', unit: 'patients enrolled', desc: 'Disease-specific registries spanning MOGAD, NMOSD, encephalitis, neurosarcoidosis, and CNS vasculitis.' },
+              { label: 'Biorepository', stat: '4', unit: 'sample types', desc: 'Serum, CSF, PBMCs, and tissue linked to detailed clinical phenotyping.' },
+              { label: 'REDCap Databases', stat: '6', unit: 'disease areas', desc: 'Longitudinal databases with validated outcome instruments for multi-center analyses.' },
+              { label: 'Global Collaborations', stat: '15+', unit: 'institutions', desc: 'Pooled analyses across institutions worldwide for ultra-rare conditions.' },
+            ].map((item) => (
+              <div key={item.label} className="rounded-lg border border-[var(--color-rule)] p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--color-primary)]">{item.label}</p>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="font-display text-2xl text-[#1a1614]">{item.stat}</span>
+                  <span className="text-sm text-[var(--color-ink-tertiary)]">{item.unit}</span>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--color-ink-secondary)]">{item.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </EditorialSection>

@@ -71,9 +71,20 @@ export default function ClinicalTrialsPage() {
 
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--color-ink-tertiary)]">
                   <span>{trial.disease}</span>
-                  <span className="text-[var(--color-rule)]">&middot;</span>
-                  <span>{trial.sponsor}</span>
-                  {trial.studyUrl && (
+                  {trial.nctId && (
+                    <>
+                      <span className="text-[var(--color-rule)]">&middot;</span>
+                      <a
+                        href={trial.studyUrl || `https://clinicaltrials.gov/study/${trial.nctId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[var(--color-accent)] hover:underline"
+                      >
+                        ClinicalTrials.gov
+                      </a>
+                    </>
+                  )}
+                  {trial.studyUrl && !trial.nctId && (
                     <>
                       <span className="text-[var(--color-rule)]">&middot;</span>
                       <a
@@ -82,7 +93,7 @@ export default function ClinicalTrialsPage() {
                         rel="noopener noreferrer"
                         className="text-[var(--color-accent)] hover:underline"
                       >
-                        View study
+                        Study website
                       </a>
                     </>
                   )}

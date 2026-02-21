@@ -1,10 +1,8 @@
 'use client'
 
 import { useState, useMemo, useRef, useEffect } from 'react'
-import SectionWrapper from '@/components/SectionWrapper'
-import ViewToggle, { type ViewMode } from '@/components/portal/ViewToggle'
-import BoardView, { type BoardColumn } from '@/components/portal/BoardView'
-import ProjectCard from '@/components/portal/ProjectCard'
+import PortalSection from '@/components/portal/PortalSection'
+import PortalPageHeader from '@/components/portal/PortalPageHeader'
 import DiseaseChips from '@/components/portal/DiseaseChips'
 import LinkedTasks from '@/components/portal/LinkedTasks'
 import TeamMemberChips from '@/components/portal/TeamMemberChips'
@@ -16,15 +14,6 @@ import type { ProjectStage, Project } from '@/data/projects'
 
 type SortKey = 'title' | 'lead' | 'pi' | 'disease' | 'stage' | 'researchType'
 type SortDir = 'asc' | 'desc'
-
-const boardColumns: BoardColumn<ProjectStage>[] = [
-  { key: 'not_started', label: 'Not Started', color: 'bg-gray-100 text-gray-700' },
-  { key: 'in_progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700' },
-  { key: 'submitted', label: 'Submitted', color: 'bg-amber-100 text-amber-700' },
-  { key: 'completed', label: 'Completed', color: 'bg-purple-100 text-purple-700' },
-  { key: 'accepted', label: 'Accepted', color: 'bg-teal-100 text-teal-700' },
-  { key: 'published', label: 'Published', color: 'bg-emerald-100 text-emerald-700' },
-]
 
 const researchTypes = ['Clinical', 'Translational', 'Basic', 'Basic & Clinical', 'Clinical Trial']
 
@@ -302,7 +291,6 @@ function StageTabs({ activeTab, onChange }: { activeTab: ProjectStage | null; on
 
 export default function ProjectsPage() {
   const { projects: allProjects, updateProject, deleteProject, addProject } = useProjectsStore()
-  const [view, setView] = useState<ViewMode>('table')
   const [stageTab, setStageTab] = useState<ProjectStage | null>(null)
   const [diseaseFilter, setDiseaseFilter] = useState<string[]>([])
   const [typeFilter, setTypeFilter] = useState<string[]>([])
@@ -393,25 +381,17 @@ export default function ProjectsPage() {
 
   return (
     <>
-      <div className="border-b border-gray-200 bg-[var(--color-surface-alt)]">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-[var(--color-primary)]">Research Projects</h1>
-              <p className="mt-2 text-gray-600">
-                {allProjects.length} projects across all disease areas
-              </p>
-            </div>
-            {stageTab !== 'published' && <ViewToggle view={view} onChange={setView} />}
-          </div>
-        </div>
-      </div>
+      <PortalPageHeader
+        title="Research Projects"
+        subtitle={`${allProjects.length} projects across all disease areas`}
+      />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <StageTabs activeTab={stageTab} onChange={setStageTab} />
       </div>
 
-      <SectionWrapper>
+      <PortalSection>
         {stageTab === 'published' ? (
           /* Published = all ANDOR publications + published projects */
           <div className="space-y-2">
@@ -495,8 +475,6 @@ export default function ProjectsPage() {
               )}
             </div>
 
-        {view === 'table' ? (
-          <>
             <div className="overflow-x-auto rounded-xl border border-gray-200">
               <table className="w-full min-w-[900px]">
                 <thead className="border-b border-gray-200 bg-gray-50">
@@ -615,27 +593,8 @@ export default function ProjectsPage() {
               Showing {filtered.length} of {allProjects.length} projects &middot; Edits saved to browser
             </p>
           </>
-        ) : (
-          <BoardView columns={boardColumns}>
-            {(stage) => {
-              const stageProjects = filtered.filter((p) => p.stage === stage)
-              return (
-                <>
-                  <div className="mb-1 text-xs text-gray-400">{stageProjects.length} projects</div>
-                  {stageProjects.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
-                  ))}
-                  {stageProjects.length === 0 && (
-                    <p className="py-4 text-center text-xs text-gray-300 italic">None</p>
-                  )}
-                </>
-              )
-            }}
-          </BoardView>
         )}
-          </>
-        )}
-      </SectionWrapper>
+      </PortalSection>
     </>
   )
 }

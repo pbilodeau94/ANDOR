@@ -186,7 +186,7 @@ export const projects: Project[] = [
   {
     id: 'p15',
     title: 'Fc polymorphisms for B cell therapy',
-    lead: 'Mattia Wruble',
+    lead: 'Mattia Wruble Clark',
     pi: 'Shamik Bhattacharyya',
     collaboration: 'MGB single center',
     diseases: ['NMOSD'],
@@ -246,7 +246,7 @@ export const projects: Project[] = [
   {
     id: 'p20',
     title: 'Lymph node MRI and biopsy',
-    lead: 'Mattia Wruble',
+    lead: 'Mattia Wruble Clark',
     pi: 'Shamik Bhattacharyya',
     collaboration: 'MGB single center',
     diseases: ['NMOSD'],
@@ -558,7 +558,7 @@ export const projects: Project[] = [
   {
     id: 'p46',
     title: 'COMPARE-NMOSD study',
-    lead: 'Mattia Wruble',
+    lead: 'Mattia Wruble Clark',
     pi: 'Shamik Bhattacharyya',
     collaboration: 'MGB led',
     diseases: ['NMOSD'],

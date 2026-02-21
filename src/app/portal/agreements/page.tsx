@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import SectionWrapper from '@/components/SectionWrapper'
-import DiseaseTabs from '@/components/DiseaseTabs'
-import { filterByDisease } from '@/data/disease-utils'
+import PortalSection from '@/components/portal/PortalSection'
+import PortalPageHeader from '@/components/portal/PortalPageHeader'
+import LinkedTasks from '@/components/portal/LinkedTasks'
+import RelatedEntities from '@/components/portal/RelatedEntities'
+import DropboxBrowser from '@/components/portal/DropboxBrowser'
 import {
   agreements,
   agreementStatusLabels,
@@ -48,6 +50,22 @@ function ExpandedAgreementRow({ agreement }: { agreement: Agreement }) {
               </div>
             </div>
           )}
+          <RelatedEntities
+            diseases={agreement.diseases}
+            excludeId={agreement.id}
+            exclude={['agreements']}
+          />
+          <div className="sm:col-span-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase text-gray-400">Tasks</span>
+              <a href="/portal/tasks" className="text-[10px] font-medium text-[var(--color-accent)] hover:underline">
+                All tasks &rarr;
+              </a>
+            </div>
+            <div className="mt-2 space-y-1">
+              <LinkedTasks agreementId={agreement.id} />
+            </div>
+          </div>
         </div>
       </td>
     </tr>
@@ -55,37 +73,22 @@ function ExpandedAgreementRow({ agreement }: { agreement: Agreement }) {
 }
 
 export default function AgreementsPage() {
-  const [diseaseTab, setDiseaseTab] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<AgreementStatus | 'all'>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
-  const diseaseFiltered = useMemo(
-    () => filterByDisease(agreements, diseaseTab),
-    [diseaseTab]
-  )
-
   const filtered = useMemo(() => {
-    if (statusFilter === 'all') return diseaseFiltered
-    return diseaseFiltered.filter((a) => a.status === statusFilter)
-  }, [diseaseFiltered, statusFilter])
+    if (statusFilter === 'all') return [...agreements]
+    return agreements.filter((a) => a.status === statusFilter)
+  }, [statusFilter])
 
   return (
     <>
-      <div className="border-b border-gray-200 bg-[var(--color-surface-alt)]">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-[var(--color-primary)]">DUA / MTA Tracker</h1>
-          <p className="mt-2 text-gray-600">
-            {agreements.length} data use and material transfer agreements
-          </p>
-        </div>
-      </div>
+      <PortalPageHeader
+        title="DUA / MTA Tracker"
+        subtitle={`${agreements.length} data use and material transfer agreements`}
+      />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <DiseaseTabs activeTab={diseaseTab} onChange={setDiseaseTab} />
-      </div>
-
-      <SectionWrapper>
-        {/* Filters */}
+      <PortalSection>
         <div className="mb-6 flex flex-wrap gap-3">
           <select
             value={statusFilter}
@@ -110,28 +113,27 @@ export default function AgreementsPage() {
           )}
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto rounded-xl border border-gray-200">
+        <div className="overflow-x-auto rounded-lg border border-gray-200">
           <table className="w-full min-w-[700px]">
             <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
                 <th className="w-8 py-3 pl-4 pr-2"></th>
-                <th className="py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <th className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Agreement
                 </th>
-                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Partner
                 </th>
-                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Type
                 </th>
-                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Direction
                 </th>
-                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <th className="whitespace-nowrap py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Expiration
                 </th>
-                <th className="whitespace-nowrap py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <th className="whitespace-nowrap py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Status
                 </th>
               </tr>
@@ -201,7 +203,13 @@ export default function AgreementsPage() {
         <p className="mt-4 text-xs text-gray-400">
           Showing {filtered.length} of {agreements.length} agreements
         </p>
-      </SectionWrapper>
+      </PortalSection>
+
+      {/* Agreement Files from Dropbox */}
+      <PortalSection>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">Agreement Documents</h2>
+        <DropboxBrowser basePath="/Agreements/DUAs:MTAs" />
+      </PortalSection>
     </>
   )
 }

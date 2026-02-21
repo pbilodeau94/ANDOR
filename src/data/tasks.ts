@@ -8,6 +8,8 @@ export type Task = {
   assignee?: string
   grantId: string | null
   projectId: string | null
+  trialId: string | null
+  agreementId: string | null
   dueDate: string | null
   status: TaskStatus
   priority: TaskPriority

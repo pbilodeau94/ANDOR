@@ -21,7 +21,7 @@ export const researchGroups: ResearchGroup[] = [
       'Prospective registry with >350 patients',
       'Biorepository (serum, CSF, PBMCs)',
       'REDCap longitudinal database',
-      'Cell-based assay lab for MOG antibody testing',
+
       '\u03B3\u03B4 T cell animal models (EAE)',
     ],
     keyInvestigators: ['Michael Levy', 'Phil Bilodeau', 'Anastasia Vishnevetsky', 'Takahisa Mikami', 'Joao Oliveira', 'Marcelo Matiello'],
@@ -40,7 +40,7 @@ export const researchGroups: ResearchGroup[] = [
       'Multi-center collaboration',
       'Biorepository and biomarker studies',
     ],
-    keyInvestigators: ['Shamik Bhattacharyya', 'Phil Bilodeau', 'Mattia Wruble', 'Michael Levy'],
+    keyInvestigators: ['Shamik Bhattacharyya', 'Phil Bilodeau', 'Mattia Wruble Clark', 'Michael Levy'],
     accentColor: 'emerald-500',
   },
   {
@@ -55,7 +55,7 @@ export const researchGroups: ResearchGroup[] = [
       'ExTINGUISH and CIELO clinical trial involvement',
       'Patient-reported outcome measures development',
     ],
-    keyInvestigators: ['Mattia Wruble', 'Shamik Bhattacharyya', 'Phil Bilodeau'],
+    keyInvestigators: ['Mattia Wruble Clark', 'Shamik Bhattacharyya', 'Phil Bilodeau'],
     accentColor: 'violet-500',
   },
   {
@@ -70,7 +70,7 @@ export const researchGroups: ResearchGroup[] = [
       'Immunopathogenesis lab studies',
       'Exosome and protein trafficking research',
     ],
-    keyInvestigators: ['Michael Levy', 'Monique Anderson', 'Phil Bilodeau', 'Shamik Bhattacharyya', 'Mattia Wruble', 'Anastasia Vishnevetsky'],
+    keyInvestigators: ['Michael Levy', 'Monique Anderson', 'Phil Bilodeau', 'Shamik Bhattacharyya', 'Mattia Wruble Clark', 'Anastasia Vishnevetsky'],
     accentColor: 'amber-600',
   },
   {
@@ -115,7 +115,7 @@ export const researchGroups: ResearchGroup[] = [
       'NeuroSLE patient registry',
       'Collaborative rheumatology and neurology protocols',
     ],
-    keyInvestigators: ['Shamik Bhattacharyya', 'Mattia Wruble', 'Douglas Wilcox', 'Phil Bilodeau'],
+    keyInvestigators: ['Shamik Bhattacharyya', 'Mattia Wruble Clark', 'Douglas Wilcox', 'Phil Bilodeau'],
     accentColor: 'indigo-500',
   },
   {

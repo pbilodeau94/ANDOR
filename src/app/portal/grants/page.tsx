@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useRef, useEffect } from 'react'
+import PortalPageHeader from '@/components/portal/PortalPageHeader'
 import DiseaseChips from '@/components/portal/DiseaseChips'
 import LinkedTasks from '@/components/portal/LinkedTasks'
 import TeamMemberChips from '@/components/portal/TeamMemberChips'
@@ -9,6 +10,7 @@ import { grantStatusLabels, grantStatusColors, grantTypeLabels, grantTypeColors,
 import { useGrantsStore } from '@/data/use-grants-store'
 import { useTasksStore } from '@/data/use-tasks-store'
 import {
+  calculateMilestones,
   getNextMilestone,
   getUrgency,
   urgencyColors,
@@ -501,7 +503,7 @@ function ExpandedGrantRow({
               </a>
             </div>
             <div className="mt-2 space-y-1">
-              <LinkedTasks grantId={grant.id} />
+              <LinkedTasks grantId={grant.id} defaultAssignee={grant.pi[0]} />
             </div>
           </div>
         </div>
@@ -553,6 +555,96 @@ function DeadlineAlerts({ grantList }: { grantList: Grant[] }) {
           ))}
         </div>
       </div>
+    </div>
+  )
+}
+
+// --- Proposal Timeline Calculator ---
+
+function ProposalTimelineCalculator() {
+  const [open, setOpen] = useState(false)
+  const [deadlineInput, setDeadlineInput] = useState('')
+
+  const milestones = useMemo(() => {
+    if (!deadlineInput) return []
+    return calculateMilestones(deadlineInput)
+  }, [deadlineInput])
+
+  const ownerColors = {
+    pi: 'bg-blue-50 text-blue-700',
+    admin: 'bg-purple-50 text-purple-700',
+    both: 'bg-gray-100 text-gray-700',
+  }
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+      >
+        <div className="flex items-center gap-2">
+          <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span className="text-sm font-semibold text-gray-700">Proposal Timeline Calculator</span>
+          <span className="text-xs text-gray-400">MGB business-day milestones</span>
+        </div>
+        <svg
+          className={`h-4 w-4 text-gray-400 transition-transform ${open ? 'rotate-90' : ''}`}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="border-t border-gray-100 px-4 py-4">
+          <div className="flex items-end gap-3">
+            <div>
+              <label className="text-xs font-medium text-gray-500">Sponsor Deadline</label>
+              <input
+                type="date"
+                value={deadlineInput}
+                onChange={(e) => setDeadlineInput(e.target.value)}
+                className="mt-0.5 block rounded border border-gray-300 px-3 py-1.5 text-sm"
+              />
+            </div>
+            {deadlineInput && (
+              <button
+                onClick={() => setDeadlineInput('')}
+                className="rounded border border-gray-300 px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-50"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
+          {milestones.length > 0 && (
+            <div className="mt-4 space-y-1">
+              {milestones.map((m) => {
+                const urgency = getUrgency(m.dateStr)
+                return (
+                  <div
+                    key={m.key}
+                    className={`flex items-start gap-3 rounded-lg border px-3 py-2 ${urgencyColors[urgency]}`}
+                  >
+                    <span className="w-20 shrink-0 text-xs font-semibold tabular-nums">
+                      {formatShortDate(m.dateStr)}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-medium">{m.label}</div>
+                      <div className="mt-0.5 text-[10px] opacity-75">{m.description}</div>
+                    </div>
+                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${ownerColors[m.owner]}`}>
+                      {m.owner === 'pi' ? 'PI' : m.owner === 'admin' ? 'Admin' : 'Both'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -693,14 +785,10 @@ export default function GrantsPage() {
 
   return (
     <>
-      <div className="border-b border-gray-200 bg-[var(--color-surface-alt)]">
-        <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-[var(--color-primary)]">Grants Tracker</h1>
-          <p className="mt-2 text-gray-600">
-            {allGrants.length} grants in the pipeline
-          </p>
-        </div>
-      </div>
+      <PortalPageHeader
+        title="Grants Tracker"
+        subtitle={`${allGrants.length} grants in the pipeline`}
+      />
 
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <GrantTypeTabs activeTab={typeTab} onChange={setTypeTab} />
@@ -708,7 +796,11 @@ export default function GrantsPage() {
 
       <DeadlineAlerts grantList={filtered} />
 
-      <section className="bg-white py-16">
+      <section className="mx-auto max-w-[1400px] px-4 pt-6 sm:px-6 lg:px-8">
+        <ProposalTimelineCalculator />
+      </section>
+
+      <section className="border-b border-gray-100 bg-white py-8">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* Add Grant */}
         {showAddForm ? (
