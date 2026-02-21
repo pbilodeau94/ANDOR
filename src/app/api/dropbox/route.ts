@@ -4,8 +4,8 @@ const BASE_PATH = '/Autoimmune Neurology Research'
 
 let cachedToken: { token: string; expiresAt: number } | null = null
 
-async function getAccessToken(): Promise<string> {
-  if (cachedToken && Date.now() < cachedToken.expiresAt) {
+async function getAccessToken(forceRefresh = false): Promise<string> {
+  if (!forceRefresh && cachedToken && Date.now() < cachedToken.expiresAt) {
     return cachedToken.token
   }
 
@@ -42,18 +42,45 @@ async function getAccessToken(): Promise<string> {
   return cachedToken.token
 }
 
-async function listFolder(path: string) {
+async function dropboxFetch(url: string, body: object, retry = true): Promise<Response> {
   const token = await getAccessToken()
-  const fullPath = path === '/' ? BASE_PATH : `${BASE_PATH}${path}`
-
-  const res = await fetch('https://api.dropboxapi.com/2/files/list_folder', {
+  const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ path: fullPath, limit: 100 }),
+    body: JSON.stringify(body),
   })
+
+  // If missing_scope or invalid token, force refresh and retry once
+  if (!res.ok && retry) {
+    const text = await res.text()
+    if (text.includes('missing_scope') || text.includes('expired_access_token') || text.includes('invalid_access_token')) {
+      cachedToken = null
+      const freshToken = await getAccessToken(true)
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${freshToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      })
+    }
+    throw new Error(text)
+  }
+
+  return res
+}
+
+async function listFolder(path: string) {
+  const fullPath = path === '/' ? BASE_PATH : `${BASE_PATH}${path}`
+
+  const res = await dropboxFetch(
+    'https://api.dropboxapi.com/2/files/list_folder',
+    { path: fullPath, limit: 100 },
+  )
 
   if (!res.ok) {
     const text = await res.text()
@@ -71,17 +98,12 @@ async function listFolder(path: string) {
 }
 
 async function getTemporaryLink(path: string) {
-  const token = await getAccessToken()
   const fullPath = `${BASE_PATH}${path}`
 
-  const res = await fetch('https://api.dropboxapi.com/2/files/get_temporary_link', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ path: fullPath }),
-  })
+  const res = await dropboxFetch(
+    'https://api.dropboxapi.com/2/files/get_temporary_link',
+    { path: fullPath },
+  )
 
   if (!res.ok) {
     const text = await res.text()
