@@ -112,7 +112,7 @@ export default function TeamPage() {
       {/* Faculty */}
       <EditorialSection rule={false}>
         <p className="overline">{roleLabels.faculty}</p>
-        <h2 className="mt-3 font-serif text-[clamp(28px,4vw,36px)]">
+        <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
           {faculty.length} faculty members
         </h2>
         <div className="mt-10 grid gap-10 sm:grid-cols-2">
@@ -125,7 +125,7 @@ export default function TeamPage() {
       {/* Fellows */}
       <EditorialSection>
         <p className="overline">{roleLabels.fellow}</p>
-        <h2 className="mt-3 font-serif text-[clamp(28px,4vw,36px)]">
+        <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
           {fellows.length} fellows &amp; trainees
         </h2>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -138,7 +138,7 @@ export default function TeamPage() {
       {/* Staff */}
       <EditorialSection>
         <p className="overline">{roleLabels.staff}</p>
-        <h2 className="mt-3 font-serif text-[clamp(28px,4vw,36px)]">
+        <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
           {staff.length} staff
         </h2>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

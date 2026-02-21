@@ -83,7 +83,7 @@ export default function SupportPage() {
       <EditorialSection rule={false}>
         <div className="mx-auto max-w-3xl">
           <p className="overline">Why Support ANDOR?</p>
-          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+          <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
             Closing the research gap
           </h2>
           <div className="mt-8 space-y-5 text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
@@ -113,7 +113,7 @@ export default function SupportPage() {
       <EditorialSection>
         <div className="mx-auto max-w-3xl">
           <p className="overline">Recent Milestones</p>
-          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+          <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
             Achievements made possible by research investment
           </h2>
 
@@ -125,7 +125,7 @@ export default function SupportPage() {
               >
                 <div className="absolute -left-px top-6 h-px w-4 bg-[var(--color-rule)]" />
                 <div className="shrink-0 w-16">
-                  <span className="font-serif text-2xl text-[var(--color-primary)]">{m.year}</span>
+                  <span className="font-display text-2xl text-[var(--color-primary)]">{m.year}</span>
                 </div>
                 <p className="text-[15px] leading-relaxed text-[var(--color-ink-secondary)]">{m.text}</p>
               </div>
@@ -138,7 +138,7 @@ export default function SupportPage() {
       <EditorialSection>
         <div className="mx-auto max-w-3xl">
           <p className="overline">Your Gift at Work</p>
-          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+          <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
             How investment translates to impact
           </h2>
           <div className="mt-12 space-y-8">
@@ -156,7 +156,7 @@ export default function SupportPage() {
       <EditorialSection>
         <div className="mx-auto max-w-3xl">
           <p className="overline">Named Research Funds</p>
-          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+          <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
             Direct your support
           </h2>
           <dl className="mt-10 space-y-6">
@@ -175,7 +175,7 @@ export default function SupportPage() {
       {/* Contact */}
       <EditorialSection>
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-serif text-[clamp(28px,4vw,44px)]">Get in Touch</h2>
+          <h2 className="font-display text-[clamp(28px,4vw,44px)]">Get in Touch</h2>
           <p className="mt-4 text-[17px] text-[var(--color-ink-secondary)]">
             To discuss philanthropic support for ANDOR, please contact the Mass General Brigham
             Development Office. We welcome conversations about directed giving, naming opportunities,

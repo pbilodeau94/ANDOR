@@ -55,7 +55,7 @@ export default function ResearchPage() {
       <EditorialSection>
         <div className="mx-auto max-w-4xl">
           <p className="overline">Shared Infrastructure</p>
-          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+          <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
             Amplifying collaborative discovery
           </h2>
           <p className="mt-4 max-w-[65ch] text-[17px] text-[var(--color-ink-secondary)]">

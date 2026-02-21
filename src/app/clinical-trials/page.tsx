@@ -34,7 +34,7 @@ export default function ClinicalTrialsPage() {
       <EditorialSection rule={false}>
         <div className="mx-auto max-w-4xl">
           <p className="overline">Active Trials</p>
-          <h2 className="mt-3 font-serif text-[clamp(28px,4vw,36px)]">
+          <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
             {clinicalTrials.length} clinical trials
           </h2>
           <p className="mt-4 max-w-[65ch] text-[17px] text-[var(--color-ink-secondary)]">
@@ -55,7 +55,7 @@ export default function ClinicalTrialsPage() {
                   }`}
                 >
                   <div className="flex flex-wrap items-baseline gap-3">
-                    <h3 className="font-serif text-xl text-[#1a1614]">
+                    <h3 className="font-display text-xl text-[#1a1614]">
                       {trial.shortName}
                     </h3>
                     <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[trial.status]}`}>
@@ -114,7 +114,7 @@ export default function ClinicalTrialsPage() {
       {/* CTA */}
       <EditorialSection>
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-serif text-[clamp(28px,4vw,36px)]">
+          <h2 className="font-display text-[clamp(28px,4vw,36px)]">
             Interested in participating?
           </h2>
           <p className="mt-4 text-[17px] text-[var(--color-ink-secondary)]">

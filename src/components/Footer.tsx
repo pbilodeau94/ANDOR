@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid gap-12 md:grid-cols-3">
           {/* About */}
           <div>
-            <h3 className="font-serif text-xl text-white">ANDOR</h3>
+            <h3 className="font-display text-xl text-white">ANDOR</h3>
             <p className="mt-4 text-sm leading-relaxed text-gray-400">
               Autoimmune Neurological DisOrders Registry.
               A division-wide research collaborative within MGB Neurology, Division of Neuroimmunology.
@@ -63,7 +63,7 @@ export default function Footer() {
               alt="Harvard Medical School"
               width={160}
               height={53}
-              className="h-9 w-auto brightness-0 invert opacity-50"
+              className="h-9 w-auto opacity-80"
             />
           </div>
           <p className="overline text-gray-600">

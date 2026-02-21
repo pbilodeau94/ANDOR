@@ -37,10 +37,10 @@ export default function Logo({ className = 'h-8' }: { className?: string }) {
         x="48"
         y="28"
         fill="currentColor"
-        fontFamily="Instrument Serif, Georgia, serif"
-        fontWeight="400"
-        fontSize="24"
-        letterSpacing="2"
+        fontFamily="Space Grotesk, system-ui, sans-serif"
+        fontWeight="600"
+        fontSize="22"
+        letterSpacing="3"
       >
         ANDOR
       </text>

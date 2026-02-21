@@ -34,10 +34,17 @@ export default function HomePage() {
           <div className="grid gap-16 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="overline text-gray-400">ANDOR Research Group</p>
-              <h1 className="mt-4 font-serif text-[clamp(40px,6vw,80px)] leading-[1.05]">
+              <h1 className="mt-4 font-display text-[clamp(40px,6vw,80px)] leading-[1.05]">
                 Advancing the Science of Autoimmune Neurology
               </h1>
-              <p className="mt-8 max-w-xl text-[17px] leading-relaxed text-gray-300">
+              <p className="mt-4 text-sm tracking-wide text-gray-400">
+                <span className="font-semibold text-gray-300">A</span>utoimmune{' '}
+                <span className="font-semibold text-gray-300">N</span>eurological{' '}
+                <span className="font-semibold text-gray-300">D</span>is
+                <span className="font-semibold text-gray-300">O</span>rders{' '}
+                <span className="font-semibold text-gray-300">R</span>egistry
+              </p>
+              <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-gray-300">
                 A division-wide research collaborative within Mass General Brigham and Harvard Medical School,
                 dedicated to understanding and treating rare autoimmune neurological diseases through
                 registries, clinical trials, and translational research.
@@ -56,7 +63,7 @@ export default function HomePage() {
                   alt="Harvard Medical School"
                   width={140}
                   height={46}
-                  className="h-8 w-auto brightness-0 invert opacity-60"
+                  className="h-8 w-auto opacity-80"
                 />
               </div>
               <p className="mt-3 text-[10px] font-medium uppercase tracking-widest text-gray-500">
@@ -95,7 +102,7 @@ export default function HomePage() {
         <div className="grid gap-16 lg:grid-cols-[7fr_4fr]">
           <div>
             <p className="overline">Our Mission</p>
-            <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
               Building the infrastructure to solve rare disease
             </h2>
             <div className="mt-8 max-w-[65ch] space-y-5 text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
@@ -146,7 +153,7 @@ export default function HomePage() {
         <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
           <div>
             <p className="overline">Research Programs</p>
-            <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
               Eight interconnected programs
             </h2>
             <p className="mt-4 max-w-[65ch] text-[17px] text-[var(--color-ink-secondary)]">
@@ -183,7 +190,7 @@ export default function HomePage() {
           <div className="hidden lg:block">
             <div className="sticky top-24 rounded-sm border-l-2 border-[var(--color-accent)] bg-[var(--color-surface-alt)] p-8">
               <p className="overline">Featured Program</p>
-              <h3 className="mt-3 font-serif text-2xl">MOGAD</h3>
+              <h3 className="mt-3 font-display text-2xl">MOGAD</h3>
               <p className="mt-4 text-sm leading-relaxed text-[var(--color-ink-secondary)]">
                 {whyThisMatters['MOGAD']?.split('.').slice(0, 2).join('.') + '.'}
               </p>
@@ -223,7 +230,7 @@ export default function HomePage() {
         <div className="grid gap-16 lg:grid-cols-[7fr_4fr]">
           <div>
             <p className="overline">Flagship Clinical Trial</p>
-            <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
               BEST-NMOSD
             </h2>
             <p className="mt-6 max-w-[65ch] text-[17px] leading-relaxed text-[var(--color-ink-secondary)]">
@@ -238,6 +245,19 @@ export default function HomePage() {
               <span>International</span>
               <span className="text-[var(--color-rule)]">&middot;</span>
               <span>200 patients</span>
+            </div>
+            <div className="mt-6">
+              <a
+                href="https://best-nmosd.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-sm font-medium text-[var(--color-accent)] hover:underline"
+              >
+                Visit best-nmosd.org
+                <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
             </div>
           </div>
 
@@ -254,7 +274,7 @@ export default function HomePage() {
         <div className="grid gap-16 lg:grid-cols-[5fr_7fr]">
           <div>
             <p className="overline">Our Team</p>
-            <h2 className="mt-3 font-serif text-[clamp(28px,4vw,44px)]">
+            <h2 className="mt-3 font-display text-[clamp(28px,4vw,44px)]">
               {team.length} investigators
             </h2>
             <p className="mt-4 text-[17px] text-[var(--color-ink-secondary)]">
@@ -272,16 +292,22 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="flex flex-wrap gap-6">
+          <div className="grid gap-6 sm:grid-cols-2">
             {featuredTeam.map((member) => (
-              <div key={member.id} className="flex items-center gap-3">
-                <Image
-                  src={member.imageUrl!}
-                  alt={member.name}
-                  width={96}
-                  height={96}
-                  className="h-[96px] w-[96px] rounded-full object-cover object-top"
-                />
+              <div key={member.id} className="flex items-center gap-4">
+                {member.imageUrl ? (
+                  <Image
+                    src={member.imageUrl}
+                    alt={member.name}
+                    width={80}
+                    height={80}
+                    className="h-20 w-20 shrink-0 rounded-full object-cover object-top"
+                  />
+                ) : (
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-white/10 text-lg font-semibold text-white/60">
+                    {member.name.split(' ').map((n) => n[0]).join('')}
+                  </div>
+                )}
                 <div className="min-w-0">
                   {member.catalystUrl ? (
                     <a
@@ -306,7 +332,7 @@ export default function HomePage() {
       {/* ── Section 7: CTA ── */}
       <section className="bg-[var(--color-primary)] py-24 sm:py-32 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-serif text-[clamp(28px,4vw,44px)]">
+          <h2 className="font-display text-[clamp(28px,4vw,44px)]">
             Support the science
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-gray-300">

@@ -33,7 +33,7 @@ export default function PageHero({
             {overline}
           </p>
         )}
-        <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl max-w-4xl">
+        <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl max-w-4xl">
           {title}
         </h1>
         {description && (

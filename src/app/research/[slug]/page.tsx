@@ -106,7 +106,7 @@ export default async function DiseaseResearchPage({
         <EditorialSection>
           <div className="mx-auto max-w-3xl">
             <p className="overline">Research Highlights</p>
-            <h2 className="mt-3 font-serif text-[clamp(28px,4vw,36px)]">Key contributions</h2>
+            <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">Key contributions</h2>
             <ol className="mt-8 space-y-4 list-decimal list-inside">
               {highlights.map((highlight, idx) => (
                 <li
@@ -126,10 +126,10 @@ export default async function DiseaseResearchPage({
         <EditorialSection>
           <div className="mx-auto max-w-3xl">
             <p className="overline">Investigators</p>
-            <h2 className="mt-3 font-serif text-[clamp(28px,4vw,36px)]">
+            <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">
               {investigators.length} researchers
             </h2>
-            <div className="mt-8 flex flex-wrap gap-6">
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
               {investigators.map((member) => (
                 <div key={member.id} className="flex items-center gap-3">
                   {member.imageUrl ? (
@@ -173,7 +173,7 @@ export default async function DiseaseResearchPage({
           <div className="flex items-baseline justify-between">
             <div>
               <p className="overline">Publications</p>
-              <h2 className="mt-3 font-serif text-[clamp(28px,4vw,36px)]">Key papers</h2>
+              <h2 className="mt-3 font-display text-[clamp(28px,4vw,36px)]">Key papers</h2>
             </div>
             {groupPubs.length > 0 && (
               <span className="text-sm text-[var(--color-ink-tertiary)]">

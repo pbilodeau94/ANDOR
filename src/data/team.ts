@@ -13,11 +13,20 @@ export type TeamMember = {
 }
 
 export const team: TeamMember[] = [
-  // Faculty — Levy, Shamik, Matiello first
+  // Faculty — Chitnis (division chief), Levy, Shamik, Matiello first
+  {
+    id: 't26',
+    name: 'Tanuja Chitnis',
+    title: 'Professor of Neurology, Chief, Division of Neuroimmunology',
+    role: 'faculty',
+    institution: 'Mass General Brigham / Harvard Medical School',
+    catalystUrl: 'https://connects.catalyst.harvard.edu/Profiles/profile/1244171',
+    diseases: ['MS', 'MOGAD', 'NMOSD'],
+  },
   {
     id: 't1',
     name: 'Michael Levy',
-    title: 'Associate Professor of Neurology, Research Director',
+    title: 'Associate Professor of Neurology',
     role: 'faculty',
     institution: 'Mass General Brigham / Harvard Medical School',
     catalystUrl: 'https://connects.catalyst.harvard.edu/profiles/display/Person/183775',
