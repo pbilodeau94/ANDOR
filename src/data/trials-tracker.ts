@@ -22,6 +22,7 @@ export type TrackedTrial = {
   nctId?: string
   studyUrl?: string
   andorLed?: boolean
+  publicFacing?: boolean
 }
 
 export const trackedTrials: TrackedTrial[] = [
@@ -33,11 +34,12 @@ export const trackedTrials: TrackedTrial[] = [
     disease: 'NMOSD',
     status: 'start_up',
     sponsor: 'PCORI / Mass General Brigham',
-    pi: 'Anastasia Vishnevetsky, Michael Levy, Phil Bilodeau',
+    pi: 'Phil Bilodeau',
     subInvestigator: 'Shamik Bhattacharyya',
     primaryCRC: 'Becca',
     studyUrl: 'https://best-nmosd.org',
     andorLed: true,
+    publicFacing: true,
   },
   {
     id: 'tt2',
@@ -61,6 +63,7 @@ export const trackedTrials: TrackedTrial[] = [
     nctId: 'NCT05063162',
     studyUrl: 'https://clinicaltrials.gov/study/NCT05063162',
     andorLed: true,
+    publicFacing: true,
   },
   {
     id: 'tt3',
@@ -84,6 +87,7 @@ export const trackedTrials: TrackedTrial[] = [
     nctId: 'NCT05271409',
     studyUrl: 'https://clinicaltrials.gov/study/NCT05271409',
     andorLed: true,
+    publicFacing: true,
   },
   {
     id: 'tt4',
@@ -197,6 +201,7 @@ export const trackedTrials: TrackedTrial[] = [
     pi: 'Anastasia Vishnevetsky, Michael Levy',
     primaryCRC: 'Aisha, Becca',
     siteNumber: '70303',
+    publicFacing: true,
   },
   {
     id: 'tt12',
@@ -208,6 +213,7 @@ export const trackedTrials: TrackedTrial[] = [
     sponsor: 'Mayo/Hopkins',
     pi: 'Anastasia Vishnevetsky',
     primaryCRC: 'Becca',
+    publicFacing: true,
   },
   {
     id: 'tt13',
@@ -233,6 +239,7 @@ export const trackedTrials: TrackedTrial[] = [
     status: 'active',
     sponsor: '',
     pi: '',
+    publicFacing: true,
   },
   {
     id: 'tt15',
@@ -246,6 +253,7 @@ export const trackedTrials: TrackedTrial[] = [
     nctId: 'NCT06453694',
     studyUrl: 'https://clinicaltrials.gov/study/NCT06453694',
     andorLed: true,
+    publicFacing: true,
   },
 ]
 

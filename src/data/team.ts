@@ -271,19 +271,47 @@ export const roleLabels: Record<TeamRole, string> = {
 
 export const roleOrder: TeamRole[] = ['faculty', 'fellow', 'staff']
 
-export const fellowships = [
+export type Fellowship = {
+  name: string
+  director?: string
+  associateDirector?: string
+  description: string
+  tracks?: {
+    name: string
+    description: string
+    pis?: { name: string; institution: string }[]
+  }[]
+  applyUrl?: string
+}
+
+export const fellowships: Fellowship[] = [
   {
-    name: 'Autoimmune Neurology Fellowship',
-    description: 'Clinical and research training in autoimmune neurological diseases including MOGAD, NMOSD, autoimmune encephalitis, and neurosarcoidosis.',
+    name: 'MGB MS and Neuroimmunology Fellowship',
+    director: 'Eric Klawiter, MD',
+    associateDirector: 'Sarah Conway, MD',
+    description: 'The Mass General Brigham MS and Neuroimmunology Fellowship provides advanced clinical and research training across two tracks, preparing fellows for academic careers in MS and neuroimmunology.',
+    tracks: [
+      {
+        name: 'Clinical Fellows',
+        description: 'Rotate through the outpatient clinics at the Brigham MS Center at Brigham and Women\'s Hospital and the MGH MS and NMO Clinic for 1\u20132 years in preparation for a career as an MS specialist. Training comprises direct supervised MS patient care, exposure to multidisciplinary care, didactic activities, and participation in clinical trials. The clinical fellowship involves 5 supervised clinics each week and exposure to ongoing research activities at the Brigham MS Center.',
+      },
+      {
+        name: 'Clinical Research Fellows',
+        description: 'This track involves supervised clinics in MS, NMO, and Neuroimmunology across multiple institutions and a focused research trajectory.',
+        pis: [
+          { name: 'Tanuja Chitnis, MD — CLIMB: Biomarker clinical correlates and predictors of MS disease course', institution: 'BWH' },
+          { name: 'Michael Levy, MD, PhD — Neuroimmunology: NMO mouse models, MOG T-cell activation studies, TM-familial genetics, and clinical trials', institution: 'MGH' },
+          { name: 'Eric Klawiter, MD — MS Neuroimaging and Clinical Trials: Therapeutic clinical trial design and novel imaging techniques including tissue microstructure and connectivity imaging on high-gradient Connectome MRI', institution: 'MGH' },
+        ],
+      },
+    ],
+    applyUrl: 'https://sfmatch.org/',
   },
   {
-    name: 'MGB Neuroimmunology Fellowship',
-    director: 'Michael Levy, MD, PhD',
-    description: 'ACGME-accredited fellowship in neuroimmunology at Mass General Brigham, with training across MGH and BWH.',
-  },
-  {
-    name: 'MGB MS Fellowship',
-    director: 'Shamik Bhattacharyya, MD',
-    description: 'ACGME-accredited fellowship in multiple sclerosis and related disorders at Mass General Brigham.',
+    name: 'Autoimmune Neurology and Neuroinflammatory Diseases Fellowship',
+    director: 'Haatem Reda, MD',
+    associateDirector: 'Shamik Bhattacharyya, MD',
+    description: 'A 1-year fellowship (with optional 2nd year for research) at Massachusetts General Hospital and Harvard Medical School, training neurologists in autoimmune and neuroinflammatory diseases including neurosarcoidosis, immune-mediated conditions, and complex diagnostic challenges across two tertiary care centers (MGH and BWH).',
+    applyUrl: 'https://www.mgbneurologyfellowships.org/fellowships/advancedgeneralneurology.html',
   },
 ]

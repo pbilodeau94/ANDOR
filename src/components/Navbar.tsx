@@ -9,6 +9,7 @@ const publicLinks = [
   { href: '/', label: 'Home' },
   { href: '/research', label: 'Research' },
   { href: '/clinical-trials', label: 'Clinical Trials' },
+  { href: '/education', label: 'Education' },
   { href: '/team', label: 'Team' },
   { href: '/support', label: 'Support' },
   { href: '/contact', label: 'Contact' },

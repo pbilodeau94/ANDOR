@@ -5,7 +5,7 @@ import StatDisplay from '@/components/StatDisplay'
 import { trackedTrials, trialStatusLabels, trialStatusColors } from '@/data/trials-tracker'
 
 const publicTrials = trackedTrials.filter(
-  (t) => t.status === 'active' || t.status === 'start_up' || t.status === 'open_label'
+  (t) => t.publicFacing && (t.status === 'active' || t.status === 'start_up' || t.status === 'open_label')
 )
 
 export const metadata = {
