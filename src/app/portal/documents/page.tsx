@@ -51,12 +51,15 @@ export default function DocumentsPage() {
   }
 
   async function openDropboxFile(path: string) {
+    const win = window.open('about:blank', '_blank')
     try {
       const res = await fetch(`/api/dropbox?action=link&path=${encodeURIComponent(path)}`)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to get link')
-      window.open(data.link, '_blank')
+      if (win) win.location.href = data.link
+      else window.location.href = data.link
     } catch (err) {
+      if (win) win.close()
       alert(err instanceof Error ? err.message : 'Failed to open file')
     }
   }

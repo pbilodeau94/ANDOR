@@ -58,12 +58,16 @@ export default function DropboxBrowser({ basePath = '/' }: { basePath?: string }
   }, [currentPath, fetchFolder])
 
   async function openFile(path: string) {
+    // Open window synchronously during click to avoid popup blocker
+    const win = window.open('about:blank', '_blank')
     try {
       const res = await fetch(`/api/dropbox?action=link&path=${encodeURIComponent(path)}`)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to get link')
-      window.open(data.link, '_blank')
+      if (win) win.location.href = data.link
+      else window.location.href = data.link
     } catch (err) {
+      if (win) win.close()
       setError(err instanceof Error ? err.message : 'Failed to open file')
     }
   }
